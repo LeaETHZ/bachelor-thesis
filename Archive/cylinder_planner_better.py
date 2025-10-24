@@ -45,10 +45,13 @@ def build_motion_primitives(max_up_m: float, max_side_m: float,
     One move = exactly round(max_side_m / s_theta) cells sideways OR
                exactly round(max_up_m   / s_z)     cells vertically.
     """
+
+    #n_theta : number of grid cells around the circumference
+    #n_z: number of gridcells along the hight
     s_theta = radius * (2 * math.pi / n_theta)              # arc length per theta cell (m)
     s_z = (height / (n_z - 1)) if n_z > 1 else height       # vertical per z cell (m)
 
-    di_mag = max(1, int(round(max_side_m / s_theta)))
+    di_mag = max(1, int(round(max_side_m / s_theta))) #convert meters to exact cell count
     dj_mag = max(1, int(round(max_up_m   / s_z)))
 
     moves: list[tuple[int,int]] = [
@@ -61,13 +64,13 @@ def build_motion_primitives(max_up_m: float, max_side_m: float,
     if allow_standstill:
         moves.append((0, 0))
 
-    return moves
+    return moves #list[(di,dj)] integre moves in grid indeces, di columns in the theta directions, dj rows in z
 
 # ---------------------- Obstacles (Branch Patches) ----------------------
 
 def make_branch_obstacles(n_theta: int, n_z: int,
                           radius: float, height: float,
-                          branches: int = 10,
+                          branches: int = 1,
                           arc_span_m_range: Tuple[float, float] = (0.3, 1.2),
                           thickness_m_range: Tuple[float, float] = (0.05, 0.30),
                           seed: Optional[int] = None,
@@ -120,6 +123,39 @@ def make_branch_obstacles(n_theta: int, n_z: int,
     return dilated
 
 # ---------------------- Planner ----------------------
+
+def is_primitive_collision_free(state, move, blocked, n_theta, n_z):
+    """Return True if every intermediate cell along the primitive is free.
+       Axis-aligned primitives only (no diagonals).
+    """
+    i, j = state
+    di, dj = move
+
+    if di != 0 and dj != 0:
+        # we don't allow diagonals in this project
+        return False
+
+    if di != 0:
+        step = 1 if di > 0 else -1
+        for k in range(1, abs(di) + 1):
+            ii = (i + k*step) % n_theta
+            if blocked[ii, j]:
+                return False
+        return True
+
+    if dj != 0:
+        step = 1 if dj > 0 else -1
+        for k in range(1, abs(dj) + 1):
+            jj = j + k*step
+            if not (0 <= jj < n_z):
+                return False
+            if blocked[i, jj]:
+                return False
+        return True
+
+    # standstill
+    return not blocked[i, j]
+
 
 def edge_cost(a: Coord, b: Coord, radius: float, height: float, n_theta: int, n_z: int) -> float:
     i1, j1 = a
@@ -174,11 +210,16 @@ def astar_with_primitives(start, goal, blocked,
 
         i, j = current
         for di, dj in primitives:
+            # reject moves that cross any blocked cell
+            if not is_primitive_collision_free((i, j), (di, dj), blocked, n_theta, n_z):
+                continue
+
             ni = (i + di) % n_theta
             nj = j + dj
             if not (0 <= nj < n_z):
                 continue
             nb = (ni, nj)
+            # end cell is free by construction, but keep this for safety:
             if blocked[nb]:
                 continue
 
@@ -337,7 +378,7 @@ def main():
     ap.add_argument('--branch-thick-min', type=float, default=0.05, help='min vertical thickness (meters)')
     ap.add_argument('--branch-thick-max', type=float, default=0.30, help='max vertical thickness (meters)')
 
-    ap.add_argument('--seed', type=int, default=7)
+    ap.add_argument('--seed', type=int, default=None)
     ap.add_argument('--start', type=parse_pair, default="0,0")
     ap.add_argument('--goal', type=parse_pair, default=None)
     ap.add_argument('--out-prefix', type=str, default='cylinder_branches_demo')

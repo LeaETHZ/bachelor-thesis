@@ -1,68 +1,47 @@
-"""
-@file: global_examples.py
-@breif: global planner application examples
-@author: Yang Haodong, Wu Maojia
-@update: 2024.11.22
-"""
 import sys, os
+import python_motion_planning as pmp
+from python_motion_planning.utils import Grid
+import robotDescription as rd
+import math 
+import AStar_extended as ASE
+from randomize import Randomize
+from polygon import Polygon
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from python_motion_planning.utils import Grid, Map, SearchFactory
+
+
+
+
 
 if __name__ == '__main__':
     '''
     path searcher constructor
     '''
-    search_factory = SearchFactory()
+    
 
-    '''
-    graph search
-    '''
     # build environment
-    start = (5, 5)
-    goal = (45, 25)
-    env = Grid(51, 31)
+    env = Grid(100, 120)
+    Randomize.random_obstacles(env, 3)
 
-    # creat planner
-    planner = search_factory("a_star", start=start, goal=goal, env=env)
-    # planner = search_factory("dijkstra", start=start, goal=goal, env=env)
-    # planner = search_factory("gbfs", start=start, goal=goal, env=env)
-    # planner = search_factory("theta_star", start=start, goal=goal, env=env)
-    # planner = search_factory("lazy_theta_star", start=start, goal=goal, env=env)
-    # planner = search_factory("s_theta_star", start=start, goal=goal, env=env)
-    # planner = search_factory("jps", start=start, goal=goal, env=env)
-    # planner = search_factory("d_star", start=start, goal=goal, env=env)
-    # planner = search_factory("lpa_star", start=start, goal=goal, env=env)
-    # planner = search_factory("d_star_lite", start=start, goal=goal, env=env)
-    # planner = search_factory("voronoi", start=start, goal=goal, env=env, n_knn=4,
-    #                             max_edge_len=10.0, inflation_r=1.0)
 
-    # animation
-    planner.run()
+    robot_shape_up = Polygon([(-4, 8), (4, 8), (4, 0), (8, -8), (-8, -8), (-4, 0)])
+    robot_shape_right = Polygon([(-4, 8), (4, 8), (4, 0), (10, -8), (-4, -8), (-4, 0)])
+    robot_shape_left = Polygon([(4, 8), (-4, 8), (-4, 0), (-10, -8), (4, -8), (4, 0)])
 
-    # ========================================================
+    start, goal = Randomize.random_start_and_goal(env)
 
-    '''
-    sample search
-    '''
-    # # build environment
-    # start = (18, 8)
-    # goal = (37, 18)
-    # env = Map(51, 31)
 
-    # # creat planner
-    # planner = search_factory("rrt", start=start, goal=goal, env=env)
-    # planner = search_factory("rrt_connect", start=start, goal=goal, env=env)
-    # planner = search_factory("rrt_star", start=start, goal=goal, env=env)
-    # planner = search_factory("informed_rrt", start=start, goal=goal, env=env)
+    robot = rd.RobotDescription(pose=(10, 7, math.radians(0)), polygon_up=robot_shape_up, polygon_right=robot_shape_right, polygon_left=robot_shape_left)
 
-    # # animation
-    # planner.run()
 
-    # ========================================================
+       
+    planner = ASE.AStarExtended(start, goal, env=env, robot=robot, allowed_moves=[(1,0), (0,1), (-1,0)], step_cells=8, goal_tol_cells= 5)
 
-    '''
-    evolutionary search
-    '''
-    # planner = search_factory("aco", start=start, goal=goal, env=env)
-    # planner = search_factory("pso", start=start, goal=goal, env=env)
-    # planner.run()
+    
+    cost, path, expand = planner.plan()
+
+    planner.plot.animation(path, "Shaped A*", cost, expand  = None)
+
+
+
+    

@@ -26,11 +26,7 @@ if __name__ == '__main__':
 
     start = (92, 60)
     goal = (16, 60)
-    env = Grid(100, 120)
-
-    env.obstacles = []
-    env.obstacles_tree = []
-
+    env = Cylinder(100, 120)
 
     robot_shape_up = Polygon([(-4, 8), (4, 8), (4, 0), (8, -8), (-8, -8), (-4, 0)])
     robot_shape_right = Polygon([(-4, 8), (4, 8), (4, 0), (10, -8), (-4, -8), (-4, 0)])

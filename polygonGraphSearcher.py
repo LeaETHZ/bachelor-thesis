@@ -72,7 +72,7 @@ class PolygonGraphSearcher(GraphSearcher):
             candidate = node + motion
 
             # wrap x coordinate if env is cylinder
-            if isinstance(self.env, Grid):
+            if isinstance(self.env, Cylinder):
                 x, y = candidate.current
                 x = x % self.env.x_range # Wrap x around cylinder
                 candidate.current = (x,y)

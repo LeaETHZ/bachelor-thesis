@@ -6,6 +6,7 @@ import math
 import AStar_extended as ASE
 from randomize import Randomize
 from polygon import Polygon
+from environment import Cylinder
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -17,18 +18,23 @@ if __name__ == '__main__':
     '''
     path searcher constructor
     '''
-    
 
     # build environment
+    # env = Grid(100, 120)
+    # Randomize.random_obstacles(env, 3)
+    # start, goal = Randomize.random_start_and_goal(env)
+
+    start = (92, 60)
+    goal = (16, 60)
     env = Grid(100, 120)
-    Randomize.random_obstacles(env, 3)
+
+    env.obstacles = []
+    env.obstacles_tree = []
 
 
     robot_shape_up = Polygon([(-4, 8), (4, 8), (4, 0), (8, -8), (-8, -8), (-4, 0)])
     robot_shape_right = Polygon([(-4, 8), (4, 8), (4, 0), (10, -8), (-4, -8), (-4, 0)])
     robot_shape_left = Polygon([(4, 8), (-4, 8), (-4, 0), (-10, -8), (4, -8), (4, 0)])
-
-    start, goal = Randomize.random_start_and_goal(env)
 
 
     robot = rd.RobotDescription(pose=(10, 7, math.radians(0)), polygon_up=robot_shape_up, polygon_right=robot_shape_right, polygon_left=robot_shape_left)
@@ -39,6 +45,7 @@ if __name__ == '__main__':
 
     
     cost, path, expand = planner.plan()
+    print("path = ", path)
 
     planner.plot.animation(path, "Shaped A*", cost, expand  = None)
 

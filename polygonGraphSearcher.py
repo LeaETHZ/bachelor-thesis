@@ -4,6 +4,7 @@ from python_motion_planning.utils import Node , Grid
 from python_motion_planning.global_planner.graph_search.graph_search import GraphSearcher
 from robotDescription import RobotDescription
 from typing import Optional
+from environment import Cylinder
 
 
 
@@ -67,7 +68,15 @@ class PolygonGraphSearcher(GraphSearcher):
         tol_squared = self.goal_tol_cells * self.goal_tol_cells  # squared tol for quick check
 
         for motion in self.motions:
+
             candidate = node + motion
+
+            # wrap x coordinate if env is cylinder
+            if isinstance(self.env, Grid):
+                x, y = candidate.current
+                x = x % self.env.x_range # Wrap x around cylinder
+                candidate.current = (x,y)
+
             if self.isCollision(node, candidate, motion):
                 continue
 
@@ -79,6 +88,8 @@ class PolygonGraphSearcher(GraphSearcher):
                     candidate.current = (goal_x, goal_y)
 
             neighbors.append(candidate)
+        
+
         return neighbors
 
 

@@ -20,12 +20,12 @@ if __name__ == '__main__':
     '''
 
     # build environment
-    # env = Grid(100, 120)
+    # env = Cylinder(100, 120)
     # Randomize.random_obstacles(env, 3)
     # start, goal = Randomize.random_start_and_goal(env)
 
     start = (92, 60)
-    goal = (16, 60)
+    goal = (10, 60)
     env = Cylinder(100, 120)
 
     robot_shape_up = Polygon([(-4, 8), (4, 8), (4, 0), (8, -8), (-8, -8), (-4, 0)])
@@ -42,6 +42,7 @@ if __name__ == '__main__':
     
     cost, path, expand = planner.plan()
     print("path = ", path)
+    print("cost = ", cost)
 
     planner.plot.animation(path, "Shaped A*", cost, expand  = None)
 

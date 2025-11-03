@@ -20,14 +20,14 @@ if __name__ == '__main__':
     '''
 
     # build environment
-    # env = Cylinder(100, 120)
-    # Randomize.random_obstacles(env, 3)
-    # start, goal = Randomize.random_start_and_goal(env)
-
-    start = (95, 30)
-    goal = (3, 60)
-    env = Cylinder(100, 120)
+    env = Cylinder(16, 120) # radius and height input
     Randomize.random_obstacles(env, 3)
+    start, goal = Randomize.random_start_and_goal(env)
+
+    # start = (94, 40)
+    # goal = (8, 40)
+    # env = Cylinder(16, 120)
+    # Randomize.random_obstacles(env, 3)
 
     robot_shape_up = Polygon([(-4, 8), (4, 8), (4, 0), (8, -8), (-8, -8), (-4, 0)])
     robot_shape_right = Polygon([(-4, 8), (4, 8), (4, 0), (10, -8), (-4, -8), (-4, 0)])

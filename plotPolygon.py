@@ -39,7 +39,6 @@ class PlotPolygon(Plot):
         # draw environment, expansions, path (same as base class)
         self.plotEnv(name)
 
-
         if expand is not None:
             self.plotExpand(expand)
         if history_pose is not None:
@@ -60,18 +59,25 @@ class PlotPolygon(Plot):
                 next_x, next_y = path[i+1]
                 theta = math.pi
                 dx, dy = next_x - x, next_y - y
-                
-                if dx > 0:
-                    self.current_shape = self.robot.local_shape_right
-                
-                elif dx < 0: 
-                    self.current_shape = self.robot.local_shape_left
-                
-                elif dy > 0:
-                    self.current_shape = self.robot.local_shape_up
-                
-                else:
-                    self.current_shape = self.robot.local_shape_up
+
+                if abs(dx) > (self.env.x_range - abs(dx)): # check if we cross edge
+                    if x > next_x: # crossing left edge
+                        self.current_shape = self.robot.local_shape_right # NAMES ??????????????????????????????????????????
+                    else: # crossing right edge
+                        self.current_shape = self.robot.local_shape_left # NAMES ??????????????????????????????????????????
+
+                else: # normal cases
+                    if dx > 0:
+                        self.current_shape = self.robot.local_shape_right
+                    
+                    elif dx < 0: 
+                        self.current_shape = self.robot.local_shape_left
+                    
+                    elif dy > 0:
+                        self.current_shape = self.robot.local_shape_up
+                    
+                    else:
+                        self.current_shape = self.robot.local_shape_up
 
                     
                 self.drawRobotPolygon((x, y, theta))

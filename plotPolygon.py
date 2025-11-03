@@ -131,7 +131,7 @@ class PlotPolygon(Plot):
             plt.plot(obs_x, obs_y, "sk")
     
             plt.axvline(0, color='gray', linestyle='--', linewidth=0.5)
-            plt.axvline(self.env.x_range, color='gray', linestyle='--', linewidth=0.5)
+            plt.axvline(self.env.x_range-1, color='gray', linestyle='--', linewidth=0.5)
 
         plt.title(name)
         plt.axis("equal")
@@ -145,29 +145,31 @@ class PlotPolygon(Plot):
         path: Path found in global planning
         '''
 
-        # path_x = [path[i][0] for i in range(len(path))]
-        # path_y = [path[i][1] for i in range(len(path))]
-        # plt.plot(path_x, path_y, path_style, linewidth='2', color=path_color)
-        # plt.plot(self.start.x, self.start.y, marker="s", color="#ff0000")
-        # plt.plot(self.goal.x, self.goal.y, marker="s", color="#1155cc")
-
-        '''gameplan:
-        1) iterate through path list
-        2) check wheter wrap step occured ( if dx > x_range - dx)
-        3) if that happens, implement line plotting differently
-        4) else: plot like before
-        '''
-
         for i in range(len(path) - 1):
             x1, y1 = path[i] # step closer to target, path is target -> start
             x2, y2 = path[i + 1] # step closer to start
             dx = abs(x2 - x1)
 
             if isinstance(self.env, Cylinder) and (dx > (self.env.x_range -dx)):    # check whether we crossed borders
+
                 if x1 > x2: # crossing left edge
-                    plt.plot([x1, x2 + self.env.x_range], [y1, y2], path_style, linewidth=2, color=path_color)
+                    x_cross = 0
+                    y_cross = y1 + (((y2 - y1)/ (x2 - x1)) * (x_cross - x1))
+                    plt.plot([x2, x_cross], [y2, y_cross], path_style, linewidth=2, color=path_color) # plot line from (x2,y2) to left border
+
+                    x_cross = self.env.x_range-1
+                    plt.plot([x_cross, x1], [y_cross, y1], path_style, linewidth=2, color=path_color) # plot line from right border to (x1,y1)
+                    print("crossing left edge")
+                
                 else: # crossing right edge
-                    plt.plot([x1 + self.env.x_range, x2], [y1, y2], path_style, linewidth=2, color=path_color)
+                    x_cross = self.env.x_range-1
+                    y_cross = y1 + (((y2 - y1)/ (x2 - x1)) * (x_cross - x1))
+                    plt.plot([x2, x_cross], [y2, y_cross], path_style, linewidth=2, color=path_color) # plot line from (x2,y2) to right border
+
+                    x_cross = 0
+                    plt.plot([x_cross, x1], [y_cross, y1], path_style, linewidth=2, color=path_color) # plot line from left border to (x1,y1)
+                    print("crossing right edge")
+
             else:
                 # normal connection
                 plt.plot([x1, x2], [y1, y2], path_style, linewidth=2, color=path_color)

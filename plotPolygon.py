@@ -153,25 +153,18 @@ class PlotPolygon(Plot):
             if isinstance(self.env, Cylinder) and (dx > (self.env.x_range -dx)):    # check whether we crossed borders
 
                 if x1 > x2: # crossing left edge
-                    x_cross = 0
-                    y_cross = y1 + (((y2 - y1)/ (x2 - x1)) * (x_cross - x1))
-                    plt.plot([x2, x_cross], [y2, y_cross], path_style, linewidth=2, color=path_color) # plot line from (x2,y2) to left border
-
-                    x_cross = self.env.x_range-1
-                    plt.plot([x_cross, x1], [y_cross, y1], path_style, linewidth=2, color=path_color) # plot line from right border to (x1,y1)
-                    print("crossing left edge")
-                
+                    x_cross_first_edge = 0
+                    x_cross_second_edge = self.env.x_range-1
+                   
                 else: # crossing right edge
-                    x_cross = self.env.x_range-1
-                    y_cross = y1 + (((y2 - y1)/ (x2 - x1)) * (x_cross - x1))
-                    plt.plot([x2, x_cross], [y2, y_cross], path_style, linewidth=2, color=path_color) # plot line from (x2,y2) to right border
+                    x_cross_first_edge = self.env.x_range-1
+                    x_cross_second_edge = 0
+                
+                y_cross = y1 + (((y2 - y1)/ (x2 - x1)) * (x_cross_first_edge - x1))
+                plt.plot([x2, x_cross_first_edge], [y2, y_cross], path_style, linewidth=2, color=path_color) # plot line from (x2,y2) to first edge
+                plt.plot([x_cross_second_edge, x1], [y_cross, y1], path_style, linewidth=2, color=path_color) # plot line from second edge to (x1,y1)
 
-                    x_cross = 0
-                    plt.plot([x_cross, x1], [y_cross, y1], path_style, linewidth=2, color=path_color) # plot line from left border to (x1,y1)
-                    print("crossing right edge")
-
-            else:
-                # normal connection
+            else: # normal connection
                 plt.plot([x1, x2], [y1, y2], path_style, linewidth=2, color=path_color)
 
         # plot start and goal markers

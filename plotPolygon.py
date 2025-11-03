@@ -4,6 +4,7 @@ from python_motion_planning.utils.plot.plot import Plot
 import math 
 from python_motion_planning.utils import Grid, Map, SearchFactory
 from robotDescription import RobotDescription
+from environment import Cylinder
 
 
 class PlotPolygon(Plot):
@@ -28,7 +29,6 @@ class PlotPolygon(Plot):
     def drawPoint(self, x: float, y: float, color: str = "red", size: int = 6) -> None:
         """Draw a point on the current plot (useful for marking waypoints)."""
         self.ax.plot(x, y, marker="o", color=color, markersize=size)
-
 
     def animation(self, path, name, cost=None, expand=None,
                   history_pose=None, predict_path=None,
@@ -77,7 +77,101 @@ class PlotPolygon(Plot):
                 self.drawRobotPolygon((x, y, theta))
                 self.drawPoint(x, y)
 
-            
-
-
         plt.show()
+
+    def plotEnv(self, name: str) -> None:
+        '''
+        Plot environment with static obstacles.
+
+        Parameters
+        ----------
+        name: Algorithm name or some other information
+        '''
+        plt.plot(self.start.x, self.start.y, marker="s", color="#ff0000")
+        plt.plot(self.goal.x, self.goal.y, marker="s", color="#1155cc")
+
+        if isinstance(self.env, Grid):
+            obs_x = [x[0] for x in self.env.obstacles]
+            obs_y = [x[1] for x in self.env.obstacles]
+            plt.plot(obs_x, obs_y, "sk")
+
+        if isinstance(self.env, Map):
+            ax = self.fig.add_subplot()
+            # boundary
+            for (ox, oy, w, h) in self.env.boundary:
+                ax.add_patch(patches.Rectangle(
+                        (ox, oy), w, h,
+                        edgecolor='black',
+                        facecolor='black',
+                        fill=True
+                    )
+                )
+            # rectangle obstacles
+            for (ox, oy, w, h) in self.env.obs_rect:
+                ax.add_patch(patches.Rectangle(
+                        (ox, oy), w, h,
+                        edgecolor='black',
+                        facecolor='gray',
+                        fill=True
+                    )
+                )
+            # circle obstacles
+            for (ox, oy, r) in self.env.obs_circ:
+                ax.add_patch(patches.Circle(
+                        (ox, oy), r,
+                        edgecolor='black',
+                        facecolor='gray',
+                        fill=True
+                    )
+                )
+
+        if isinstance(self.env, Cylinder):
+            obs_x = [x[0] for x in self.env.obstacles]
+            obs_y = [x[1] for x in self.env.obstacles]
+            plt.plot(obs_x, obs_y, "sk")
+    
+            plt.axvline(0, color='gray', linestyle='--', linewidth=0.5)
+            plt.axvline(self.env.x_range, color='gray', linestyle='--', linewidth=0.5)
+
+        plt.title(name)
+        plt.axis("equal")
+ 
+    def plotPath(self, path: list, path_color: str='#13ae00', path_style: str="-") -> None:
+        '''
+        Plot path in global planning.
+
+        Parameters
+        ----------
+        path: Path found in global planning
+        '''
+
+        # path_x = [path[i][0] for i in range(len(path))]
+        # path_y = [path[i][1] for i in range(len(path))]
+        # plt.plot(path_x, path_y, path_style, linewidth='2', color=path_color)
+        # plt.plot(self.start.x, self.start.y, marker="s", color="#ff0000")
+        # plt.plot(self.goal.x, self.goal.y, marker="s", color="#1155cc")
+
+        '''gameplan:
+        1) iterate through path list
+        2) check wheter wrap step occured ( if dx > x_range - dx)
+        3) if that happens, implement line plotting differently
+        4) else: plot like before
+        '''
+
+        for i in range(len(path) - 1):
+            x1, y1 = path[i] # step closer to target, path is target -> start
+            x2, y2 = path[i + 1] # step closer to start
+            dx = abs(x2 - x1)
+
+            if isinstance(self.env, Cylinder) and (dx > (self.env.x_range -dx)):    # check whether we crossed borders
+                if x1 > x2: # crossing left edge
+                    plt.plot([x1, x2 + self.env.x_range], [y1, y2], path_style, linewidth=2, color=path_color)
+                else: # crossing right edge
+                    plt.plot([x1 + self.env.x_range, x2], [y1, y2], path_style, linewidth=2, color=path_color)
+            else:
+                # normal connection
+                plt.plot([x1, x2], [y1, y2], path_style, linewidth=2, color=path_color)
+
+        # plot start and goal markers
+        plt.plot(self.start.x, self.start.y, marker="s", color="#ff0000")
+        plt.plot(self.goal.x, self.goal.y, marker="s", color="#1155cc")

@@ -24,8 +24,8 @@ if __name__ == '__main__':
     # Randomize.random_obstacles(env, 3)
     # start, goal = Randomize.random_start_and_goal(env)
 
-    start = (92, 60)
-    goal = (10, 60)
+    start = (99, 60)
+    goal = (16, 60)
     env = Cylinder(100, 120)
 
     robot_shape_up = Polygon([(-4, 8), (4, 8), (4, 0), (8, -8), (-8, -8), (-4, 0)])

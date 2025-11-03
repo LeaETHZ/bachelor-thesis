@@ -75,7 +75,7 @@ class PolygonGraphSearcher(GraphSearcher):
             # wrap x coordinate if env is cylinder
             if isinstance(self.env, Cylinder):
                 x, y = candidate.current
-                x = x % self.env.x_range # Wrap x around cylinder
+                x = x % self.env.x_range # wrap around x
                 candidate.current = (x,y)
 
             if self.isCollision(node, candidate, motion):
@@ -90,7 +90,6 @@ class PolygonGraphSearcher(GraphSearcher):
 
             neighbors.append(candidate)
         
-
         return neighbors
 
     

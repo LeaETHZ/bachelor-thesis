@@ -4,6 +4,7 @@ from python_motion_planning.utils.plot.plot import Plot
 import math 
 from python_motion_planning.utils import Grid, Map, SearchFactory
 from robotDescription import RobotDescription
+from environment import Cylinder
 import random
 
 
@@ -29,10 +30,7 @@ class PlotPolygon(Plot):
     
     def drawPoint(self, x: float, y: float, color: str = "red", size: int = 6) -> None:
         """Draw a point on the current plot (useful for marking waypoints)."""
-        self.ax.plot(x, y, marker="o", color=self.color, markersize=size)
-
-
-    
+        self.ax.plot(x, y, marker="o", color=color, markersize=size)
 
 
     def animation(self, path, name, cost=None, expand=None,
@@ -43,7 +41,6 @@ class PlotPolygon(Plot):
 
         # draw environment, expansions, path (same as base class)
         self.plotEnv(name)
-
 
         if expand is not None:
             self.plotExpand(expand)
@@ -87,3 +84,95 @@ class PlotPolygon(Plot):
 
 
         plt.show()
+
+    def plotEnv(self, name: str) -> None:
+        '''
+        Plot environment with static obstacles.
+
+        Parameters
+        ----------
+        name: Algorithm name or some other information
+        '''
+        plt.plot(self.start.x, self.start.y, marker="s", color="#ff0000")
+        plt.plot(self.goal.x, self.goal.y, marker="s", color="#1155cc")
+
+        if isinstance(self.env, Grid):
+            obs_x = [x[0] for x in self.env.obstacles]
+            obs_y = [x[1] for x in self.env.obstacles]
+            plt.plot(obs_x, obs_y, "sk")
+
+        if isinstance(self.env, Map):
+            ax = self.fig.add_subplot()
+            # boundary
+            for (ox, oy, w, h) in self.env.boundary:
+                ax.add_patch(patches.Rectangle(
+                        (ox, oy), w, h,
+                        edgecolor='black',
+                        facecolor='black',
+                        fill=True
+                    )
+                )
+            # rectangle obstacles
+            for (ox, oy, w, h) in self.env.obs_rect:
+                ax.add_patch(patches.Rectangle(
+                        (ox, oy), w, h,
+                        edgecolor='black',
+                        facecolor='gray',
+                        fill=True
+                    )
+                )
+            # circle obstacles
+            for (ox, oy, r) in self.env.obs_circ:
+                ax.add_patch(patches.Circle(
+                        (ox, oy), r,
+                        edgecolor='black',
+                        facecolor='gray',
+                        fill=True
+                    )
+                )
+
+        if isinstance(self.env, Cylinder):
+            obs_x = [x[0] for x in self.env.obstacles]
+            obs_y = [x[1] for x in self.env.obstacles]
+            plt.plot(obs_x, obs_y, "sk")
+    
+            plt.axvline(0, color='gray', linestyle='--', linewidth=0.5)
+            plt.axvline(self.env.x_range-1, color='gray', linestyle='--', linewidth=0.5)
+
+        plt.title(name)
+        plt.axis("equal")
+ 
+    def plotPath(self, path: list, path_color: str='#13ae00', path_style: str="-") -> None:
+        '''
+        Plot path in global planning.
+
+        Parameters
+        ----------
+        path: Path found in global planning
+        '''
+
+        for i in range(len(path) - 1):
+            x1, y1 = path[i] # step closer to target, path is target -> start
+            x2, y2 = path[i + 1] # step closer to start
+            dx = abs(x2 - x1)
+
+            if isinstance(self.env, Cylinder) and (dx > (self.env.x_range -dx)):    # check whether we crossed borders
+
+                if x1 > x2: # crossing left edge
+                    x_cross_first_edge = 0
+                    x_cross_second_edge = self.env.x_range-1
+                   
+                else: # crossing right edge
+                    x_cross_first_edge = self.env.x_range-1
+                    x_cross_second_edge = 0
+                
+                y_cross = y1 + (((y2 - y1)/ (x2 - x1)) * (x_cross_first_edge - x1))
+                plt.plot([x2, x_cross_first_edge], [y2, y_cross], path_style, linewidth=2, color=path_color) # plot line from (x2,y2) to first edge
+                plt.plot([x_cross_second_edge, x1], [y_cross, y1], path_style, linewidth=2, color=path_color) # plot line from second edge to (x1,y1)
+
+            else: # normal connection
+                plt.plot([x1, x2], [y1, y2], path_style, linewidth=2, color=path_color)
+
+        # plot start and goal markers
+        plt.plot(self.start.x, self.start.y, marker="s", color="#ff0000")
+        plt.plot(self.goal.x, self.goal.y, marker="s", color="#1155cc")

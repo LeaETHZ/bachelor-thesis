@@ -125,3 +125,22 @@ class PolygonGraphSearcher(GraphSearcher):
             dx = min(dx , self.env.x_range - dx)  # shortest path around the cylinder
 
         return math.hypot(dx, dy)
+    
+    def h(self, node: Node, goal: Node) -> float:
+        """
+        Calculate heuristic.
+
+        Parameters:
+            node (Node): current node
+            goal (Node): goal node
+
+        Returns:
+            h (float): heuristic function value of node
+        """
+        if self.heuristic_type == "manhattan":
+            x_min = min(abs(goal.x - node.x), abs(self.env.x_range - abs(goal.x - node.x))) # check if x distance is closer across grid or across edge
+            return x_min + abs(goal.y - node.y) 
+        
+        elif self.heuristic_type == "euclidean":
+            x_min = min(abs(goal.x - node.x), abs(self.env.x_range - abs(goal.x - node.x))) # check if x distance is closer across grid or across edge
+            return math.hypot(x_min, goal.y - node.y)

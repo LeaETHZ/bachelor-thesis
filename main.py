@@ -24,18 +24,21 @@ if __name__ == '__main__':
     Randomize.random_obstacles(env, 3)
     start, goal = Randomize.random_start_and_goal(env)
 
-    # start = (94, 40)
-    # goal = (8, 40)
+    start = (85, 40)
+    goal = (8, 40)
     # env = Cylinder(16, 120)
     # Randomize.random_obstacles(env, 3)
 
-    robot_shape_up = Polygon([(-4, 8), (4, 8), (4, 0), (8, -8), (-8, -8), (-4, 0)])
-    robot_shape_right = Polygon([(-4, 8), (4, 8), (4, 0), (10, -8), (-4, -8), (-4, 0)])
-    robot_shape_left = Polygon([(4, 8), (-4, 8), (-4, 0), (-10, -8), (4, -8), (4, 0)])
+    # randomize.build_obstacle((30,40),(50,60), env)
+    # randomize.build_obstacle((10,34),(33,50), env)
+    # randomize.build_obstacle((58,70),(30,50), env)
 
 
-    robot = rd.RobotDescription(pose=(10, 7, math.radians(0)), polygon_up=robot_shape_up, polygon_right=robot_shape_right, polygon_left=robot_shape_left)
+    robot_shape_up = Polygon([(-4,0),(-4,8),(-7,16),(7,16),(4,8), (4,0)])
+    robot_shape_right = Polygon([(-4,0),(-4,16),(10,16),(4,8),(4,0)])
+    robot_shape_left = Polygon([(-4,0),(-4,8),(-10,16),(4,16),(4,0)])
 
+    robot = rd.RobotDescription(pose=(start[0], start[1], math.radians(0)), polygon_up=robot_shape_up, polygon_right=robot_shape_right, polygon_left=robot_shape_left)
 
        
     planner = ASE.AStarExtended(start, goal, env=env, robot=robot, allowed_moves=[(1,0), (0,1), (-1,0)], step_cells=8, goal_tol_cells= 5)

@@ -74,6 +74,4 @@ class Randomize:
                    return start, goal
 
          
-    @staticmethod
-    def random_goal(env : Grid):
-         return Randomize.random_free_cell(env)
+   

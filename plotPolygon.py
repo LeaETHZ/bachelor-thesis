@@ -4,6 +4,7 @@ from python_motion_planning.utils.plot.plot import Plot
 import math 
 from python_motion_planning.utils import Grid, Map, SearchFactory
 from robotDescription import RobotDescription
+import random
 
 
 class PlotPolygon(Plot):
@@ -12,6 +13,7 @@ class PlotPolygon(Plot):
         self.robot = robot
         self._robot_patch = None
         self.current_shape = self.robot.local_shape_up
+        self.color = "red"
 
 
     def drawRobotPolygon(self, pose : tuple[float, float, float]) -> None:
@@ -22,12 +24,15 @@ class PlotPolygon(Plot):
             if isinstance(art, patches.Polygon):
                 art.remove()
 
-        poly = patches.Polygon(poly_world, closed=True, fill=False, edgecolor="purple", linewidth=2)
+        poly = patches.Polygon(poly_world, closed=True, fill=False, edgecolor=self.color, linewidth=2)
         self.ax.add_patch(poly)
     
     def drawPoint(self, x: float, y: float, color: str = "red", size: int = 6) -> None:
         """Draw a point on the current plot (useful for marking waypoints)."""
-        self.ax.plot(x, y, marker="o", color=color, markersize=size)
+        self.ax.plot(x, y, marker="o", color=self.color, markersize=size)
+
+
+    
 
 
     def animation(self, path, name, cost=None, expand=None,
@@ -54,12 +59,13 @@ class PlotPolygon(Plot):
 
         if path:
             # downsample trail if path is long (avoid clutter)
-            for i in range(1, len(path)-1):
+            path.reverse()
+            for i in range(0, len(path)-1):
                 x, y = path[i]
 
                 next_x, next_y = path[i+1]
-                theta = math.pi
-                dx, dy = next_x - x, next_y - y
+                theta = 0
+                dx, dy = next_x - x , next_y -y
                 
                 if dx > 0:
                     self.current_shape = self.robot.local_shape_right
@@ -73,10 +79,10 @@ class PlotPolygon(Plot):
                 else:
                     self.current_shape = self.robot.local_shape_up
 
-                    
+                self.color = (random.random(), random.random(), random.random())
                 self.drawRobotPolygon((x, y, theta))
                 self.drawPoint(x, y)
-
+                
             
 
 

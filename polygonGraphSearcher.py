@@ -28,7 +28,7 @@ class PolygonGraphSearcher(GraphSearcher):
         if super().isCollision(node_from, node_to):
             return True
 
-        # move robot to candidate location
+        # # move robot to candidate location
         x, y = node_to.current
         theta = self.robot.pose[2]   # keep orientation constant 
         self.robot.pose = (x, y, theta)
@@ -58,6 +58,7 @@ class PolygonGraphSearcher(GraphSearcher):
             shape = self.robot.local_shape_up
 
         # polygon footprint collision    
+        #if self.robot.is_in_collision((x_current, y_current, theta), shape, self.env):
         if self.robot.is_in_collision(self.robot.pose, shape, self.env):
              return True
     

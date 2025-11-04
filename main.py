@@ -21,9 +21,9 @@ if __name__ == '__main__':
     '''
 
     # build environment
-    env = Grid(80, 120)
-    Randomize.random_obstacles(env, 3)
-    start, goal = Randomize.random_start_and_goal(env)
+    # env = Grid(80, 120)
+    # Randomize.random_obstacles(env, 3)
+    # start, goal = Randomize.random_start_and_goal(env)
 
     # start = (40, 20)
     # goal = (20, 100)
@@ -36,7 +36,10 @@ if __name__ == '__main__':
     # randomize.build_obstacle((37,65),(20,25), env)
     # randomize.build_obstacle((0,3),(10,30), env)
 
-    # env = Cylinder(100, 120)
+    env = Cylinder(20, 120)
+    Randomize.random_obstacles(env, 3)
+    start, goal = Randomize.random_start_and_goal(env)
+
 
     robot_shape_up = Polygon([(-4,0),(-4,8),(-7,16),(7,16),(4,8), (4,0)])
     robot_shape_right = Polygon([(-4,0),(-4,16),(10,16),(4,8),(4,0)])

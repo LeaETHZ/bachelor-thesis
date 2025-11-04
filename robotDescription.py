@@ -26,7 +26,6 @@ class RobotDescription(pmp.Robot):
 
         grid_width, grid_height = env.x_range, env.y_range
         footprint = polygon.footprint_cells(pose, grid_width, grid_height)
-        #print("This is the pose: ", pose, "This is the footprint: ", footprint)
 
         obs = obstacles if obstacles is not None else env.obstacles
         return any((ix, iy) in obs for (ix, iy) in footprint) #wenn mindestens eine zelle true dann gibt true zurück

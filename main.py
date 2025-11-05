@@ -1,11 +1,11 @@
 import sys, os
 import python_motion_planning as pmp
 from python_motion_planning.utils import Grid
-import robotDescription as rd
+import agent.poly_agent as rd
 import math 
-import AStar_extended as ASE
-from randomize import Randomize
-from polygon import Polygon
+import planner.a_star_ext as ASE
+from environment.randomize import Randomize
+from agent.poly import Polygon
 from environment import Cylinder
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -38,10 +38,10 @@ if __name__ == '__main__':
     robot_shape_right = Polygon([(-4,0),(-4,16),(10,16),(4,8),(4,0)])
     robot_shape_left = Polygon([(-4,0),(-4,8),(-10,16),(4,16),(4,0)])
 
-    robot = rd.RobotDescription(pose=(start[0], start[1], math.radians(0)), polygon_up=robot_shape_up, polygon_right=robot_shape_right, polygon_left=robot_shape_left)
+    robot = rd.PolygonAgent(pose=(start[0], start[1], math.radians(0)), polygon_up=robot_shape_up, polygon_right=robot_shape_right, polygon_left=robot_shape_left)
 
        
-    planner = ASE.AStarExtended(start, goal, env=env, robot=robot, allowed_moves=[(1,0), (0,1), (-1,0)], step_cells=8, goal_tol_cells= 5)
+    planner = ASE.AStarExtension(start, goal, env=env, robot=robot, allowed_moves=[(1,0), (0,1), (-1,0)], step_cells=8, goal_tol_cells= 5)
 
     
     cost, path, expand = planner.plan()

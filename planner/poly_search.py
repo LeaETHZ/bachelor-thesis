@@ -1,19 +1,19 @@
 import python_motion_planning as pmp
-import plotPolygon
+import plot.poly_plot as poly_plot
 from python_motion_planning.utils import Node , Grid
 from python_motion_planning.global_planner.graph_search.graph_search import GraphSearcher
-from robotDescription import RobotDescription
+from agent.poly_agent import PolygonAgent
 from typing import Optional
 from environment import Cylinder
 import math
 
 
 
-class PolygonGraphSearcher(GraphSearcher):
-    def __init__(self, start : tuple[int, int], goal : tuple[int, int], env : Grid, robot : RobotDescription, heuristic_type : str ="euclidean", allowed_moves : Optional[list[tuple[int, int]]]=None, step_cells : int =1, goal_tol_cells : int=0) -> None:
+class PolygonSearcher(GraphSearcher):
+    def __init__(self, start : tuple[int, int], goal : tuple[int, int], env : Grid, robot : PolygonAgent, heuristic_type : str ="euclidean", allowed_moves : Optional[list[tuple[int, int]]]=None, step_cells : int =1, goal_tol_cells : int=0) -> None:
         super().__init__(start, goal, env, heuristic_type)
         self.robot = robot  # instance of PolygonRobot
-        self.plot = plotPolygon.PlotPolygon(start, goal, env, robot)
+        self.plot = poly_plot.PolygonPlot(start, goal, env, robot)
         
 
         if allowed_moves is None:

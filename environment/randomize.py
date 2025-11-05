@@ -1,13 +1,13 @@
 import sys, os
 import python_motion_planning as pmp
 from python_motion_planning.utils import Grid, Map, SearchFactory
-import robotDescription as rd
+import agent.poly_agent as rd
 import math as math
-import AStar_extended as ASE
+import planner.a_star_ext as ASE
 import random
 from typing import Optional, Tuple
-from robotDescription import RobotDescription
-from polygon import Polygon
+from agent.poly_agent import PolygonAgent
+from agent.poly import Polygon
 import numpy as np
 
 
@@ -58,7 +58,7 @@ class Randomize:
             x = random.randint(0, W - 1)
             y = random.randint(0, H - 1)
             pose = (float(x), float(y), 0.0)
-            if not RobotDescription.is_in_collision(pose, shape, env):
+            if not PolygonAgent.is_in_collision(pose, shape, env):
                 return (x, y)
 
 

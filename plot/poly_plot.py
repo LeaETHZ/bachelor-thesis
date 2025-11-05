@@ -3,14 +3,14 @@ import matplotlib.patches as patches
 from python_motion_planning.utils.plot.plot import Plot
 import math 
 from python_motion_planning.utils import Grid, Map, SearchFactory
-from robotDescription import RobotDescription
+from agent.poly_agent import PolygonAgent
 from environment import Cylinder
 import random
 
 
 
-class PlotPolygon(Plot):
-    def __init__(self, start : tuple[int,int], goal : tuple[int,int], env : Grid, robot : RobotDescription) -> None:
+class PolygonPlot(Plot):
+    def __init__(self, start : tuple[int,int], goal : tuple[int,int], env : Grid, robot : PolygonAgent) -> None:
         super().__init__(start, goal, env)
         self.robot = robot
         self._robot_patch = None

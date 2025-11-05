@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import python_motion_planning as pmp
 from python_motion_planning.utils import Grid
-from polygon import Polygon
+from agent.poly import Polygon
 
 Pose2D = tuple[float, float, float]
 Cell = tuple[int, int]
 
 #in this class everything that is robot description and its interaction with the environment
-class RobotDescription(pmp.Robot):
+class PolygonAgent(pmp.Robot):
     def __init__(self, pose : Pose2D, polygon_up : Polygon, polygon_right : Polygon, polygon_left : Polygon) -> None:
         self.pose = pose
         px,py,theta = pose

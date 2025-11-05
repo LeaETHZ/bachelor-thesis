@@ -83,8 +83,8 @@ class PolygonSearcher(GraphSearcher):
 
             # If within tolerance, snap to exact goal so A* equality triggers
             if self.goal_tol_cells > 0:
-                dx = candidate.current[0] - goal_x
-                dy = candidate.current[1] - goal_y
+                dx = candidate.x - goal_x
+                dy = candidate.y - goal_y
                 if dx*dx + dy*dy <= tol_squared:
                     candidate.current = (goal_x, goal_y)
 

@@ -1,14 +1,12 @@
 import sys, os
-import python_motion_planning as pmp
-from python_motion_planning.utils import Grid, Map, SearchFactory
-import agent.poly_agent as rd
 import math as math
-import planner.a_star_ext as ASE
+import numpy as np
 import random
 from typing import Optional, Tuple
-from agent.poly_agent import PolygonAgent
-from agent.poly import Polygon
-import numpy as np
+import python_motion_planning as pmp
+from python_motion_planning.utils import Grid, Map, SearchFactory
+
+from agent import PolygonAgent, Polygon 
 
 
 def build_obstacle(x_range: tuple[int, int], y_range: tuple[int, int], env: Grid):

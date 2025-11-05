@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from python_motion_planning.utils.plot.plot import Plot
-import math 
-from python_motion_planning.utils import Grid, Map, SearchFactory
-from agent.poly_agent import PolygonAgent
+from python_motion_planning.utils import Grid, Map
+
+from agent import PolygonAgent 
 from environment import Cylinder
 import random
 
@@ -65,9 +65,9 @@ class PolygonPlot(Plot):
                 dx, dy = next_x - x, next_y - y
 
                 if abs(dx) > (self.env.x_range - abs(dx)): # check if we cross edge
-                    if x > next_x: # crossing left edge
+                    if x > next_x: # crossing right edge
                         self.current_shape = self.robot.local_shape_right # NAMES ??????????????????????????????????????????
-                    else: # crossing right edge
+                    else: # crossing left edge
                         self.current_shape = self.robot.local_shape_left # NAMES ??????????????????????????????????????????
 
                 else: # normal cases

@@ -1,8 +1,8 @@
 from __future__ import annotations
-
 import python_motion_planning as pmp
 from python_motion_planning.utils import Grid
-from agent.poly import Polygon
+
+from .poly import Polygon
 
 Pose2D = tuple[float, float, float]
 Cell = tuple[int, int]

@@ -10,16 +10,18 @@ import math
 
 
 class PolygonSearcher(GraphSearcher):
-    def __init__(self, start : tuple[int, int], goal : tuple[int, int], env : Grid, robot : PolygonAgent, heuristic_type : str ="euclidean", allowed_moves : Optional[list[tuple[int, int]]]=None, step_cells : int =1, goal_tol_cells : int=0) -> None:
+    def __init__(self, start : tuple[int, int], goal : tuple[int, int], env : Grid, robot : PolygonAgent, heuristic_type : str ="euclidean", step_cells : int =1, goal_tol_cells : int=0) -> None:
         super().__init__(start, goal, env, heuristic_type)
         self.robot = robot  # instance of PolygonRobot
         self.plot = poly_plot.PolygonPlot(start, goal, env, robot)
         
 
-        if allowed_moves is None:
-            allowed_moves = [(1,0),(0,1),(-1,0),(0,-1)]
         
-        self.motions = [Node((dx * step_cells, dy * step_cells)) for (dx, dy) in allowed_moves]
+        
+        moves = robot.motions
+
+        self.motions = [Node(moves[0]), Node(moves[1]), Node(moves[2])]
+
         self.goal_tol_cells = int(goal_tol_cells)
 
     

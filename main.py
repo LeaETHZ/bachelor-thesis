@@ -7,6 +7,7 @@ import planner.a_star_ext as ASE
 from environment.randomize import Randomize
 from agent.poly import Polygon
 from environment import Cylinder
+from helper import convert
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -20,12 +21,12 @@ if __name__ == '__main__':
     '''
 
     # build environment
-    env = Cylinder(16, 120) # radius and height input
-    Randomize.random_obstacles(env, 3)
+    env = Cylinder(12, 200) # radius and height input
+    #Randomize.random_obstacles(env, 3)
     start, goal = Randomize.random_start_and_goal(env)
 
-    start = (85, 40)
-    goal = (8, 40)
+    # start = (85, 40)
+    # goal = (8, 40)
     # env = Cylinder(16, 120)
     # Randomize.random_obstacles(env, 3)
 
@@ -33,15 +34,20 @@ if __name__ == '__main__':
     # randomize.build_obstacle((10,34),(33,50), env)
     # randomize.build_obstacle((58,70),(30,50), env)
 
+    res = 1.7 # in cm
 
-    robot_shape_up = Polygon([(-4,0),(-4,8),(-7,16),(7,16),(4,8), (4,0)])
-    robot_shape_right = Polygon([(-4,0),(-4,16),(10,16),(4,8),(4,0)])
-    robot_shape_left = Polygon([(-4,0),(-4,8),(-10,16),(4,16),(4,0)])
 
-    robot = rd.PolygonAgent(pose=(start[0], start[1], math.radians(0)), polygon_up=robot_shape_up, polygon_right=robot_shape_right, polygon_left=robot_shape_left)
+    robot_shape_up = convert.convertPolygonToCells(Polygon([(-68,0),(68,0),(68,215),(90,215),(232,783),(-232,783), (-90,215),(-68,215)]), res) #in mm
+    robot_shape_right = convert.convertPolygonToCells(Polygon([(239,0),(-68,0),(-68,576),(413,576),(280,364),(261,279),(239,279)]),res)
+    robot_shape_left = convert.convertPolygonToCells(Polygon([(-239,0),(68,0),(68,576),(-413,576),(-280,364),(-261,279),(-239,279)]),res)
+
+    #robot = rd.PolygonAgent((start[0], start[1], math.radians(0)), robot_shape_up, robot_shape_right, robot_shape_left, motions=[(0, 14), (10, 0),(-10, 0)])
+    robot = rd.PolygonAgent((start[0], start[1], math.radians(0)), robot_shape_up, robot_shape_right, robot_shape_left, motions=[convert.convertToCells((0, 200), res), convert.convertToCells((170, 0), res),convert.convertToCells((-170, 0),res)])
+
+    #self.motions = [Node((0, 14)), Node((10, 0)), Node((-10, 0))]
 
        
-    planner = ASE.AStarExtension(start, goal, env=env, robot=robot, allowed_moves=[(1,0), (0,1), (-1,0)], step_cells=8, goal_tol_cells= 5)
+    planner = ASE.AStarExtension(start, goal, env=env, robot=robot, step_cells=14, goal_tol_cells= 5)
 
     
     cost, path, expand = planner.plan()

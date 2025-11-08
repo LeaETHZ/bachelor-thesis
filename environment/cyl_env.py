@@ -2,6 +2,7 @@ from math import sqrt, pi
 from abc import ABC, abstractmethod
 from scipy.spatial import cKDTree
 import numpy as np
+from typing import Optional
 from python_motion_planning.utils import Env, Node
 
 class Cylinder(Env):
@@ -41,5 +42,20 @@ class Cylinder(Env):
     def update(self, obstacles):
         self.obstacles = obstacles 
         self.obstacles_tree = cKDTree(np.array(list(obstacles)))
+
+    def crossed_edge_tuple(self, x_1: int, x_2: int) -> Optional[str]:
+        dx = x_2 - x_1
+
+        if abs(dx) < (self.x_range - abs(dx)): # no edge was crossed
+            print("no edge was crossed")
+            return None
+
+        elif dx > 0: # left edge was crossed
+            print("left edge was crossed")
+            return "left"
+        
+        else:
+            print("right edge was crossed")
+            return "right"
 
     

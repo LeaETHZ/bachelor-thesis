@@ -64,13 +64,15 @@ class PolygonPlot(Plot):
                 theta = 0
                 dx, dy = next_x - x, next_y - y
 
-                if abs(dx) > (self.env.x_range - abs(dx)): # check if we cross edge
-                    if x > next_x: # crossing right edge
-                        self.current_shape = self.robot.local_shape_right # NAMES ??????????????????????????????????????????
-                    else: # crossing left edge
-                        self.current_shape = self.robot.local_shape_left # NAMES ??????????????????????????????????????????
+                crossed_edge = self.env.crossed_edge_tuple(x, next_x) # check if we cross edge
 
-                else: # normal cases
+                if crossed_edge != None: 
+                    if crossed_edge == "right": 
+                        self.current_shape = self.robot.local_shape_right 
+                    else: 
+                        self.current_shape = self.robot.local_shape_left 
+
+                else: # no edges were crossed
                     if dx > 0:
                         self.current_shape = self.robot.local_shape_right
                     

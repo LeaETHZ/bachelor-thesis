@@ -158,25 +158,28 @@ class PolygonPlot(Plot):
         '''
 
         for i in range(len(path) - 1):
-            x1, y1 = path[i] # step closer to target, path is target -> start
-            x2, y2 = path[i + 1] # step closer to start
-            dx = abs(x2 - x1)
+            x1, y1 = path[i] 
+            x2, y2 = path[i + 1] 
 
-            if isinstance(self.env, Cylinder) and (dx > (self.env.x_range -dx)):    # check whether we crossed borders
-
-                if x1 > x2: # crossing left edge
-                    x_cross_first_edge = 0
-                    x_cross_second_edge = self.env.x_range-1
-                   
-                else: # crossing right edge
-                    x_cross_first_edge = self.env.x_range-1
-                    x_cross_second_edge = 0
+            if isinstance(self.env, Cylinder):    
+                crossed_edge = self.env.crossed_edge_check(x2,x1)
+                if crossed_edge != None: 
+                    if crossed_edge == "left": # crossing left edge
+                        x_cross_first_edge = 0
+                        x_cross_second_edge = self.env.x_range-1
+                    
+                    else: # crossing right edge
+                        x_cross_first_edge = self.env.x_range-1
+                        x_cross_second_edge = 0
+                    
+                    y_cross = y1 + (((y2 - y1)/ (x2 - x1)) * (x_cross_first_edge - x1))
+                    plt.plot([x2, x_cross_first_edge], [y2, y_cross], path_style, linewidth=2, color=path_color) # plot line from (x2,y2) to first edge
+                    plt.plot([x_cross_second_edge, x1], [y_cross, y1], path_style, linewidth=2, color=path_color) # plot line from second edge to (x1,y1)
                 
-                y_cross = y1 + (((y2 - y1)/ (x2 - x1)) * (x_cross_first_edge - x1))
-                plt.plot([x2, x_cross_first_edge], [y2, y_cross], path_style, linewidth=2, color=path_color) # plot line from (x2,y2) to first edge
-                plt.plot([x_cross_second_edge, x1], [y_cross, y1], path_style, linewidth=2, color=path_color) # plot line from second edge to (x1,y1)
+                else: # no edge was crossed
+                    plt.plot([x1, x2], [y1, y2], path_style, linewidth=2, color=path_color)
 
-            else: # normal connection
+            else: 
                 plt.plot([x1, x2], [y1, y2], path_style, linewidth=2, color=path_color)
 
         # plot start and goal markers

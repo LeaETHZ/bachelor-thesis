@@ -93,35 +93,13 @@ class PolygonSearcher(GraphSearcher):
         return neighbors
 
     
-    def extractPath(self, closed_list: dict) -> tuple:
-        """
-        Extract the path based on the CLOSED list.
-
-        Parameters:
-            closed_list (dict): CLOSED list
-
-        Returns:
-            cost (float): the cost of planned path
-            path (list): the planning path
-        """
-
-        cost = 0
-        node = closed_list[self.goal.current]
-        path = [node.current]
-        while node != self.start:
-            node_parent = closed_list[node.parent]
-            cost += self.dist(node, node_parent)
-            node = node_parent
-            path.append(node.current)
-        return cost, path
-    
     def dist(self, node1: Node, node2: Node) -> float:
         
         dx = abs(node2.x - node1.x)
         dy =  abs(node2.y - node1.y)
 
         if isinstance(self.env, Cylinder):  # Handle wrap-around in the x direction
-            dx = min(dx , self.env.x_range - dx)  # shortest path around the cylinder
+            dx = self.env.dx_min(node1, node2)  # shortest path around the cylinder
 
         return math.hypot(dx, dy)
     
@@ -136,10 +114,12 @@ class PolygonSearcher(GraphSearcher):
         Returns:
             h (float): heuristic function value of node
         """
+        x_min = abs(goal.x - node.x) 
+        if isinstance(self.env, Cylinder):
+            x_min = self.env.dx_min(node, goal)
+
         if self.heuristic_type == "manhattan":
-            x_min = min(abs(goal.x - node.x), abs(self.env.x_range - abs(goal.x - node.x))) # check if x distance is closer across grid or across edge
             return x_min + abs(goal.y - node.y) 
         
         elif self.heuristic_type == "euclidean":
-            x_min = min(abs(goal.x - node.x), abs(self.env.x_range - abs(goal.x - node.x))) # check if x distance is closer across grid or across edge
             return math.hypot(x_min, goal.y - node.y)

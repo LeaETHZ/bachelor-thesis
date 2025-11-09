@@ -64,7 +64,7 @@ class PolygonPlot(Plot):
                 theta = 0
                 dx, dy = next_x - x, next_y - y
 
-                crossed_edge = self.env.crossed_edge_tuple(x, next_x) # check if we cross edge
+                crossed_edge = self.env.crossed_edge_check(x, next_x) # check if we cross edge
 
                 if crossed_edge != None: 
                     if crossed_edge == "right": 

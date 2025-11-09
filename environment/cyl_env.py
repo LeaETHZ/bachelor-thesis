@@ -43,19 +43,18 @@ class Cylinder(Env):
         self.obstacles = obstacles 
         self.obstacles_tree = cKDTree(np.array(list(obstacles)))
 
-    def crossed_edge_tuple(self, x_1: int, x_2: int) -> Optional[str]:
+    def crossed_edge_check(self, x_1: int, x_2: int) -> Optional[str]:
         dx = x_2 - x_1
 
         if abs(dx) < (self.x_range - abs(dx)): # no edge was crossed
-            print("no edge was crossed")
             return None
 
         elif dx > 0: # left edge was crossed
-            print("left edge was crossed")
             return "left"
         
-        else:
-            print("right edge was crossed")
+        else: # right edge was crossed
             return "right"
 
+    def dx_min(self, node1: Node, node2: Node) -> float:
+        return min(abs(node2.x - node1.x), self.x_range - abs(node2.x - node1.x))
     

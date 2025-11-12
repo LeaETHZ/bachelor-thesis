@@ -1,13 +1,11 @@
 import sys, os
+import math 
 import python_motion_planning as pmp
 from python_motion_planning.utils import Grid
-import agent.poly_agent as rd
-import math 
-import planner.a_star_ext as ASE
-from environment.randomize import Randomize
-from agent.poly import Polygon
-from environment import Cylinder
-from helper import convert
+
+from agent import PolygonAgent, Polygon
+from planner import AStarExtension 
+from environment import Randomize, Cylinder
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 

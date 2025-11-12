@@ -10,17 +10,12 @@ from environment import Cylinder
 
 
 class PolygonSearcher(GraphSearcher):
-    def __init__(self, start : tuple[int, int], goal : tuple[int, int], env : Grid, robot : PolygonAgent, heuristic_type : str ="euclidean", step_cells : int =1, goal_tol_cells : int=0) -> None:
+    def __init__(self, start : tuple[int, int], goal : tuple[int, int], env : Grid, robot : PolygonAgent, heuristic_type : str ="euclidean", goal_tol_cells : int=0) -> None:
         super().__init__(start, goal, env, heuristic_type)
         self.robot = robot  # instance of PolygonRobot
         self.plot = PolygonPlot(start, goal, env, robot)
         
-
-        
-        
-        moves = robot.motions
-
-        self.motions = [Node(moves[0]), Node(moves[1]), Node(moves[2])]
+        self.motions = [Node(robot.motions[0]), Node(robot.motions[1]), Node(robot.motions[2])]
 
         self.goal_tol_cells = int(goal_tol_cells)
 

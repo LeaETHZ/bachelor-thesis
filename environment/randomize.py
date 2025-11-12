@@ -16,7 +16,9 @@ def build_obstacle(x_range: tuple[int, int], y_range: tuple[int, int], env: Grid
 
         for x in range(x_min, x_max):
                 for y in range(y_min, y_max):
-                    env.obstacles.add((x, y)) 
+                    env.obstacles.add((x, y))
+        
+
         env.update(env.obstacles) 
         return env
 

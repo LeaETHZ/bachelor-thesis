@@ -35,6 +35,8 @@ class Polygon:
     def footprint_cells(self, pose : tuple[float, float, float], grid_width : int, grid_height : int , pad : int=1) -> list[tuple[int, int]]:
         """Compute the set of grid cells covered by the polygon's footprint at a given pose."""
         poly_world = self.transform_polygon_local_to_world(pose)
+        
+       
 
         minx = max(int(math.floor(np.min(poly_world[:, 0]))), 0)
         maxx = min(int(math.ceil (np.max(poly_world[:, 0]))), grid_width)
@@ -62,5 +64,7 @@ class Polygon:
 
         return list(inflated)
     
+
+
 
     

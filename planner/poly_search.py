@@ -15,8 +15,7 @@ class PolygonSearcher(GraphSearcher):
         self.robot = robot  # instance of PolygonRobot
         self.plot = PolygonPlot(start, goal, env, robot)
         
-        self.motions = [Node(robot.motions[0]), Node(robot.motions[1]), Node(robot.motions[2])]
-
+        self.motions = robot.motions
         self.goal_tol_cells = int(goal_tol_cells)
 
     
@@ -67,7 +66,6 @@ class PolygonSearcher(GraphSearcher):
         tol_squared = self.goal_tol_cells * self.goal_tol_cells  # squared tol for quick check
 
         for motion in self.motions:
-
             candidate = node + motion
 
             # wrap x coordinate if env is cylinder

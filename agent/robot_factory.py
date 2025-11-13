@@ -1,10 +1,12 @@
 import math
 from typing import Tuple
+from python_motion_planning.utils import Node
 
 from agent import PolygonAgent
 from helper import convert
 from .presets import SHAPES_MM, MOTION_GROUPS_MM, RESOLUTION_GROUPS_CM, ShapeSetMM
 from .poly import Polygon
+
 
 
 
@@ -44,14 +46,22 @@ def build_robot(shape_key: str, motion_key: str, resolution_key: str, start_pose
     # --- convert motions (mm -> cells) ---
     motions_cells = [convert.ScaleVertex(m, resolution_cm) for m in motions_mm]
 
+
+    #diagonal motions different cost
+    motions = [Node((x,y), None, 1, None) for (x,y) in motions_cells]
+    for motion in motions:
+        if motion.current[0] != 0 and motion.current[1] != 0:
+            motion.g = math.sqrt(2)
+        
+
     # --- pose setup ---
     start_pose = (start_pose[0], start_pose[1], math.radians(start_pose[2]))
 
     #check if start pose is in colllision
-    
 
 
     # --- construct agent ---
-    return PolygonAgent(start_pose, scaledShapeUp, scaledShapeRight, sacledShapeLeft, motions_cells)
+    agent = PolygonAgent(start_pose, scaledShapeUp, scaledShapeRight, sacledShapeLeft, motions)
+    return agent
 
 

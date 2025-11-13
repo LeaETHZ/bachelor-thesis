@@ -31,14 +31,14 @@ if __name__ == '__main__':
     randomize.build_obstacle((29,70),(20,30),env)
     
     
-    robot = robot_factory.build_robot('ExactRobot', 'UpSidewaysDiagonal', 'RegularRes', (start,goal, 0))
+    robot = robot_factory.build_robot('ExactRobot', 'VaryingLength', 'RegularRes', (start,goal, 0))
 
     #collision of start cell does not get checked by planner
     #REPLACE THE SHAPE WITH THE CROUCHED SHAPES AND NOT THE MERGED SHAPES
     if PolygonAgent.is_in_collision((start[0], start[1], 0),robot.local_shape_up, env):
         raise ValueError("START position is in collision.")
-    if PolygonAgent.is_in_collision((goal[0], goal[1], 0),robot.local_shape_up, env):
-        raise ValueError("GOAL position is in collision.")
+    # if PolygonAgent.is_in_collision((goal[0], goal[1], 0),robot.local_shape_up, env):
+    #     raise ValueError("GOAL position is in collision.")
 
        
     planner = AStarExtension(start, goal, env, robot, goal_tol_cells= 10)

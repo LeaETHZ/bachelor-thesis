@@ -1,6 +1,7 @@
 from __future__ import annotations
 import python_motion_planning as pmp
 from python_motion_planning.utils import Grid
+import matplotlib.pyplot as plt
 
 from .poly import Polygon
 
@@ -30,9 +31,10 @@ class PolygonAgent(pmp.Robot):
 
         grid_width, grid_height = env.x_range, env.y_range
         footprint = polygon.footprint_cells(pose, grid_width, grid_height)
-        #print("This is my pose: ", pose)
-        #print("This is my pose: ", pose, "This is my footprint: ",footprint)
+        padded_footprint = Polygon.padded_footprint(footprint, grid_width, grid_height, 0)
         obs = obstacles if obstacles is not None else env.obstacles
-        return any((ix, iy) in obs for (ix, iy) in footprint) #wenn mindestens eine zelle true dann gibt true zurück
+        
+        return any((ix, iy) in obs for (ix, iy) in padded_footprint) #wenn mindestens eine zelle true dann gibt true zurück
 
+    
 

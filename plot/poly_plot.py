@@ -1,11 +1,14 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import math
+import numpy as np
 from python_motion_planning.utils.plot.plot import Plot
 from python_motion_planning.utils import Grid, Map
 
-from agent import PolygonAgent 
+from agent import PolygonAgent, Polygon
 from environment import Cylinder
 import random
+
 
 
 
@@ -28,6 +31,15 @@ class PolygonPlot(Plot):
 
         poly = patches.Polygon(poly_world, closed=True, fill=False, edgecolor=self.color, linewidth=2)
         self.ax.add_patch(poly)
+
+    def drawFootprint(self):
+        footprint = Polygon.footprint_cells(self.current_shape, self.robot.pose, self.env.x_range, self.env.y_range)
+        footprint_padded = Polygon.padded_footprint(footprint, self.env.x_range,self.env.y_range, pad = 0)
+        
+        for (ix, iy) in footprint_padded:
+            self.ax.plot(ix,iy, marker = "o")
+        
+        
     
     def drawPoint(self, x: float, y: float, color: str = "red", size: int = 6) -> None:
         """Draw a point on the current plot (useful for marking waypoints)."""
@@ -37,7 +49,7 @@ class PolygonPlot(Plot):
                   history_pose=None, predict_path=None,
                   lookahead_pts=None, cost_curve=None, ellipse=None):
         # Re-implement the base animation so we can insert our polygon BEFORE show()
-        name = name + "\ncost: " + str(cost) if cost else name
+        name = name + "\ncost: " + str(cost) + "\nstep counter: " + str(len(path)) if cost else name
 
         # draw environment, expansions, path (same as base class)
         self.plotEnv(name)
@@ -86,6 +98,7 @@ class PolygonPlot(Plot):
                 self.color = (random.random(), random.random(), random.random())
                 self.drawRobotPolygon((x, y, theta))
                 self.drawPoint(x, y)
+                #self.drawFootprint()
 
         plt.show()
 

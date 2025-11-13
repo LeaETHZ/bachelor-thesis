@@ -47,6 +47,9 @@ def build_robot(shape_key: str, motion_key: str, resolution_key: str, start_pose
     # --- pose setup ---
     start_pose = (start_pose[0], start_pose[1], math.radians(start_pose[2]))
 
+    #check if start pose is in colllision
+    
+
 
     # --- construct agent ---
     return PolygonAgent(start_pose, scaledShapeUp, scaledShapeRight, sacledShapeLeft, motions_cells)

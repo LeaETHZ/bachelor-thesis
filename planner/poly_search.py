@@ -44,10 +44,10 @@ class PolygonSearcher(GraphSearcher):
         else:
             direction = "none"
 
-        if direction in ("right"):
+        if direction == "right":
             shape = self.robot.local_shape_right
 
-        if direction in ("left"):
+        elif direction == "left":
             shape = self.robot.local_shape_left
         
 
@@ -57,6 +57,7 @@ class PolygonSearcher(GraphSearcher):
         # polygon footprint collision    
         if self.robot.is_in_collision(self.robot.pose, shape, self.env):
              return True
+        return False
     
 
     #need this function to set a tolerance

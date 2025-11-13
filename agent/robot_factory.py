@@ -11,7 +11,7 @@ from .poly import Polygon
 
 
 
-def build_robot(shape_key: str, motion_key: str, resolution_key: str, start_pose: Tuple[int, int, int]) -> PolygonAgent:
+def build_robot(shape_key: str, motion_key: str, resolution_key: str) -> PolygonAgent:
     """
     Create a PolygonAgent from preset names.
 
@@ -54,14 +54,8 @@ def build_robot(shape_key: str, motion_key: str, resolution_key: str, start_pose
             motion.g = math.sqrt(2)
         
 
-    # --- pose setup ---
-    start_pose = (start_pose[0], start_pose[1], math.radians(start_pose[2]))
-
-    #check if start pose is in colllision
-
-
     # --- construct agent ---
-    agent = PolygonAgent(start_pose, scaledShapeUp, scaledShapeRight, sacledShapeLeft, motions)
+    agent = PolygonAgent(None, scaledShapeUp, scaledShapeRight, sacledShapeLeft, motions)
     return agent
 
 

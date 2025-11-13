@@ -48,6 +48,7 @@ MOTION_GROUPS_MM: Dict[str, List[Tuple[int, int]]] = {
 
 RESOLUTION_GROUPS_CM: Dict[str, float] = {
     "RegularRes": 1.7,
+    #comparing resolutions is diffeicult bc of the problem that to get a good start node we need to know robot size to check that start is not in collision
 }
 
 

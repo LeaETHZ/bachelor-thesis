@@ -6,7 +6,8 @@ from typing import Optional, Tuple
 import python_motion_planning as pmp
 from python_motion_planning.utils import Grid, Map, SearchFactory
 
-from agent import PolygonAgent, Polygon 
+from agent import PolygonAgent, Polygon , presets
+from helper import convert
 
 
 def build_obstacle(x_range: tuple[int, int], y_range: tuple[int, int], env: Grid):
@@ -50,7 +51,9 @@ class Randomize:
         
         max_tries = 50
 
-        shape = Polygon([(-4, 8), (4, 8), (4, 0), (8, -8), (-8, -8), (-4, 0)])
+        #REPLACE WITH CROUCHED POSITION
+        shape = Polygon([(-68, 0), (68, 0), (68, 215), (90, 215), (232, 783), (-232, 783), (-90, 215), (-68, 215)])
+        shape = convert.ScalePolygon(shape, 1.7)
         
         W, H = env.x_range, env.y_range
     
@@ -63,17 +66,16 @@ class Randomize:
 
 
     @staticmethod
-    def random_start_and_goal( env : Grid) -> tuple[tuple[int, int], tuple[int, int]]:
-         max_tries = 50
+    def random_start_and_goal(env : Grid) -> tuple[tuple[int, int], tuple[int, int]]:
+         max_tries = 100
 
          for _ in range(max_tries):
               start = Randomize.random_free_cell(env)
-              goal = Randomize.random_free_cell(env)
+              goal = Randomize.random_free_cell( env)
 
-              if goal[1] >= start[1]:
+              if goal[1] >= start[1] and pow(start[0]-goal[0],2) +  pow(start[1]-goal[1],2)> 20**2:
                    return start, goal
 
          
-    @staticmethod
-    def random_goal(env : Grid):
-         return Randomize.random_free_cell(env)
+   
+   

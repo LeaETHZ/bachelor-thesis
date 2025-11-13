@@ -22,7 +22,6 @@ if __name__ == '__main__':
 
     # build environment
     env = Cylinder(12, 200) # radius and height input
-    start, goal = Randomize.random_start_and_goal(env)
     #start, goal = (25,25), (25,155)
 
     Randomize.random_obstacles(env, 2)
@@ -31,7 +30,10 @@ if __name__ == '__main__':
     randomize.build_obstacle((29,70),(20,30),env)
     
     
-    robot = robot_factory.build_robot('ExactRobot', 'VaryingLength', 'RegularRes', (start,goal, 0))
+    robot = robot_factory.build_robot('ExactRobot', 'VaryingLength', 'RegularRes')
+
+    start, goal = Randomize.random_start_and_goal(env)
+
 
     #collision of start cell does not get checked by planner
     #REPLACE THE SHAPE WITH THE CROUCHED SHAPES AND NOT THE MERGED SHAPES

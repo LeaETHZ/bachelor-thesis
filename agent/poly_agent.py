@@ -10,7 +10,10 @@ Cell = tuple[int, int]
 
 #in this class everything that is robot description and its interaction with the environment
 class PolygonAgent(pmp.Robot):
-    def __init__(self, pose : Pose2D, polygon_up : Polygon, polygon_right : Polygon, polygon_left : Polygon, motions : list[Node]) -> None:
+    def __init__(self,  pose: Pose2D | None, polygon_up : Polygon, polygon_right : Polygon, polygon_left : Polygon, motions : list[Node]) -> None:
+        if pose is None:
+            pose = (0.0, 0.0, 0.0)
+        
         self.pose = pose
         px,py,theta = pose
         

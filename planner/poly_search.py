@@ -10,16 +10,12 @@ from environment import Cylinder
 
 
 class PolygonSearcher(GraphSearcher):
-    def __init__(self, start : tuple[int, int], goal : tuple[int, int], env : Grid, robot : PolygonAgent, heuristic_type : str ="euclidean", allowed_moves : Optional[list[tuple[int, int]]]=None, step_cells : int =1, goal_tol_cells : int=0) -> None:
+    def __init__(self, start : tuple[int, int], goal : tuple[int, int], env : Grid, robot : PolygonAgent, heuristic_type : str ="euclidean", goal_tol_cells : int=0) -> None:
         super().__init__(start, goal, env, heuristic_type)
         self.robot = robot  # instance of PolygonRobot
         self.plot = PolygonPlot(start, goal, env, robot)
         
-
-        if allowed_moves is None:
-            allowed_moves = [(1,0),(0,1),(-1,0),(0,-1)]
-        
-        self.motions = [Node((dx * step_cells, dy * step_cells)) for (dx, dy) in allowed_moves]
+        self.motions = robot.motions
         self.goal_tol_cells = int(goal_tol_cells)
 
     
@@ -47,10 +43,10 @@ class PolygonSearcher(GraphSearcher):
         else:
             direction = "none"
 
-        if direction in ("right"):
+        if direction == "right":
             shape = self.robot.local_shape_right
 
-        if direction in ("left"):
+        elif direction == "left":
             shape = self.robot.local_shape_left
         
 
@@ -60,6 +56,7 @@ class PolygonSearcher(GraphSearcher):
         # polygon footprint collision    
         if self.robot.is_in_collision(self.robot.pose, shape, self.env):
              return True
+        return False
     
 
     #need this function to set a tolerance
@@ -69,7 +66,6 @@ class PolygonSearcher(GraphSearcher):
         tol_squared = self.goal_tol_cells * self.goal_tol_cells  # squared tol for quick check
 
         for motion in self.motions:
-
             candidate = node + motion
 
             # wrap x coordinate if env is cylinder

@@ -32,9 +32,11 @@ class Polygon:
         return inside
     
 
-    def footprint_cells(self, pose : tuple[float, float, float], grid_width : int, grid_height : int , pad : int=1) -> list[tuple[int, int]]:
+    def footprint_cells(self, pose : tuple[float, float, float], grid_width : int, grid_height : int) -> list[tuple[int, int]]:
         """Compute the set of grid cells covered by the polygon's footprint at a given pose."""
         poly_world = self.transform_polygon_local_to_world(pose)
+        
+       
 
         minx = max(int(math.floor(np.min(poly_world[:, 0]))), 0)
         maxx = min(int(math.ceil (np.max(poly_world[:, 0]))), grid_width)
@@ -47,20 +49,30 @@ class Polygon:
             for ix in range(minx, maxx):
                 if self.contains_point(ix + 0.5, iy + 0.5, poly_world):
                     base.append((ix, iy))
+        
+        return base
 
-        if pad <= 0:
-            return base
-
-        # add 1-cell (or pad) border around each base cell
+        
+    def padded_footprint(base: list[tuple[int,int]], grid_width : int, grid_height : int, pad : int=1):
+        
+        
+        base_set = set(base)
         inflated = set(base)
+
+        # find outermost cells
         for (ix, iy) in base:
-            for dx in range(-pad, pad + 1):
-                for dy in range(-pad, pad + 1):
-                    nx, ny = ix + dx, iy + dy
-                    if 0 <= nx < grid_width and 0 <= ny < grid_height:
-                        inflated.add((nx, ny))
+            # if any of the 4 neighbors are not in the base -> it's a border cell
+            if any((ix + dx, iy + dy) not in base_set for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]):
+                for dx in range(-pad, pad + 1):
+                    for dy in range(-pad, pad + 1):
+                        nx, ny = ix + dx, iy + dy
+                        if 0 <= nx < grid_width and 0 <= ny < grid_height:
+                            inflated.add((nx, ny))
 
         return list(inflated)
+
     
+
+
 
     

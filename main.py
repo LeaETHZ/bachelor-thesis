@@ -3,9 +3,11 @@ import math
 import python_motion_planning as pmp
 from python_motion_planning.utils import Grid
 
-from agent import PolygonAgent, Polygon
+from agent import PolygonAgent, Polygon, robot_factory, presets
 from planner import AStarExtension 
-from environment import Randomize, Cylinder
+from environment import Randomize, Cylinder, randomize
+from helper import convert
+
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -19,33 +21,37 @@ if __name__ == '__main__':
     '''
 
     # build environment
-    env = Cylinder(16, 120) # radius and height input
-    Randomize.random_obstacles(env, 3)
+    env = Cylinder(12, 200) # radius and height input
+    #start, goal = (25,25), (25,155)
+
+    Randomize.random_obstacles(env, 2)
+    #randomize.build_obstacle((25,35),(60,70),env)
+    #randomize.build_obstacle((30,70),(70,80),env)
+    randomize.build_obstacle((29,70),(20,30),env)
+    
+    
+    robot = robot_factory.build_robot('ExactRobot', 'VaryingLength', 'RegularRes')
+
     start, goal = Randomize.random_start_and_goal(env)
 
-    start = (5, 40)
-    goal = (85, 40)
-    # env = Cylinder(16, 120)
-    # Randomize.random_obstacles(env, 3)
 
-    # randomize.build_obstacle((30,40),(50,60), env)
-    # randomize.build_obstacle((10,34),(33,50), env)
-    # randomize.build_obstacle((58,70),(30,50), env)
-
-
-    robot_shape_up = Polygon([(-4,0),(-4,8),(-7,16),(7,16),(4,8), (4,0)])
-    robot_shape_right = Polygon([(-4,0),(-4,16),(10,16),(4,8),(4,0)])
-    robot_shape_left = Polygon([(-4,0),(-4,8),(-10,16),(4,16),(4,0)])
-
-    robot = PolygonAgent(pose=(start[0], start[1], math.radians(0)), polygon_up=robot_shape_up, polygon_right=robot_shape_right, polygon_left=robot_shape_left)
+    #collision of start cell does not get checked by planner
+    #REPLACE THE SHAPE WITH THE CROUCHED SHAPES AND NOT THE MERGED SHAPES
+    if PolygonAgent.is_in_collision((start[0], start[1], 0),robot.local_shape_up, env):
+        raise ValueError("START position is in collision.")
+    # if PolygonAgent.is_in_collision((goal[0], goal[1], 0),robot.local_shape_up, env):
+    #     raise ValueError("GOAL position is in collision.")
 
        
-    planner = AStarExtension(start, goal, env=env, robot=robot, allowed_moves=[(1,0), (0,1), (-1,0)], step_cells=8, goal_tol_cells= 5)
-
+    planner = AStarExtension(start, goal, env, robot, goal_tol_cells= 10)
     
     cost, path, expand = planner.plan()
     print("path = ", path)
+    steps = len(path)
+    print("Step count: ",steps)
+
     print("cost = ", cost)
+    
 
     planner.plot.animation(path, "Shaped A*", cost, expand  = None)
 

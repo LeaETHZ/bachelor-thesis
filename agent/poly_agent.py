@@ -1,6 +1,7 @@
 from __future__ import annotations
 import python_motion_planning as pmp
-from python_motion_planning.utils import Grid
+from python_motion_planning.utils import Grid, Node
+import matplotlib.pyplot as plt
 
 from .poly import Polygon
 
@@ -9,14 +10,22 @@ Cell = tuple[int, int]
 
 #in this class everything that is robot description and its interaction with the environment
 class PolygonAgent(pmp.Robot):
-    def __init__(self, pose : Pose2D, polygon_up : Polygon, polygon_right : Polygon, polygon_left : Polygon) -> None:
+    def __init__(self,  pose: Pose2D | None, polygon_up : Polygon, polygon_right : Polygon, polygon_left : Polygon, motions : list[Node]) -> None:
+        if pose is None:
+            pose = (0.0, 0.0, 0.0)
+        
         self.pose = pose
         px,py,theta = pose
+        
         super().__init__(px, py, theta, v = 1, w = 1)
+
+        self.motions = motions
 
         self.local_shape_up : Polygon = polygon_up
         self.local_shape_right : Polygon = polygon_right
         self.local_shape_left : Polygon = polygon_left
+
+        
         
 
     
@@ -26,7 +35,10 @@ class PolygonAgent(pmp.Robot):
 
         grid_width, grid_height = env.x_range, env.y_range
         footprint = polygon.footprint_cells(pose, grid_width, grid_height)
+        padded_footprint = Polygon.padded_footprint(footprint, grid_width, grid_height, 1)
         obs = obstacles if obstacles is not None else env.obstacles
-        return any((ix, iy) in obs for (ix, iy) in footprint) #wenn mindestens eine zelle true dann gibt true zurück
+        
+        return any((ix, iy) in obs for (ix, iy) in padded_footprint) #wenn mindestens eine zelle true dann gibt true zurück
 
+    
 

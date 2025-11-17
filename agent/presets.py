@@ -27,6 +27,7 @@ class ShapeSetMM:
     up: Polygon
     right: Polygon
     left: Polygon
+    crouched: Polygon
 
 
 SHAPES_MM: Dict[str, ShapeSetMM] = {
@@ -34,6 +35,14 @@ SHAPES_MM: Dict[str, ShapeSetMM] = {
     up=Polygon([(-68, 0), (68, 0), (68, 215), (90, 215), (232, 783), (-232, 783), (-90, 215), (-68, 215)]),
     right=Polygon([(239, 0), (-68, 0), (-68, 576), (413, 576), (280, 364), (261, 279), (239, 279)]),
     left=Polygon([(-239, 0), (68, 0), (68, 576), (-413, 576), (-280, 364), (-261, 279), (-239, 279)]),
+    crouched=Polygon([(-68, 0), (68, 0), (68, 215), (90, 215), (160, 525), (-160, 525), (-90, 215), (-68, 215)]) 
+    ),
+
+    "RectangleRobot": ShapeSetMM(
+    up=Polygon([(-196, 0), (196, 0), (196, 780), (-196, 780)]),
+    right=Polygon([(374, 0), (-68, 0), (-68, 576), (374, 576)]),
+    left=Polygon([(-374, 0), (68, 0), (68, 576), (-374, 576)]),
+    crouched=Polygon([(-139, 0), (139, 0), (139, 525), (-139, 525)]) 
     ),
 }
 

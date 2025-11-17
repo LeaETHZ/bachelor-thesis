@@ -11,7 +11,7 @@ from .poly import Polygon
 
 
 
-def build_robot(shape_key: str, motion_key: str, resolution_key: str) -> PolygonAgent:
+def build_planner(shape_key: str, motion_key: str, resolution_key: str) -> PolygonAgent:
     """
     Create a PolygonAgent from preset names.
 

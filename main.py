@@ -3,7 +3,7 @@ import math
 import python_motion_planning as pmp
 from python_motion_planning.utils import Grid
 
-from agent import PolygonAgent, Polygon, robot_factory, presets
+from agent import PolygonAgent, Polygon, planner_factory, presets
 from planner import AStarExtension 
 from environment import Randomize, Cylinder, randomize
 from helper import convert
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     randomize.build_obstacle((29,70),(20,30),env)
     
     
-    robot = robot_factory.build_robot('ExactRobot', 'VaryingLength', 'RegularRes')
+    robot = planner_factory.build_planner('ExactRobot', 'VaryingLength', 'RegularRes')
 
     start, goal = Randomize.random_start_and_goal(env)
 

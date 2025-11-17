@@ -12,7 +12,7 @@ from python_motion_planning.utils import Grid
 
 from environment import Cylinder, Randomize, randomize
 from planner import AStarExtension
-from agent import robot_factory
+from agent import planner_factory
 from agent.presets import SHAPES_MM, MOTION_GROUPS_MM, RESOLUTION_GROUPS_CM
 
 
@@ -21,9 +21,10 @@ from agent.presets import SHAPES_MM, MOTION_GROUPS_MM, RESOLUTION_GROUPS_CM
 # ---------- Configs you want to compare ----------
 VARIANTS = [
     #here we can add things like padding and stuff
-    ("ExactRobot", "VaryingLength", "RegularRes"),
+    # ("ExactRobot", "VaryingLength", "RegularRes"),
     ("ExactRobot", "UpSideways", "RegularRes"),
-    ("ExactRobot", "UpSidewaysDiagonal", "RegularRes"),
+    ("RectangleRobot", "UpSideways", "RegularRes"),
+    # ("ExactRobot", "UpSidewaysDiagonal", "RegularRes"),
 ]
 
 
@@ -99,7 +100,7 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
     variant_name = f"{shape_key}_{motion_key}_{res_key}"
 
     # Build robot
-    robot = robot_factory.build_robot(shape_key, motion_key, res_key)
+    robot = planner_factory.build_planner(shape_key, motion_key, res_key)
 
     # (Optional) pre-check start collision
     # from agent import PolygonAgent

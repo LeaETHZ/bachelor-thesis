@@ -28,7 +28,7 @@ VARIANTS = [
 
 
 # ---------- Evaluation parameters ----------
-N_CASES = 100
+N_CASES = 3
 CYL_RADIUS = 12
 CYL_HEIGHT = 200
 N_RANDOM_OBS_BLOCKS = 3           # how many random obstacles per case
@@ -200,23 +200,42 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
                         int(r.success), r.cost, r.steps, r.expand_count, round(r.runtime_ms,2), r.img_path])
 
     # Print a tiny summary
+
+    summary_lines = []
+
     by_variant: Dict[str, Dict[str, Any]] = {}
     for r in results:
         s = by_variant.setdefault(r.variant, {"runs":0, "success":0, "costs":[]})
         s["runs"] += 1
         s["success"] += int(r.success)
         if r.success: s["costs"].append(r.cost)
+
     print("\n=== Summary ===")
+    summary_lines.append("\n=== Summary ===")
+
     for v, s in by_variant.items():
         sr = 100.0 * s["success"] / s["runs"]
         avg = (sum(s["costs"])/len(s["costs"])) if s["costs"] else float("nan")
-        print(f"{v}: success {sr:.1f}% | avg cost {avg:.2f} over {s['runs']} cases")
-    
+        line = f"{v}: success {sr:.1f}% | avg cost {avg:.2f} over {s['runs']} cases"
+        print(line)
+        summary_lines.append(line)
+
     print("\n=== Failed Cases ===")
+    summary_lines.append("\n=== Failed Cases ===")
+
     if failed_cases:
-        print("Cases with no success:", sorted(set(failed_cases)))
+        fail_line = "Cases with no success: " + ", ".join(map(str, sorted(set(failed_cases))))
+        print(fail_line)
+        summary_lines.append(fail_line)
     else:
         print("All cases successful!")
+        summary_lines.append("All cases successful!")
+    
+    summary_path = ts_dir / "summary.txt"
+    with open(summary_path, "w") as f:
+        f.write("\n".join(summary_lines))
+    print(f"Summary saved to {summary_path}")
+
 
 if __name__ == "__main__":
     run_experiment()

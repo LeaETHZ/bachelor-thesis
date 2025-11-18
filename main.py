@@ -47,7 +47,7 @@ if __name__ == '__main__':
     
     cost, path, expand = planner.plan()
     print("path = ", path)
-    steps = len(path)
+    steps = len(path)-1
     print("Step count: ",steps)
 
     print("cost = ", cost)

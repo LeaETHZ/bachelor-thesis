@@ -49,7 +49,7 @@ class PolygonPlot(Plot):
                   history_pose=None, predict_path=None,
                   lookahead_pts=None, cost_curve=None, ellipse=None):
         # Re-implement the base animation so we can insert our polygon BEFORE show()
-        name = name + "\ncost: " + str(cost) + "\nstep counter: " + str(len(path)) if cost else name
+        name = name + "\ncost: " + str(cost) + "\nstep counter: " + str(len(path)-1) if cost else name
 
         # draw environment, expansions, path (same as base class)
         self.plotEnv(name)

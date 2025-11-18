@@ -114,7 +114,7 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
     dt = (time.perf_counter() - t0) * 1000.0
 
     success = bool(path)
-    steps = len(path) if success else 0
+    steps = len(path)-1 if success else 0 
     expand_count = len(expand) if expand else 0
     cost_val = float(cost) if success else float("inf")
 

@@ -119,3 +119,25 @@ class PolygonSearcher(GraphSearcher):
         
         elif self.heuristic_type == "euclidean":
             return math.hypot(x_min, goal.y - node.y)
+
+    def extractPath(self, closed_list: dict) -> tuple:
+        """
+        Extract the path based on the CLOSED list.
+
+        Parameters:
+            closed_list (dict): CLOSED list
+
+        Returns:
+            cost (float): the cost of planned path
+            path (list): the planning path
+        """
+        cost = 0
+        node = closed_list[self.goal.current]
+        path = [node.current]
+        while node != self.start:
+            node_parent = closed_list[node.parent]
+            # cost += self.dist(node, node_parent)
+            cost += 1
+            node = node_parent
+            path.append(node.current)
+        return cost, path

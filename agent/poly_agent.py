@@ -10,7 +10,7 @@ Cell = tuple[int, int]
 
 #in this class everything that is robot description and its interaction with the environment
 class PolygonAgent(pmp.Robot):
-    def __init__(self,  pose: Pose2D | None, polygon_up : Polygon, polygon_right : Polygon, polygon_left : Polygon, motions : list[Node]) -> None:
+    def __init__(self,  pose: Pose2D | None, polygon_up : Polygon, polygon_right : Polygon, polygon_left : Polygon, motions : list[Node], padding: int) -> None:
         if pose is None:
             pose = (0.0, 0.0, 0.0)
         
@@ -24,6 +24,7 @@ class PolygonAgent(pmp.Robot):
         self.local_shape_up : Polygon = polygon_up
         self.local_shape_right : Polygon = polygon_right
         self.local_shape_left : Polygon = polygon_left
+        self.padding : int = padding
 
         
         
@@ -35,7 +36,7 @@ class PolygonAgent(pmp.Robot):
 
         grid_width, grid_height = env.x_range, env.y_range
         footprint = polygon.footprint_cells(pose, grid_width, grid_height)
-        padded_footprint = Polygon.padded_footprint(footprint, grid_width, grid_height, 1)
+        padded_footprint = Polygon.padded_footprint(footprint, grid_width, grid_height,1)
         obs = obstacles if obstacles is not None else env.obstacles
         
         return any((ix, iy) in obs for (ix, iy) in padded_footprint) #wenn mindestens eine zelle true dann gibt true zurück

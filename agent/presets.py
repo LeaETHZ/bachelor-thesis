@@ -60,6 +60,10 @@ RESOLUTION_GROUPS_CM: Dict[str, float] = {
     #comparing resolutions is diffeicult bc of the problem that to get a good start node we need to know robot size to check that start is not in collision
 }
 
+PADDING_GROUPS_CM: Dict[str, int] = {
+    "RegularPad": 1,
+}
+
 
 
 

@@ -4,14 +4,14 @@ from python_motion_planning.utils import Node
 
 from agent import PolygonAgent
 from helper import convert
-from .presets import SHAPES_MM, MOTION_GROUPS_MM, RESOLUTION_GROUPS_CM, ShapeSetMM
+from .presets import SHAPES_MM, MOTION_GROUPS_MM, RESOLUTION_GROUPS_CM, PADDING_GROUPS_CM, ShapeSetMM
 from .poly import Polygon
 
 
 
 
 
-def build_planner(shape_key: str, motion_key: str, resolution_key: str) -> PolygonAgent:
+def build_planner(shape_key: str, motion_key: str, resolution_key: str, padding_key: str) -> PolygonAgent:
     """
     Create a PolygonAgent from preset names.
 
@@ -32,10 +32,14 @@ def build_planner(shape_key: str, motion_key: str, resolution_key: str) -> Polyg
         raise KeyError(f"motion group '{motion_key}' not found. Available: {list(MOTION_GROUPS_MM.keys())}")
     if resolution_key not in RESOLUTION_GROUPS_CM:
         raise KeyError(f"motion group '{motion_key}' not found. Available: {list(MOTION_GROUPS_MM.keys())}")
+    if padding_key not in PADDING_GROUPS_CM:
+        raise KeyError(f"motion group '{motion_key}' not found. Available: {list(MOTION_GROUPS_MM.keys())}")
+
 
     shapes_mm: ShapeSetMM = SHAPES_MM[shape_key]
     motions_mm = MOTION_GROUPS_MM[motion_key]
     resolution_cm = RESOLUTION_GROUPS_CM[resolution_key]
+    padding_cm = PADDING_GROUPS_CM[padding_key]
 
     # --- convert polygons (mm -> cells) ---
     scaledShapeUp = convert.ScalePolygon(shapes_mm.up, resolution_cm)
@@ -55,7 +59,7 @@ def build_planner(shape_key: str, motion_key: str, resolution_key: str) -> Polyg
         
 
     # --- construct agent ---
-    agent = PolygonAgent(None, scaledShapeUp, scaledShapeRight, sacledShapeLeft, motions)
+    agent = PolygonAgent(None, scaledShapeUp, scaledShapeRight, sacledShapeLeft, motions, padding_cm)
     return agent
 
 

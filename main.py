@@ -30,7 +30,7 @@ if __name__ == '__main__':
     randomize.build_obstacle((29,70),(20,30),env)
     
     
-    robot = planner_factory.build_planner('ExactRobot', 'VaryingLength', 'RegularRes')
+    robot = planner_factory.build_planner('ExactRobot', 'VaryingLength', 'RegularRes','RegularPad')
 
     start, goal = Randomize.random_start_and_goal(env)
 

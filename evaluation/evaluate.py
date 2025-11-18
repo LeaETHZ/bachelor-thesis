@@ -22,8 +22,8 @@ from agent.presets import SHAPES_MM, MOTION_GROUPS_MM, RESOLUTION_GROUPS_CM
 VARIANTS = [
     #here we can add things like padding and stuff
     # ("ExactRobot", "VaryingLength", "RegularRes"),
-    ("ExactRobot", "UpSideways", "RegularRes"),
-    ("RectangleRobot", "UpSideways", "RegularRes"),
+    ("ExactRobot", "UpSideways", "RegularRes","RegularPad"),
+    ("RectangleRobot", "UpSideways", "RegularRes", "RegularPad"),
     # ("ExactRobot", "UpSidewaysDiagonal", "RegularRes"),
 ]
 
@@ -52,6 +52,7 @@ class RunResult:
     shape_key: str
     motion_key: str
     res_key: str
+    pad_key: str
     success: bool
     cost: float
     steps: int
@@ -95,12 +96,12 @@ def seed_everything(seed: int | None):
 
 # ---------- One run on one scenario / one variant ----------
 def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], goal: Tuple[int,int],
-                            variant: tuple[str,str,str], out_dir: Path) -> RunResult:
-    shape_key, motion_key, res_key = variant
-    variant_name = f"{shape_key}_{motion_key}_{res_key}"
+                            variant: tuple[str,str,str,str], out_dir: Path) -> RunResult:
+    shape_key, motion_key, res_key, pad_key = variant
+    variant_name = f"{shape_key}_{motion_key}_{res_key}_{pad_key}"
 
     # Build robot
-    robot = planner_factory.build_planner(shape_key, motion_key, res_key)
+    robot = planner_factory.build_planner(shape_key, motion_key, res_key, pad_key)
 
     # (Optional) pre-check start collision
     # from agent import PolygonAgent
@@ -134,6 +135,7 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
         shape_key=shape_key,
         motion_key=motion_key,
         res_key=res_key,
+        pad_key=pad_key,
         success=success,
         cost=cost_val,
         steps=steps,

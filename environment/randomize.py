@@ -51,8 +51,7 @@ class Randomize:
         
         max_tries = 50
 
-        #REPLACE WITH CROUCHED POSITION
-        shape = Polygon([(-68, 0), (68, 0), (68, 215), (90, 215), (232, 783), (-232, 783), (-90, 215), (-68, 215)])
+        shape = Polygon([(-68, 0), (68, 0), (68, 215), (90, 215), (160, 525), (-160, 525), (-90, 215), (-68, 215)]) # crouched position
         shape = convert.ScalePolygon(shape, 1.7)
         
         W, H = env.x_range, env.y_range

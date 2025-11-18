@@ -46,7 +46,7 @@ class Randomize:
         return env
     
     @staticmethod
-    def random_free_cell(env: Grid) -> Tuple[int, int]:
+    def random_start_cell(env: Grid) -> Tuple[int, int]:
         """Pick a random cell (x,y) where the given robot footprint at (x,y,theta) is collision-free."""
         
         max_tries = 50
@@ -62,6 +62,22 @@ class Randomize:
             pose = (float(x), float(y), 0.0)
             if not PolygonAgent.is_in_collision(pose, shape, env):
                 return (x, y)
+            
+    
+    def random_goal_cell(env: Grid) -> Tuple[int, int]:
+        """Pick a random cell (x,y) that is collision-free."""
+        
+        max_tries = 50
+        
+        W, H = env.x_range, env.y_range
+    
+        for _ in range(max_tries):
+            x = random.randint(0, W - 1)
+            y = random.randint(0, H - 1)
+
+            if (x, y) not in env.obstacles:
+                return (x, y)
+
 
 
     @staticmethod
@@ -69,10 +85,10 @@ class Randomize:
          max_tries = 100
 
          for _ in range(max_tries):
-              start = Randomize.random_free_cell(env)
-              goal = Randomize.random_free_cell( env)
+              start = Randomize.random_start_cell(env)
+              goal = Randomize.random_goal_cell( env)
 
-              if goal[1] >= start[1] and pow(start[0]-goal[0],2) +  pow(start[1]-goal[1],2)> 20**2:
+              if goal[1] >= start[1] and (pow((start[0]-goal[0]),2) +  pow(start[1]-goal[1],2))> (20/1.7)**2: #ADJUST TO GRID RESOLUTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                    return start, goal
 
          

@@ -61,7 +61,10 @@ RESOLUTION_GROUPS_CM: Dict[str, float] = {
 }
 
 PADDING_GROUPS_CM: Dict[str, int] = {
-    "RegularPad": 1,
+    "RegularPad": 1.7,
+    "MinPad" : 0.85,
+    "BigPad": 3.4,
+    "NoPad": 0
 }
 
 

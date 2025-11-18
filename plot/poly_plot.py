@@ -34,11 +34,22 @@ class PolygonPlot(Plot):
 
     def drawFootprint(self):
         footprint = Polygon.footprint_cells(self.current_shape, self.robot.pose, self.env.x_range, self.env.y_range)
-        footprint_padded = Polygon.padded_footprint(footprint, self.env.x_range,self.env.y_range, pad = 0)
+        footprint_padded = Polygon.padded_footprint(footprint, self.env.x_range,self.env.y_range, self.robot.resolution, self.robot.padding)
         
         for (ix, iy) in footprint_padded:
             self.ax.plot(ix,iy, marker = "o")
+    
+    def drawPadding(self):
+        footprint = Polygon.footprint_cells(self.current_shape, self.robot.pose, self.env.x_range, self.env.y_range)
+        footprint_padded = Polygon.padded_footprint(footprint, self.env.x_range,self.env.y_range, self.robot.resolution, self.robot.padding)
         
+        base = set(footprint)
+        padded = set(footprint_padded)
+
+        padding_only = padded - base
+
+        for (ix, iy) in padding_only:
+            self.ax.plot(ix,iy, marker = "o")
         
     
     def drawPoint(self, x: float, y: float, color: str = "red", size: int = 6) -> None:
@@ -100,7 +111,8 @@ class PolygonPlot(Plot):
                 self.color = (random.random(), random.random(), random.random())
                 self.drawRobotPolygon((x, y, theta))
                 self.drawPoint(x, y)
-                #self.drawFootprint()
+                # self.drawFootprint()
+                #self.drawPadding()
 
         plt.show()
 

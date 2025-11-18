@@ -54,7 +54,7 @@ class PolygonSearcher(GraphSearcher):
             shape = self.robot.local_shape_up
 
         # polygon footprint collision    
-        if self.robot.is_in_collision(self.robot.pose, shape, self.env):
+        if self.robot.is_in_collision(self.robot.pose, shape, self.env, self.robot.resolution, self.robot.padding):
              return True
         return False
     

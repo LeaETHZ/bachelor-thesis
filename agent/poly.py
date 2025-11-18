@@ -53,8 +53,9 @@ class Polygon:
         return base
 
         
-    def padded_footprint(base: list[tuple[int,int]], grid_width : int, grid_height : int, pad : int=1):
+    def padded_footprint(base: list[tuple[int,int]], grid_width : int, grid_height : int, res: float=1.7, pad : float=1.7):
         
+        pad_cells = math.ceil(pad/res)
         
         base_set = set(base)
         inflated = set(base)
@@ -63,8 +64,8 @@ class Polygon:
         for (ix, iy) in base:
             # if any of the 4 neighbors are not in the base -> it's a border cell
             if any((ix + dx, iy + dy) not in base_set for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]):
-                for dx in range(-pad, pad + 1):
-                    for dy in range(-pad, pad + 1):
+                for dx in range(-pad_cells, pad_cells + 1):
+                    for dy in range(-pad_cells, pad_cells + 1):
                         nx, ny = ix + dx, iy + dy
                         if 0 <= nx < grid_width and 0 <= ny < grid_height:
                             inflated.add((nx, ny))

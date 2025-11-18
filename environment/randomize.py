@@ -60,7 +60,7 @@ class Randomize:
             x = random.randint(0, W - 1)
             y = random.randint(0, H - 1)
             pose = (float(x), float(y), 0.0)
-            if not PolygonAgent.is_in_collision(pose, shape, env):
+            if not PolygonAgent.is_in_collision(pose, shape, env, res=1.7, pad =1.7):
                 return (x, y)
             
     

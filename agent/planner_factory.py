@@ -59,7 +59,7 @@ def build_planner(shape_key: str, motion_key: str, resolution_key: str, padding_
         
 
     # --- construct agent ---
-    agent = PolygonAgent(None, scaledShapeUp, scaledShapeRight, sacledShapeLeft, motions, padding_cm)
+    agent = PolygonAgent(None, scaledShapeUp, scaledShapeRight, sacledShapeLeft, motions, resolution_cm, padding_cm)
     return agent
 
 

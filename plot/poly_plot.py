@@ -112,7 +112,7 @@ class PolygonPlot(Plot):
                 self.drawRobotPolygon((x, y, theta))
                 self.drawPoint(x, y)
                 # self.drawFootprint()
-                #self.drawPadding()
+                self.drawPadding()
 
         plt.show()
 

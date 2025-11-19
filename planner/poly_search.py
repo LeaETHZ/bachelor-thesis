@@ -20,6 +20,7 @@ class PolygonSearcher(GraphSearcher):
 
     
     def isCollision(self, node_from : Node, node_to : Node, motion : Node) -> bool:
+        # DO WE NEED THIS?!
         # keep original A* grid bounds & wall collisions
         if super().isCollision(node_from, node_to):
             return True

@@ -51,11 +51,9 @@ def build_planner(shape_key: str, motion_key: str, resolution_key: str, padding_
     motions_cells = [convert.ScaleVertex(m, resolution_cm) for m in motions_mm]
 
 
-    #diagonal motions different cost
+    # all motions have same cost
     motions = [Node((x,y), None, 1, None) for (x,y) in motions_cells]
-    for motion in motions:
-        if motion.current[0] != 0 and motion.current[1] != 0:
-            motion.g = math.sqrt(2)
+   
         
 
     # --- construct agent ---

@@ -38,8 +38,8 @@ class Polygon:
         
        
 
-        minx = max(int(math.floor(np.min(poly_world[:, 0]))), 0)
-        maxx = min(int(math.ceil (np.max(poly_world[:, 0]))), grid_width)
+        minx = int(math.floor(np.min(poly_world[:, 0])))
+        maxx = int(math.ceil (np.max(poly_world[:, 0])))
         miny = max(int(math.floor(np.min(poly_world[:, 1]))), 0)
         maxy = min(int(math.ceil (np.max(poly_world[:, 1]))), grid_height)
 
@@ -48,7 +48,7 @@ class Polygon:
         for iy in range(miny, maxy):
             for ix in range(minx, maxx):
                 if self.contains_point(ix + 0.5, iy + 0.5, poly_world):
-                    base.append((ix, iy))
+                    base.append((ix%grid_width, iy))
         
         return base
 
@@ -67,8 +67,8 @@ class Polygon:
                 for dx in range(-pad_cells, pad_cells + 1):
                     for dy in range(-pad_cells, pad_cells + 1):
                         nx, ny = ix + dx, iy + dy
-                        if 0 <= nx < grid_width and 0 <= ny < grid_height:
-                            inflated.add((nx, ny))
+                        if 0 <= ny < grid_height:
+                            inflated.add((nx%grid_width, ny))
 
         return list(inflated)
 

@@ -22,8 +22,8 @@ class PolygonSearcher(GraphSearcher):
     def isCollision(self, node_from : Node, node_to : Node, motion : Node) -> bool:
         # DO WE NEED THIS?!
         # keep original A* grid bounds & wall collisions
-        if super().isCollision(node_from, node_to):
-            return True
+        # if super().isCollision(node_from, node_to):
+        #     return True
 
         # move robot to candidate location
         x, y = node_to.current
@@ -54,6 +54,7 @@ class PolygonSearcher(GraphSearcher):
         else:
             shape = self.robot.local_shape_up
 
+
         # polygon footprint collision    
         if self.robot.is_in_collision(self.robot.pose, shape, self.env, self.robot.resolution, self.robot.padding):
              return True
@@ -83,6 +84,8 @@ class PolygonSearcher(GraphSearcher):
                 dx = candidate.x - goal_x
                 dy = candidate.y - goal_y
                 if dx*dx + dy*dy <= tol_squared:
+                    print("candidate.x: ", candidate.x, "candidate.y: ", candidate.y)
+
                     candidate.current = (goal_x, goal_y)
 
             neighbors.append(candidate)

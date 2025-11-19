@@ -14,8 +14,6 @@ def varying_length(motions: list[tuple], number: int) -> list[tuple]:
                 varying_length_motions.append((int((motion[0]/float(number)*i)), 0))
             if motion[1] != 0:
                 varying_length_motions.append((0,int((motion[1]/float(number)*i))))
-    
-    print(varying_length_motions)
 
     return varying_length_motions
 
@@ -57,14 +55,15 @@ MOTION_GROUPS_MM: Dict[str, List[Tuple[int, int]]] = {
 
 RESOLUTION_GROUPS_CM: Dict[str, float] = {
     "RegularRes": 1.7,
+    "HighRes": 0.85,
+    "LowRes": 3.4
     #comparing resolutions is diffeicult bc of the problem that to get a good start node we need to know robot size to check that start is not in collision
 }
 
 PADDING_GROUPS_CM: Dict[str, int] = {
     "RegularPad": 1.7,
-    "MinPad" : 0.85,
-    "BigPad": 3.4,
-    "NoPad": 0
+    "HighPad": 3.4,
+    "LowPad" : 0.85,
 }
 
 

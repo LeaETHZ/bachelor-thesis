@@ -12,7 +12,7 @@ from python_motion_planning.utils import Grid
 
 from environment import Cylinder, Randomize, randomize
 from planner import AStarExtension
-from agent import planner_factory
+from agent import robot_factory
 from agent.presets import SHAPES_MM, MOTION_GROUPS_MM, RESOLUTION_GROUPS_CM
 
 
@@ -101,7 +101,7 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
     variant_name = f"{shape_key}_{motion_key}_{res_key}_{pad_key}"
 
     # Build robot
-    robot = planner_factory.build_planner(shape_key, motion_key, res_key, pad_key)
+    robot = robot_factory.build_robot(shape_key, motion_key, res_key, pad_key)
 
     # (Optional) pre-check start collision
     # from agent import PolygonAgent

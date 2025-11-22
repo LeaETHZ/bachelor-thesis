@@ -17,6 +17,7 @@ class PolygonSearcher(GraphSearcher):
         
         self.motions = robot.motions
         self.goal_tol_cells = int(goal_tol_cells)
+       
 
     
     def isCollision(self, node_from : Node, node_to : Node, motion : Node) -> bool:
@@ -26,7 +27,10 @@ class PolygonSearcher(GraphSearcher):
         #     return True
 
         # move robot to candidate location
-        x, y = node_to.current
+
+
+        #node_from or node_to???
+        x, y = node_from.current
         theta = self.robot.pose[2]   # keep orientation constant 
         self.robot.pose = (x, y, theta)
 
@@ -85,8 +89,9 @@ class PolygonSearcher(GraphSearcher):
                 dy = candidate.y - goal_y
                 if dx*dx + dy*dy <= tol_squared:
                     print("candidate.x: ", candidate.x, "candidate.y: ", candidate.y)
-
-                    candidate.current = (goal_x, goal_y)
+                    self.robot.target = self.goal
+                    self.goal = Node((candidate.x, candidate.y))
+                    
 
             neighbors.append(candidate)
         

@@ -8,6 +8,7 @@ from python_motion_planning.utils import Grid, Map
 from agent import PolygonAgent, Polygon
 from environment import Cylinder
 import random
+from agent.poly import transform_polygon_local_to_world, footprint_cells, padded_footprint
 
 
 
@@ -17,13 +18,13 @@ class PolygonPlot(Plot):
         super().__init__(start, goal, env)
         self.robot = robot
         self._robot_patch = None
-        self.current_shape = self.robot.local_shape_up
+        self.current_shape = self.robot.local_shape_crouched
         self.color = "red"
 
 
     def drawRobotPolygon(self, pose : tuple[float, float, float]) -> None:
         self.robot.pose = pose
-        poly_world = self.current_shape.transform_polygon_local_to_world(pose)
+        poly_world = transform_polygon_local_to_world(pose, self.current_shape)
 
         for art in list(self.ax.artists):
             if isinstance(art, patches.Polygon):
@@ -33,16 +34,16 @@ class PolygonPlot(Plot):
         self.ax.add_patch(poly)
 
     def drawFootprint(self):
-        footprint = Polygon.footprint_cells(self.current_shape, self.robot.pose, self.env.x_range, self.env.y_range)
-        footprint_padded = Polygon.padded_footprint(footprint, self.env.x_range,self.env.y_range, self.robot.resolution, self.robot.padding)
-        #footprint_padded = Polygon.padded_footprint(footprint, self.env.x_range,self.env.y_range, self.robot.resolution,0)
+        footprint = footprint_cells(self.robot.pose, self.current_shape, self.env.x_range, self.env.y_range)
+        footprint_padded = padded_footprint(footprint, self.env.x_range,self.env.y_range, self.robot.resolution, self.robot.padding)
+        #footprint_padded = footprint
         
         for (ix, iy) in footprint_padded:
             self.ax.plot(ix,iy, marker = "o")
     
     def drawPadding(self):
-        footprint = Polygon.footprint_cells(self.current_shape, self.robot.pose, self.env.x_range, self.env.y_range)
-        footprint_padded = Polygon.padded_footprint(footprint, self.env.x_range,self.env.y_range, self.robot.resolution, self.robot.padding)
+        footprint = footprint_cells(self.current_shape, self.robot.pose, self.env.x_range, self.env.y_range)
+        footprint_padded = padded_footprint(footprint, self.env.x_range,self.env.y_range, self.robot.resolution, self.robot.padding)
         
         base = set(footprint)
         padded = set(footprint_padded)
@@ -57,6 +58,7 @@ class PolygonPlot(Plot):
         """Draw a point on the current plot (useful for marking waypoints)."""
         self.ax.plot(x, y, marker="o", color=self.color, markersize=size)
 
+ 
     def animation(self, path, name, cost=None, expand=None,
                   history_pose=None, predict_path=None,
                   lookahead_pts=None, cost_curve=None, ellipse=None):
@@ -81,6 +83,7 @@ class PolygonPlot(Plot):
         if path:
             # downsample trail if path is long (avoid clutter)
             path.reverse()
+            self.drawRobotPolygon((self.start.x, self.start.y, 0))
             for i in range(0, len(path)-1):
                 x, y = path[i]
 
@@ -112,8 +115,10 @@ class PolygonPlot(Plot):
                 self.color = (random.random(), random.random(), random.random())
                 self.drawRobotPolygon((x, y, theta))
                 self.drawPoint(x, y)
-                #self.drawFootprint()
+                self.drawFootprint()
                 #self.drawPadding()
+            #draw final point that triggers goal
+            self.drawPoint(path[-1][0], path[-1][1], "green")
 
         plt.show()
 
@@ -173,6 +178,11 @@ class PolygonPlot(Plot):
 
         plt.title(name)
         plt.axis("equal")
+
+        #plotting the grid
+        self.ax.set_xticks(np.arange(0, self.env.x_range+1, 1))
+        self.ax.set_yticks(np.arange(0, self.env.y_range+1, 1))
+        self.ax.grid(which="both", color="lightgray", linewidth=0.3)
  
     def plotPath(self, path: list, path_color: str='#13ae00', path_style: str="-") -> None:
         '''

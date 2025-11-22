@@ -42,6 +42,7 @@ class Randomize:
 
             # build obstacle
             build_obstacle((x_min, x_min + w), (y_min, y_min + h), env)
+            env.update(env.obstacles)
 
         return env
     
@@ -70,6 +71,11 @@ class Randomize:
         max_tries = 50
         
         W, H = env.x_range, env.y_range
+
+
+        #NEW: do we want this?
+        Hight_Robot = convert.ScaleVertex((0,783), 1.7)[1]
+        H = H - Hight_Robot
     
         for _ in range(max_tries):
             x = random.randint(0, W - 1)

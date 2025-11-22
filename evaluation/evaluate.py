@@ -35,7 +35,7 @@ CYL_HEIGHT = 200
 N_RANDOM_OBS_BLOCKS = 3           # how many random obstacles per case
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
 GOAL_TOL_CELLS = 10
-MASTER_SEED = 40                  # set None for non-deterministic
+MASTER_SEED = 53                # set None for non-deterministic
 
 # ---------- Data containers ----------
 @dataclass
@@ -125,9 +125,20 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
     # Use your PolygonPlot-based animation instead of static plot
     planner.plot.animation(path, title, cost, expand)
 
-    # Save the current figure headlessly
-    plt.savefig(img_path, dpi=120, bbox_inches="tight")
-    plt.close("all")
+    # ---- RESIZE IN METRIC UNITS ----
+    fig = plt.gcf()
+
+    cm = 1 / 2.54   # centimeters → inches
+    # Set your desired size IN CENTIMETERS:
+    fig.set_size_inches(50 * cm, 120 * cm)  # example: 40 cm width × 120 cm height
+
+    # ---- SAVE HIGH-RES ----
+    fig.savefig(img_path, dpi=200, bbox_inches="tight")
+
+    # (Optional) also save vector:
+    #fig.savefig(img_path.with_suffix(".pdf"), bbox_inches="tight")
+
+    plt.close(fig)
 
     return RunResult(
         case_id=case_id,

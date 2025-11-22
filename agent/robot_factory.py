@@ -27,13 +27,13 @@ def build_robot(shape_key: str, motion_key: str, resolution_key: str, padding_ke
     """
     # --- lookup presets ---
     if shape_key not in SHAPES_MM:
-        raise KeyError(f"shape '{shape_key}' not found. Available: {list(SHAPES_MM.keys())}")
+        raise KeyError(f"Shape '{shape_key}' not found. Available: {list(SHAPES_MM.keys())}")
     if motion_key not in MOTION_GROUPS_MM:
-        raise KeyError(f"motion group '{motion_key}' not found. Available: {list(MOTION_GROUPS_MM.keys())}")
+        raise KeyError(f"Motion group '{motion_key}' not found. Available: {list(MOTION_GROUPS_MM.keys())}")
     if resolution_key not in RESOLUTION_GROUPS_CM:
-        raise KeyError(f"motion group '{motion_key}' not found. Available: {list(MOTION_GROUPS_MM.keys())}")
+        raise KeyError(f"Resolution  '{resolution_key}' not found. Available: {list(RESOLUTION_GROUPS_CM.keys())}")
     if padding_key not in PADDING_GROUPS_CM:
-        raise KeyError(f"motion group '{motion_key}' not found. Available: {list(MOTION_GROUPS_MM.keys())}")
+        raise KeyError(f"Padding '{padding_key}' not found. Available: {list(PADDING_GROUPS_CM.keys())}")
 
 
     shapes_mm: ShapeSetMM = SHAPES_MM[shape_key]
@@ -45,6 +45,7 @@ def build_robot(shape_key: str, motion_key: str, resolution_key: str, padding_ke
     scaledShapeUp = convert.ScalePolygon(shapes_mm.up, resolution_cm)
     scaledShapeRight = convert.ScalePolygon(shapes_mm.right, resolution_cm)
     sacledShapeLeft = convert.ScalePolygon(shapes_mm.left, resolution_cm)
+    sacledShapeCrouched = convert.ScalePolygon(shapes_mm.crouched, resolution_cm)
     
 
     # --- convert motions (mm -> cells) ---
@@ -57,7 +58,7 @@ def build_robot(shape_key: str, motion_key: str, resolution_key: str, padding_ke
         
 
     # --- construct agent ---
-    agent = PolygonAgent(None, scaledShapeUp, scaledShapeRight, sacledShapeLeft, motions, resolution_cm, padding_cm)
+    agent = PolygonAgent(None, scaledShapeUp, scaledShapeRight, sacledShapeLeft, sacledShapeCrouched, motions, resolution_cm, padding_cm)
     return agent
 
 

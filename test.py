@@ -7,6 +7,7 @@ from agent import PolygonAgent, Polygon, presets, robot_factory
 from planner import AStarExtension 
 from environment import Randomize, Cylinder, randomize
 from helper import convert
+from agent.presets import SHAPES_MM, MOTION_GROUPS_MM, RESOLUTION_GROUPS_CM, PADDING_GROUPS_CM
 
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -24,24 +25,26 @@ if __name__ == '__main__':
     env = Cylinder(12, 200) # radius and height input
     #start, goal = (25,25), (25,155)
 
-    # Randomize.random_obstacles(env, 2)
+
+    Randomize.random_obstacles(env, 3)
     #randomize.build_obstacle((25,35),(60,70),env)
     #randomize.build_obstacle((30,70),(70,80),env)
-    randomize.build_obstacle((55,75),(35,42),env)
+    # randomize.build_obstacle((70,80),(30,40),env)
     
     
     robot = robot_factory.build_robot('ExactRobot', 'UpSideways', 'RegularRes','LowPad')
+    res = RESOLUTION_GROUPS_CM["RegularRes"]
+    pad = PADDING_GROUPS_CM["LowPad"]   
+    start, goal = Randomize.random_start_and_goal(env, res, pad)
 
-    #start, goal = Randomize.random_start_and_goal(env)
-
-    start = (56, 2)
-    goal = (30, 17)
+    # start = (10, 2)
+    # goal = (10, 20)
 
 
     #collision of start cell does not get checked by planner
     #REPLACE THE SHAPE WITH THE CROUCHED SHAPES AND NOT THE MERGED SHAPES
-    if PolygonAgent.is_in_collision((start[0], start[1], 0),robot.local_shape_crouched, env, robot.resolution, robot.padding):
-        raise ValueError("START position is in collision.")
+    # if PolygonAgent.is_in_collision((start[0], start[1], 0),robot.local_shape_crouched, env, robot.resolution, robot.padding):
+    #     raise ValueError("START position is in collision.")
     # if PolygonAgent.is_in_collision((goal[0], goal[1], 0),robot.local_shape_up, env):
     #     raise ValueError("GOAL position is in collision.")
 

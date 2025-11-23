@@ -36,7 +36,7 @@ class Randomize:
             w = random.randint(min_size, max_size)
             h = random.randint(min_size, max_size)
 
-            # choose random top-left corner (make sure obstacle fits)
+            # choose random bottom-left corner (make sure obstacle fits)
             x_min = random.randint(0, width - w - 1)
             y_min = random.randint(0, height - h - 1)
 
@@ -47,7 +47,7 @@ class Randomize:
         return env
     
     @staticmethod
-    def random_start_cell(env: Grid) -> Tuple[int, int]:
+    def random_start_cell(env: Grid, res: float, pad: float) -> Tuple[int, int]:
         """Pick a random cell (x,y) where the given robot footprint at (x,y,theta) is collision-free."""
         
         max_tries = 50
@@ -59,9 +59,9 @@ class Randomize:
     
         for _ in range(max_tries):
             x = random.randint(0, W - 1)
-            y = random.randint(0, H - 1)
+            y = random.randint(2, H - 1) # obstacles at y = 0, padding is at least 1 grid, start looking for y > 2
             pose = (float(x), float(y), 0.0)
-            if not PolygonAgent.is_in_collision(pose, shape, env, res=1.7, pad =1.7):
+            if not PolygonAgent.is_in_collision(pose, shape, env, res, pad):
                 return (x, y)
             
     
@@ -87,11 +87,11 @@ class Randomize:
 
 
     @staticmethod
-    def random_start_and_goal(env : Grid) -> tuple[tuple[int, int], tuple[int, int]]:
+    def random_start_and_goal(env : Grid, res: float = 1.7, pad: float = 1.7) -> tuple[tuple[int, int], tuple[int, int]]:
          max_tries = 100
 
          for _ in range(max_tries):
-              start = Randomize.random_start_cell(env)
+              start = Randomize.random_start_cell(env, res, pad)
               goal = Randomize.random_goal_cell( env)
 
               if goal[1] >= start[1] and (pow((start[0]-goal[0]),2) +  pow(start[1]-goal[1],2))> (20/1.7)**2: #ADJUST TO GRID RESOLUTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

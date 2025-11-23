@@ -13,7 +13,8 @@ from python_motion_planning.utils import Grid
 from environment import Cylinder, Randomize, randomize
 from planner import AStarExtension
 from agent import robot_factory
-from agent.presets import SHAPES_MM, MOTION_GROUPS_MM, RESOLUTION_GROUPS_CM
+from agent.presets import SHAPES_MM, MOTION_GROUPS_MM, RESOLUTION_GROUPS_CM, PADDING_GROUPS_CM
+
 
 
 #python -m evaluation.evaluate
@@ -68,9 +69,9 @@ def save_scenario(path: Path, scenario: Scenario) -> None:
     with open(path, "w") as f:
         json.dump(asdict(scenario), f, indent=2)
 
-def save_config(path: Path) -> None:
+def save_config(path: Path, varaints: List[Tuple[str, str, str, str]] = VARIANTS, n : int = N_CASES) -> None:
     data = {
-        "variants": VARIANTS,
+        "variants": varaints,
         "n_cases": N_CASES,
         "cylinder": {"radius": CYL_RADIUS, "height": CYL_HEIGHT},
         "random_obstacles": N_RANDOM_OBS_BLOCKS,
@@ -156,7 +157,7 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
     )
 
 # ---------- Build one scenario ----------
-def build_random_scenario(case_seed: int) -> tuple[Cylinder, Tuple[int,int], Tuple[int,int], Scenario]:
+def build_random_scenario(case_seed: int, res: float, pad: float) -> tuple[Cylinder, Tuple[int,int], Tuple[int,int], Scenario]:
     seed_everything(case_seed)
 
     env = Cylinder(CYL_RADIUS, CYL_HEIGHT)
@@ -167,7 +168,7 @@ def build_random_scenario(case_seed: int) -> tuple[Cylinder, Tuple[int,int], Tup
     # Optional fixed rectangle:
     randomize.build_obstacle(EXTRA_OBS_RECT[0], EXTRA_OBS_RECT[1], env)
 
-    start, goal = Randomize.random_start_and_goal(env)
+    start, goal = Randomize.random_start_and_goal(env, res, pad)
 
     # Serialize obstacles if you need them (convert set->list)
     obs_list = list(env.obstacles)
@@ -178,11 +179,14 @@ def build_random_scenario(case_seed: int) -> tuple[Cylinder, Tuple[int,int], Tup
 def run_experiment(n_cases=N_CASES, variants=VARIANTS):
     ts_dir = Path("runs") / time.strftime("%Y-%m-%d_%H-%M-%S")
     ensure_dir(ts_dir)
-    save_config(ts_dir / "config.json")
+    save_config(ts_dir / "config.json", variants, n_cases)
 
     results: List[RunResult] = []
     failed_cases: List[int] = []
 
+    # find min padding and min res throughout all variants
+    min_res = min(RESOLUTION_GROUPS_CM[variant[2]] for variant in variants)
+    min_pad = min(PADDING_GROUPS_CM[variant[3]] for variant in variants)
 
     for i in range(1, n_cases + 1):
         case_dir = ts_dir / f"case_{i:04d}"
@@ -191,7 +195,7 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
         t_case_start = time.perf_counter()  # ⏱ start timer
         # Use MASTER_SEED + i to make each case reproducible & distinct
         case_seed = (MASTER_SEED or 0) + i
-        env, start, goal, scen = build_random_scenario(case_seed)
+        env, start, goal, scen = build_random_scenario(case_seed, min_res, min_pad)
         save_scenario(case_dir / "scenario.json", scen)
 
         # Run all variants on the SAME scenario

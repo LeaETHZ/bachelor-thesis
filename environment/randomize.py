@@ -94,7 +94,7 @@ class Randomize:
               start = Randomize.random_start_cell(env, res, pad)
               goal = Randomize.random_goal_cell( env)
 
-              if goal[1] >= start[1] and (pow((start[0]-goal[0]),2) +  pow(start[1]-goal[1],2))> (20/1.7)**2: #ADJUST TO GRID RESOLUTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+              if goal[1] >= start[1] and (pow((start[0]-goal[0]),2) +  pow(start[1]-goal[1],2))> (math.ceil(20/res))**2: 
                    return start, goal
 
          

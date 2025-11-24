@@ -37,10 +37,10 @@ SHAPES_MM: Dict[str, ShapeSetMM] = {
     ),
 
     "RectangleRobot": ShapeSetMM(
-    up=Polygon([(-196, 0), (196, 0), (196, 780), (-196, 780)]),
-    right=Polygon([(374, 0), (-68, 0), (-68, 576), (374, 576)]),
-    left=Polygon([(-374, 0), (68, 0), (68, 576), (-374, 576)]),
-    crouched=Polygon([(-139, 0), (139, 0), (139, 525), (-139, 525)]) 
+    up=Polygon([(-232, 0), (232, 0), (232, 783), (-232, 783)]),
+    right=Polygon([(413, 0), (-68, 0), (-68, 576), (413, 576)]),
+    left=Polygon([(-413, 0), (68, 0), (68, 576), (-413, 576)]),
+    crouched=Polygon([(-160, 0), (160, 0), (160, 525), (-160, 525)]) 
     ),
 }
 
@@ -64,6 +64,7 @@ PADDING_GROUPS_CM: Dict[str, int] = {
     "RegularPad": 1.7,
     "HighPad": 3.4,
     "LowPad" : 0.85,
+    "NoPad" : 0
 }
 
 

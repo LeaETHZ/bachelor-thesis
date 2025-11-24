@@ -2,6 +2,7 @@ import os, json, time, random
 from pathlib import Path
 from dataclasses import dataclass, asdict
 from typing import Tuple, List, Dict, Any
+import math
 
 import matplotlib
 matplotlib.use("Agg")  # headless saves
@@ -35,7 +36,8 @@ CYL_RADIUS = 12
 CYL_HEIGHT = 200
 N_RANDOM_OBS_BLOCKS = 3           # how many random obstacles per case
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
-GOAL_TOL_CELLS = 10
+GOAL_TOL_CM_X = 8.5
+GOAL_TOL_CM_Y = 10
 MASTER_SEED = 53                # set None for non-deterministic
 
 # ---------- Data containers ----------
@@ -76,7 +78,8 @@ def save_config(path: Path, varaints: List[Tuple[str, str, str, str]] = VARIANTS
         "cylinder": {"radius": CYL_RADIUS, "height": CYL_HEIGHT},
         "random_obstacles": N_RANDOM_OBS_BLOCKS,
         "extra_obstacle_rect": EXTRA_OBS_RECT,
-        "goal_tol_cells": GOAL_TOL_CELLS,
+        "goal_tol_cm_x": GOAL_TOL_CM_X,
+        "goal_tol_cm_y": GOAL_TOL_CM_Y,
         "master_seed": MASTER_SEED,
     }
     with open(path, "w") as f:
@@ -109,7 +112,11 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
     # if PolygonAgent.is_in_collision((start[0], start[1], 0), robot.local_shape_up, env):
     #     return RunResult(case_id, variant_name, shape_key, motion_key, res_key, False, float("inf"), 0, 0, 0.0, "")
 
-    planner = AStarExtension(start, goal, env, robot, goal_tol_cells=GOAL_TOL_CELLS)
+    # convert goal_tol_x/y from cm into res
+    goal_tol_cells_x = math.ceil(GOAL_TOL_CM_X/RESOLUTION_GROUPS_CM[variant[2]])
+    goal_tol_cells_y = math.ceil(GOAL_TOL_CM_Y/RESOLUTION_GROUPS_CM[variant[2]])    
+
+    planner = AStarExtension(start, goal, env, robot, goal_tol_cells_x = goal_tol_cells_x, goal_tol_cells_y= goal_tol_cells_y)
 
     t0 = time.perf_counter()
     cost, path, expand = planner.plan()

@@ -26,7 +26,7 @@ if __name__ == '__main__':
     #start, goal = (25,25), (25,155)
 
 
-    Randomize.random_obstacles(env, 3)
+    # Randomize.random_obstacles(env, 3)
     #randomize.build_obstacle((25,35),(60,70),env)
     #randomize.build_obstacle((30,70),(70,80),env)
     # randomize.build_obstacle((70,80),(30,40),env)
@@ -35,10 +35,10 @@ if __name__ == '__main__':
     robot = robot_factory.build_robot('ExactRobot', 'UpSideways', 'RegularRes','LowPad')
     res = RESOLUTION_GROUPS_CM["RegularRes"]
     pad = PADDING_GROUPS_CM["LowPad"]   
-    start, goal = Randomize.random_start_and_goal(env, res, pad)
+    # start, goal = Randomize.random_start_and_goal(env, res, pad)
 
-    # start = (10, 2)
-    # goal = (10, 20)
+    start = (10, 2)
+    goal = (24, 14)
 
 
     #collision of start cell does not get checked by planner
@@ -47,9 +47,16 @@ if __name__ == '__main__':
     #     raise ValueError("START position is in collision.")
     # if PolygonAgent.is_in_collision((goal[0], goal[1], 0),robot.local_shape_up, env):
     #     raise ValueError("GOAL position is in collision.")
+    
+    goal_tol_cells_x = math.ceil(8.5/res) 
+    goal_tol_cells_y = math.ceil(10/res)
 
-       
-    planner = AStarExtension(start, goal, env, robot, goal_tol_cells= 12)
+    # print("goal_tol_cells_x = ", goal_tol_cells_x)
+    # print("goal_tol_cells_y = ", goal_tol_cells_y)
+    
+
+
+    planner = AStarExtension(start, goal, env, robot, goal_tol_cells_x = goal_tol_cells_x, goal_tol_cells_y = goal_tol_cells_y)
     
     cost, path, expand = planner.plan()
     print("path = ", path)

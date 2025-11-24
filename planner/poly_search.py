@@ -10,13 +10,14 @@ from environment import Cylinder
 
 
 class PolygonSearcher(GraphSearcher):
-    def __init__(self, start : tuple[int, int], goal : tuple[int, int], env : Grid, robot : PolygonAgent, heuristic_type : str ="euclidean", goal_tol_cells : int=0) -> None:
+    def __init__(self, start : tuple[int, int], goal : tuple[int, int], env : Grid, robot : PolygonAgent, heuristic_type : str ="euclidean", goal_tol_cells_x : int=0, goal_tol_cells_y : int=0) -> None:
         super().__init__(start, goal, env, heuristic_type)
         self.robot = robot  # instance of PolygonRobot
         self.plot = PolygonPlot(start, goal, env, robot)
         
         self.motions = robot.motions
-        self.goal_tol_cells = int(goal_tol_cells)
+        self.goal_tol_cells_x = goal_tol_cells_x
+        self.goal_tol_cells_y = goal_tol_cells_y
        
 
     
@@ -69,7 +70,6 @@ class PolygonSearcher(GraphSearcher):
     def getNeighbor(self, node: Node) -> list:
         neighbors = []
         goal_x, goal_y = self.goal.current
-        tol_squared = self.goal_tol_cells * self.goal_tol_cells  # squared tol for quick check
 
         for motion in self.motions:
             candidate = node + motion
@@ -84,13 +84,12 @@ class PolygonSearcher(GraphSearcher):
                 continue
 
             # If within tolerance, snap to exact goal so A* equality triggers
-            if self.goal_tol_cells > 0:
-                dx = candidate.x - goal_x
-                dy = candidate.y - goal_y
-                if dx*dx + dy*dy <= tol_squared:
-                    print("candidate.x: ", candidate.x, "candidate.y: ", candidate.y)
-                    self.robot.target = self.goal
-                    self.goal = Node((candidate.x, candidate.y))
+            dx = abs(candidate.x - goal_x)
+            dy = abs(candidate.y - goal_y)
+            if (dx <= self.goal_tol_cells_x) and (dy <= self.goal_tol_cells_y):
+                print("candidate.x: ", candidate.x, "candidate.y: ", candidate.y)
+                self.robot.target = self.goal
+                self.goal = Node((candidate.x, candidate.y))
                     
 
             neighbors.append(candidate)

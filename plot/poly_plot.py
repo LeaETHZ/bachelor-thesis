@@ -68,6 +68,9 @@ class PolygonPlot(Plot):
         # draw environment, expansions, path (same as base class)
         self.plotEnv(name)
 
+        self.drawStartPos()
+        self.drawGoalPos()
+
         if expand is not None:
             self.plotExpand(expand)
         if history_pose is not None:
@@ -115,7 +118,7 @@ class PolygonPlot(Plot):
                 self.color = (random.random(), random.random(), random.random())
                 self.drawRobotPolygon((x, y, theta))
                 self.drawPoint(x, y)
-                self.drawFootprint()
+                # self.drawFootprint()
                 #self.drawPadding()
             #draw final point that triggers goal
             self.drawPoint(path[-1][0], path[-1][1], "green")
@@ -221,3 +224,81 @@ class PolygonPlot(Plot):
         # plot start and goal markers
         plt.plot(self.start.x, self.start.y, marker="s", color="#ff0000")
         plt.plot(self.goal.x, self.goal.y, marker="s", color="#1155cc")
+
+    
+    def drawStartPos(self):
+        """Draw crouched polygon + padded footprint at the start position."""
+        start_pose = (self.start.x, self.start.y, 0)
+
+        # Fixed crouched shape
+        crouched_shape = self.robot.local_shape_crouched
+        
+        # Polygon in world
+        poly_world = transform_polygon_local_to_world(start_pose, crouched_shape)
+        poly = patches.Polygon(poly_world, closed=True, fill=False, edgecolor="red", linewidth=3)
+        self.ax.add_patch(poly)
+
+        # Footprint
+        footprint = footprint_cells(start_pose, crouched_shape, self.env.x_range, self.env.y_range)
+
+        # Padding
+        padded = padded_footprint(
+            footprint,
+            self.env.x_range,
+            self.env.y_range,
+            self.robot.resolution,
+            self.robot.padding
+        )
+
+        base = set(footprint)
+        extra = set(padded) - base
+
+        # Base footprint cells (blue)
+        # for (ix, iy) in base:
+        #     self.ax.plot(ix, iy, marker="o", color="blue")
+
+        # Padding-only cells (cyan)
+        # for (ix, iy) in extra:
+        #     self.ax.plot(ix, iy, marker="o", color="cyan")
+
+        # Start marker
+        self.ax.plot(self.start.x, self.start.y, marker="s", color="red", markersize=10)
+
+
+    def drawGoalPos(self):
+        """Draw crouched polygon + padded footprint at the start position."""
+        start_pose = (self.goal.x, self.goal.y, 0)
+
+        # Fixed crouched shape
+        crouched_shape = self.robot.local_shape_crouched
+        
+        # Polygon in world
+        poly_world = transform_polygon_local_to_world(start_pose, crouched_shape)
+        poly = patches.Polygon(poly_world, closed=True, fill=False, edgecolor="red", linewidth=3)
+        self.ax.add_patch(poly)
+
+        # Footprint
+        footprint = footprint_cells(start_pose, crouched_shape, self.env.x_range, self.env.y_range)
+
+        # Padding
+        padded = padded_footprint(
+            footprint,
+            self.env.x_range,
+            self.env.y_range,
+            self.robot.resolution,
+            self.robot.padding
+        )
+
+        base = set(footprint)
+        extra = set(padded) - base
+
+        # Base footprint cells (blue)
+        # for (ix, iy) in base:
+        #     self.ax.plot(ix, iy, marker="o", color="blue")
+
+        # Padding-only cells (cyan)
+        # for (ix, iy) in extra:
+        #     self.ax.plot(ix, iy, marker="o", color="cyan")
+
+        # Start marker
+        self.ax.plot(self.start.x, self.start.y, marker="s", color="red", markersize=10)

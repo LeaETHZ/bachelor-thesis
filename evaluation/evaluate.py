@@ -33,12 +33,15 @@ VARIANTS = [
 # ---------- Evaluation parameters ----------
 N_CASES = 3
 CYL_RADIUS = 12
-CYL_HEIGHT = 200
-N_RANDOM_OBS_BLOCKS = 3           # how many random obstacles per case
+CYL_HEIGHT = 2000
+N_RANDOM_OBS_BLOCKS = 8           # how many random obstacles per case
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
 GOAL_TOL_CM_X = 8.5
 GOAL_TOL_CM_Y = 10
-MASTER_SEED = 53                # set None for non-deterministic
+MASTER_SEED = 70                # set None for non-deterministic
+
+
+MAX_CASE_TIME_S = 30.0 
 
 # ---------- Data containers ----------
 @dataclass
@@ -205,8 +208,11 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
         env, start, goal, scen = build_random_scenario(case_seed, min_res, min_pad)
         save_scenario(case_dir / "scenario.json", scen)
 
+
         # Run all variants on the SAME scenario
         for v in variants:
+            variant_start = time.perf_counter()
+
             res = run_variant_on_scenario(i, env.copy() if hasattr(env, "copy") else env, start, goal, v, case_dir)
             results.append(res)
             if not res.success:

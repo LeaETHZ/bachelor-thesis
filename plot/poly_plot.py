@@ -13,6 +13,7 @@ from agent.poly import transform_polygon_local_to_world, footprint_cells, padded
 
 
 
+
 class PolygonPlot(Plot):
     def __init__(self, start : tuple[int,int], goal : tuple[int,int], env : Grid, robot : PolygonAgent) -> None:
         super().__init__(start, goal, env)
@@ -56,7 +57,7 @@ class PolygonPlot(Plot):
     
     def drawPoint(self, x: float, y: float, color: str = "red", size: int = 6) -> None:
         """Draw a point on the current plot (useful for marking waypoints)."""
-        self.ax.plot(x, y, marker="o", color=self.color, markersize=size)
+        self.ax.plot(x, y, marker="o", color=color, markersize=size)
 
  
     def animation(self, path, name, cost=None, expand=None,
@@ -117,11 +118,13 @@ class PolygonPlot(Plot):
 
                 self.color = (random.random(), random.random(), random.random())
                 self.drawRobotPolygon((x, y, theta))
-                self.drawPoint(x, y)
+                self.drawPoint(x, y, color="#888888", size=4)
                 # self.drawFootprint()
                 #self.drawPadding()
             #draw final point that triggers goal
             self.drawPoint(path[-1][0], path[-1][1], "green")
+            #This is the real end
+            
 
         plt.show()
 
@@ -133,8 +136,11 @@ class PolygonPlot(Plot):
         ----------
         name: Algorithm name or some other information
         '''
-        plt.plot(self.start.x, self.start.y, marker="s", color="#ff0000")
-        plt.plot(self.goal.x, self.goal.y, marker="s", color="#1155cc")
+        plt.plot(self.start.x, self.start.y, marker="s", color="#ff0000", markersize=8)
+        plt.text(self.start.x + 5.0, self.start.y + 0.3, "START", color="red", fontsize=8)
+
+        plt.plot(self.goal.x, self.goal.y, marker="s", color="#1155cc", markersize=8)
+        plt.text(self.goal.x + 5.0, self.goal.y + 0.3, "GOAL", color="#1155cc", fontsize=8)
 
         if isinstance(self.env, Grid):
             obs_x = [x[0] for x in self.env.obstacles]
@@ -185,6 +191,9 @@ class PolygonPlot(Plot):
         #plotting the grid
         self.ax.set_xticks(np.arange(0, self.env.x_range+1, 1))
         self.ax.set_yticks(np.arange(0, self.env.y_range+1, 1))
+
+       
+
         self.ax.grid(which="both", color="lightgray", linewidth=0.3)
  
     def plotPath(self, path: list, path_color: str='#13ae00', path_style: str="-") -> None:
@@ -212,18 +221,18 @@ class PolygonPlot(Plot):
                         x_cross_second_edge = 0
                     
                     y_cross = y1 + (((y2 - y1)/ (x2 - x1)) * (x_cross_first_edge - x1))
-                    plt.plot([x2, x_cross_first_edge], [y2, y_cross], path_style, linewidth=2, color=path_color) # plot line from (x2,y2) to first edge
-                    plt.plot([x_cross_second_edge, x1], [y_cross, y1], path_style, linewidth=2, color=path_color) # plot line from second edge to (x1,y1)
+                    plt.plot([x2, x_cross_first_edge], [y2, y_cross], path_style, linewidth=4, color=path_color) # plot line from (x2,y2) to first edge
+                    plt.plot([x_cross_second_edge, x1], [y_cross, y1], path_style, linewidth=4, color=path_color) # plot line from second edge to (x1,y1)
                 
                 else: # no edge was crossed
-                    plt.plot([x1, x2], [y1, y2], path_style, linewidth=2, color=path_color)
+                    plt.plot([x1, x2], [y1, y2], path_style, linewidth=4, color=path_color)
 
             else: 
-                plt.plot([x1, x2], [y1, y2], path_style, linewidth=2, color=path_color)
+                plt.plot([x1, x2], [y1, y2], path_style, linewidth=4, color=path_color)
 
         # plot start and goal markers
-        plt.plot(self.start.x, self.start.y, marker="s", color="#ff0000")
-        plt.plot(self.goal.x, self.goal.y, marker="s", color="#1155cc")
+        #plt.plot(self.start.x, self.start.y, marker="s", color="#ff0000")
+        
 
     
     def drawStartPos(self):
@@ -266,6 +275,7 @@ class PolygonPlot(Plot):
 
 
     def drawGoalPos(self):
+
         """Draw crouched polygon + padded footprint at the start position."""
         start_pose = (self.goal.x, self.goal.y, 0)
 
@@ -302,3 +312,7 @@ class PolygonPlot(Plot):
 
         # Start marker
         self.ax.plot(self.start.x, self.start.y, marker="s", color="red", markersize=10)
+
+
+
+

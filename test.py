@@ -26,25 +26,25 @@ if __name__ == '__main__':
     #start, goal = (25,25), (25,155)
 
 
-    # Randomize.random_obstacles(env, 3)
+    Randomize.random_obstacles(env, 4)
     #randomize.build_obstacle((25,35),(60,70),env)
     #randomize.build_obstacle((30,70),(70,80),env)
-    # randomize.build_obstacle((70,80),(30,40),env)
+    #randomize.build_obstacle((70,100),(40,50),env)
     
     
     robot = robot_factory.build_robot('ExactRobot', 'UpSideways', 'RegularRes','LowPad')
     res = RESOLUTION_GROUPS_CM["RegularRes"]
     pad = PADDING_GROUPS_CM["LowPad"]   
-    # start, goal = Randomize.random_start_and_goal(env, res, pad)
+    start, goal = Randomize.random_start_and_goal(env, res, pad)
 
-    start = (10, 2)
-    goal = (24, 14)
+    # start = (20, 2)
+    # goal = (40, 100)
 
 
     #collision of start cell does not get checked by planner
     #REPLACE THE SHAPE WITH THE CROUCHED SHAPES AND NOT THE MERGED SHAPES
-    # if PolygonAgent.is_in_collision((start[0], start[1], 0),robot.local_shape_crouched, env, robot.resolution, robot.padding):
-    #     raise ValueError("START position is in collision.")
+    if PolygonAgent.is_in_collision((start[0], start[1], 0),robot.local_shape_crouched, env, robot.resolution, robot.padding):
+        raise ValueError("START position is in collision.")
     # if PolygonAgent.is_in_collision((goal[0], goal[1], 0),robot.local_shape_up, env):
     #     raise ValueError("GOAL position is in collision.")
     
@@ -67,6 +67,11 @@ if __name__ == '__main__':
     
 
     planner.plot.animation(path, "Shaped A*", cost, expand  = None)
+    
+    
+
+
+
 
 
 

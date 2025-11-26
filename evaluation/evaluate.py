@@ -3,6 +3,11 @@ from pathlib import Path
 from dataclasses import dataclass, asdict
 from typing import Tuple, List, Dict, Any
 import math
+from concurrent.futures import ProcessPoolExecutor, as_completed
+import multiprocessing
+
+
+
 
 import matplotlib
 matplotlib.use("Agg")  # headless saves
@@ -102,6 +107,48 @@ def seed_everything(seed: int | None):
     except ImportError:
         pass
 
+
+def _run_single_case(case_id: int,
+                     case_seed: int,
+                     variants,
+                     min_res: float,
+                     min_pad: float,
+                     ts_dir: Path) -> list[RunResult]:
+    """
+    Run all variants for a single case_id.
+    This will be executed in a separate process.
+    """
+    case_dir = ts_dir / f"case_{case_id:04d}"
+    ensure_dir(case_dir)
+    print(f"\n=== RUN CASE {case_id} ===")
+    t_case_start = time.perf_counter()
+
+    # build scenario (may raise ValueError if no start/goal is found)
+    try:
+        env, start, goal, scen = build_random_scenario(case_seed, min_res, min_pad)
+    except ValueError as e:
+        print(f"[SCENARIO {case_id}] could not sample start/goal: {e}")
+        return []  # no results for this case
+
+    save_scenario(case_dir / "scenario.json", scen)
+
+    case_results: list[RunResult] = []
+
+    for v in variants:
+        res = run_variant_on_scenario(
+            case_id,
+            env.copy() if hasattr(env, "copy") else env,
+            start,
+            goal,
+            v,
+            case_dir,
+        )
+        case_results.append(res)
+
+    t_case_end = time.perf_counter()
+    print(f"Case {case_id} finished in {(t_case_end - t_case_start):.2f} seconds")
+
+    return case_results
 
 
 # ---------- One run on one scenario / one variant ----------
@@ -207,54 +254,87 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
     save_config(ts_dir / "config.json", variants, n_cases)
 
     results: List[RunResult] = []
-    failed_cases: List[int] = []
 
     # find min padding and min res throughout all variants
     min_res = min(RESOLUTION_GROUPS_CM[variant[2]] for variant in variants)
     min_pad = min(PADDING_GROUPS_CM[variant[3]] for variant in variants)
 
-    for i in range(1, n_cases + 1):
-        case_dir = ts_dir / f"case_{i:04d}"
-        ensure_dir(case_dir)
-        print(f"\n=== RUN CASE {i}/{n_cases} ===")
-        t_case_start = time.perf_counter()  #
-        # Use MASTER_SEED + i to make each case reproducible & distinct
-        case_seed = (MASTER_SEED or 0) + i
 
-        #if no start or goal can be found
-        try:
-            env, start, goal, scen = build_random_scenario(case_seed, min_res, min_pad)
-        except ValueError as e:
-            print(f"[SCENARIO {i}] could not sample start/goal: {e} — skipping case.")
-            failed_cases.append(i)
-            continue  # go to next case
+    # ---------- PARALLEL CASE EXECUTION ----------
+    num_cores = multiprocessing.cpu_count()
+    max_workers = max(1, num_cores - 2)   # leave a couple cores free
+    print(f"Using {max_workers} parallel workers out of {num_cores} cores")
+
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        futures = []
+        for i in range(1, n_cases + 1):
+            case_seed = (MASTER_SEED or 0) + i
+            futures.append(
+                executor.submit(
+                    _run_single_case,
+                    i,
+                    case_seed,
+                    variants,
+                    min_res,
+                    min_pad,
+                    ts_dir,
+                )
+            )
+
+        # collect results as they complete
+        for fut in as_completed(futures):
+            case_results = fut.result()  # this is list[RunResult]
+            results.extend(case_results)
+
+    # for i in range(1, n_cases + 1):
+    #     case_dir = ts_dir / f"case_{i:04d}"
+    #     ensure_dir(case_dir)
+    #     print(f"\n=== RUN CASE {i}/{n_cases} ===")
+    #     t_case_start = time.perf_counter()  #
+    #     # Use MASTER_SEED + i to make each case reproducible & distinct
+    #     case_seed = (MASTER_SEED or 0) + i
+
+    #     #if no start or goal can be found
+    #     try:
+    #         env, start, goal, scen = build_random_scenario(case_seed, min_res, min_pad)
+    #     except ValueError as e:
+    #         print(f"[SCENARIO {i}] could not sample start/goal: {e} — skipping case.")
+    #         failed_cases.append(i)
+    #         continue  # go to next case
 
 
-        save_scenario(case_dir / "scenario.json", scen)
+    #     save_scenario(case_dir / "scenario.json", scen)
 
         
 
 
 
-        # Run all variants on the SAME scenario
-        for v in variants:
+    #     # Run all variants on the SAME scenario
+    #     for v in variants:
 
-            res = run_variant_on_scenario(i, env.copy() if hasattr(env, "copy") else env, start, goal, v, case_dir)
-            results.append(res)
-            if not res.success:
-                failed_cases.append(i)
+    #         res = run_variant_on_scenario(i, env.copy() if hasattr(env, "copy") else env, start, goal, v, case_dir)
+    #         results.append(res)
+    #         if not res.success:
+    #             failed_cases.append(i)
         
-        t_case_end = time.perf_counter()  #end timer
-        print(f"Case {i} finished in {(t_case_end - t_case_start):.2f} seconds")
+    #     t_case_end = time.perf_counter()  #end timer
+    #     print(f"Case {i} finished in {(t_case_end - t_case_start):.2f} seconds")
 
     # Write CSV
     import csv
     with open(ts_dir / "results.csv", "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["case_id","variant","shape","motion","res","success","cost","steps","expand_count","runtime_ms","img_path"])
+        w.writerow([
+            "case_id","variant","shape","motion","res","success",
+            "cost","steps","expand_count","runtime_ms","img_path"
+        ])
         for r in results:
-            w.writerow([r.case_id, r.variant, r.shape_key, r.motion_key, r.res_key,
-                        int(r.success), r.cost, r.steps, r.expand_count, round(r.runtime_ms,2), r.img_path])
+            w.writerow([
+                r.case_id, r.variant, r.shape_key, r.motion_key, r.res_key,
+                int(r.success), r.cost, r.steps, r.expand_count,
+                round(r.runtime_ms, 2), r.img_path
+            ])
+
 
     # Print a tiny summary
 
@@ -277,17 +357,46 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
         print(line)
         summary_lines.append(line)
 
-    print("\n=== Failed Cases ===")
-    summary_lines.append("\n=== Failed Cases ===")
+    print("\n=== Case Outcome Classification ===")
+    summary_lines.append("\n=== Case Outcome Classification ===")
 
-    if failed_cases:
-        fail_line = "Cases with no success: " + ", ".join(map(str, sorted(set(failed_cases))))
-        print(fail_line)
-        summary_lines.append(fail_line)
-    else:
-        print("All cases successful!")
-        summary_lines.append("All cases successful!")
-    
+    all_case_ids = set(range(1, n_cases + 1))
+
+    # For each case → list of success booleans (one per variant)
+    case_success_map: dict[int, list[bool]] = {}
+
+    for r in results:
+        case_success_map.setdefault(r.case_id, []).append(r.success)
+
+    # Cases where scenario failed entirely (no variants ran → map never filled)
+    cases_no_results = sorted(all_case_ids - set(case_success_map.keys()))
+
+    # Cases where ALL variants succeeded
+    cases_all_success = sorted([cid for cid, succ_list in case_success_map.items()
+                                if all(succ_list)])
+
+    # Cases where AT LEAST one variant succeeded BUT NOT all
+    cases_partial_success = sorted([cid for cid, succ_list in case_success_map.items()
+                                    if any(succ_list) and not all(succ_list)])
+
+    # Cases where NO variant succeeded
+    cases_all_failed = sorted([cid for cid, succ_list in case_success_map.items()
+                            if not any(succ_list)])
+
+    # -------- Print results --------
+    print(f"Cases with ALL variants successful: {cases_all_success}")
+    summary_lines.append(f"Cases with ALL variants successful: {cases_all_success}")
+
+    print(f"Cases with AT LEAST one success BUT NOT all: {cases_partial_success}")
+    summary_lines.append(f"Cases with AT LEAST one success BUT NOT all: {cases_partial_success}")
+
+    print(f"Cases with NO successful variant: {cases_all_failed}")
+    summary_lines.append(f"Cases with NO successful variant: {cases_all_failed}")
+
+    if cases_no_results:
+        print(f"Cases where NO variants could run (start/goal not found): {cases_no_results}")
+        summary_lines.append(f"Cases where NO variants could run (start/goal not found): {cases_no_results}")
+        
     summary_path = ts_dir / "summary.txt"
     with open(summary_path, "w") as f:
         f.write("\n".join(summary_lines))

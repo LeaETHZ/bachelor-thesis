@@ -56,14 +56,16 @@ if __name__ == '__main__':
     planner = AStarExtension(start, goal, env, robot, goal_tol_cells_x = goal_tol_cells_x, goal_tol_cells_y = goal_tol_cells_y)
     
     cost, path, expand = planner.plan()
+    print("start = ", start)
+    print("goal = ", goal)
     print("path = ", path)
-    steps = len(path)-1
-    print("Step count: ",steps)
+    # steps = len(path)-1
+    # print("Step count: ",steps)
 
-    print("cost = ", cost)
-    
+    # print("cost = ", cost)
+    print ("final distance = ", planner.final_distance)
 
-    planner.plot.animation(path, "Shaped A*", cost, expand  = None)
+    planner.plot.animation(path, "Shaped A*", cost, planner.final_distance, expand  = None)
     
     
 

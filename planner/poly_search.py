@@ -18,6 +18,7 @@ class PolygonSearcher(GraphSearcher):
         self.motions = robot.motions
         self.goal_tol_cells_x = goal_tol_cells_x
         self.goal_tol_cells_y = goal_tol_cells_y
+        self.final_distance = -1
        
 
     
@@ -87,10 +88,9 @@ class PolygonSearcher(GraphSearcher):
             dx = abs(candidate.x - goal_x)
             dy = abs(candidate.y - goal_y)
             if (dx <= self.goal_tol_cells_x) and (dy <= self.goal_tol_cells_y):
-                print("candidate.x: ", candidate.x, "candidate.y: ", candidate.y)
                 self.robot.target = self.goal
                 self.goal = Node((candidate.x, candidate.y))
-                    
+                self.final_distance = math.hypot(self.env.dx_min(self.robot.target, self.goal), self.robot.target.y - self.goal.y) # calculate distance between last path point and original goal point
 
             neighbors.append(candidate)
         

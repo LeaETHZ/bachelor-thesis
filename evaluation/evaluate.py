@@ -36,8 +36,8 @@ CYL_RADIUS = 12
 CYL_HEIGHT = 200
 START_BOUND_CM = 100               # random start point is constrainted in y = (0, start_bound)
 GOAL_BOUND_CM = 100                # random end point is constrainted in y = (height - goal_bound , height)
-N_RANDOM_OBS_RECTANGLE = 3          # how many random rectangle obstacles per case
-N_RANDOM_OBS_ELLIPSE = 3
+N_RANDOM_OBS_RECTANGLE = 0          # how many random rectangle obstacles per case
+N_RANDOM_OBS_ELLIPSE = 1
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
 GOAL_TOL_CM_X = 8.5
 GOAL_TOL_CM_Y = 10
@@ -65,6 +65,7 @@ class RunResult:
     success: bool
     cost: float
     steps: int
+    final_distance : float
     expand_count: int
     runtime_ms: float
     img_path: str
@@ -131,6 +132,7 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
 
     success = bool(path)
     steps = len(path)-1 if success else 0 
+    final_distance = planner.final_distance
     expand_count = len(expand) if expand else 0
     cost_val = float(cost) if success else float("inf")
 
@@ -138,7 +140,7 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
     title = f"case {case_id:04d} - {variant_name} - {'OK' if success else 'FAIL'}"
 
     # Use your PolygonPlot-based animation instead of static plot
-    planner.plot.animation(path, title, cost, expand)
+    planner.plot.animation(path, title, cost, final_distance, expand)
 
     # ---- RESIZE IN METRIC UNITS ----
     fig = plt.gcf()
@@ -165,6 +167,7 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
         success=success,
         cost=cost_val,
         steps=steps,
+        final_distance=final_distance,
         expand_count=expand_count,
         runtime_ms=dt,
         img_path=str(img_path),
@@ -230,10 +233,10 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
     import csv
     with open(ts_dir / "results.csv", "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["case_id","variant","shape","motion","res","success","cost","steps","expand_count","runtime_ms","img_path"])
+        w.writerow(["case_id","variant","shape","motion","res","success","cost","steps","final_distance","expand_count","runtime_ms","img_path"])
         for r in results:
             w.writerow([r.case_id, r.variant, r.shape_key, r.motion_key, r.res_key,
-                        int(r.success), r.cost, r.steps, r.expand_count, round(r.runtime_ms,2), r.img_path])
+                        int(r.success), r.cost, r.steps, r.final_distance, r.expand_count, round(r.runtime_ms,2), r.img_path])
 
     # Print a tiny summary
 
@@ -241,18 +244,21 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
 
     by_variant: Dict[str, Dict[str, Any]] = {}
     for r in results:
-        s = by_variant.setdefault(r.variant, {"runs":0, "success":0, "costs":[]})
+        s = by_variant.setdefault(r.variant, {"runs":0, "success":0, "costs":[], "final_distances":[]})
         s["runs"] += 1
         s["success"] += int(r.success)
-        if r.success: s["costs"].append(r.cost)
+        if r.success: 
+            s["costs"].append(r.cost)
+            s["final_distances"].append(r.final_distance)
 
     print("\n=== Summary ===")
     summary_lines.append("\n=== Summary ===")
 
     for v, s in by_variant.items():
         sr = 100.0 * s["success"] / s["runs"]
-        avg = (sum(s["costs"])/len(s["costs"])) if s["costs"] else float("nan")
-        line = f"{v}: success {sr:.1f}% | avg cost {avg:.2f} over {s['runs']} cases"
+        avg_cost = (sum(s["costs"])/len(s["costs"])) if s["costs"] else float("nan")
+        avg_final_dist = (sum(s["final_distances"]) / len(s["final_distances"])) if s["final_distances"] else float("nan")
+        line = f"{v}: success {sr:.1f}% | avg cost {avg_cost:.2f} | avg final dist {avg_final_dist:.2f} over {s['runs']} cases"
         print(line)
         summary_lines.append(line)
 

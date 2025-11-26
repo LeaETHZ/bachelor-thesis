@@ -33,7 +33,9 @@ VARIANTS = [
 # ---------- Evaluation parameters ----------
 N_CASES = 3
 CYL_RADIUS = 12
-CYL_HEIGHT = 2000
+CYL_HEIGHT = 200
+START_BOUND_CM = 100               # random start point is constrainted in y = (0, start_bound)
+GOAL_BOUND_CM = 100                # random end point is constrainted in y = (height - goal_bound , height)
 N_RANDOM_OBS_BLOCKS = 8           # how many random obstacles per case
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
 GOAL_TOL_CM_X = 8.5
@@ -178,7 +180,7 @@ def build_random_scenario(case_seed: int, res: float, pad: float) -> tuple[Cylin
     # Optional fixed rectangle:
     randomize.build_obstacle(EXTRA_OBS_RECT[0], EXTRA_OBS_RECT[1], env)
 
-    start, goal = Randomize.random_start_and_goal(env, res, pad)
+    start, goal = Randomize.random_start_and_goal(env, res, pad, START_BOUND_CM, GOAL_BOUND_CM)
 
     # Serialize obstacles if you need them (convert set->list)
     obs_list = list(env.obstacles)

@@ -68,8 +68,8 @@ class Randomize:
         return env
     
     @staticmethod
-    def random_start_cell(env: Grid, res: float, pad: float) -> Tuple[int, int]:
-        """Pick a random cell (x,y) where the given robot footprint at (x,y,theta) is collision-free."""
+    def random_start_cell(env: Grid, res: float, pad: float, start_bound: int ) -> Tuple[int, int]:
+        """Pick a random cell (x,y) where the given robot footprint at (x,y,theta) is collision-free. It should be between y_min and y = start_bound"""
         
         max_tries = 50
 
@@ -80,43 +80,45 @@ class Randomize:
     
         for _ in range(max_tries):
             x = random.randint(0, W - 1)
-            y = random.randint(2, H - 1) # obstacles at y = 0, padding is at least 1 grid, start looking for y > 2
+            y = random.randint(1 + math.ceil(pad/res), start_bound) # y_min = lower border obst + pad > 2
             pose = (float(x), float(y), 0.0)
             if not PolygonAgent.is_in_collision(pose, shape, env, res, pad):
                 return (x, y)
             
     
-    def random_goal_cell(env: Grid) -> Tuple[int, int]:
-        """Pick a random cell (x,y) that is collision-free."""
+    def random_goal_cell(env: Grid, res: float, pad: float, goal_bound: int ) -> Tuple[int, int]:
+        """Pick a random cell (x,y) where the given robot footprint at (x,y,theta) is collision-free. It should be between y = goal_bound and y_max"""
         
         max_tries = 50
+
+        shape = Polygon([(-68, 0), (68, 0), (68, 215), (90, 215), (160, 525), (-160, 525), (-90, 215), (-68, 215)]) # crouched position
+        shape = convert.ScalePolygon(shape, 1.7)
         
         W, H = env.x_range, env.y_range
 
-
-        #NEW: do we want this?
-        Hight_Robot = convert.ScaleVertex((0,783), 1.7)[1]
-        H = H - Hight_Robot
+        print("H = ", H)
+        print("math.ceil((525+pad)/res) = ", math.ceil((52.5+pad)/res))
     
         for _ in range(max_tries):
             x = random.randint(0, W - 1)
-            y = random.randint(0, H - 1)
-
-            if (x, y) not in env.obstacles:
+            y = random.randint(H-goal_bound, H - math.ceil((52.5+pad)/res)) # find a random y s.t. it is between (y_max - bound, y_max - height of courched shape incl. pad)
+            pose = (float(x), float(y), 0.0)
+            if not PolygonAgent.is_in_collision(pose, shape, env, res, pad):
                 return (x, y)
 
 
 
     @staticmethod
-    def random_start_and_goal(env : Grid, res: float = 1.7, pad: float = 1.7) -> tuple[tuple[int, int], tuple[int, int]]:
-         max_tries = 100
+    def random_start_and_goal(env : Grid, res: float = 1.7, pad: float = 1.7, start_bound_cm : float = 10, goal_bound_cm : float = 100) -> tuple[tuple[int, int], tuple[int, int]]:
+         
+        start_bound_cells = math.ceil(start_bound_cm/res)
+        goal_bound_cells = math.ceil(goal_bound_cm/res)         
 
-         for _ in range(max_tries):
-              start = Randomize.random_start_cell(env, res, pad)
-              goal = Randomize.random_goal_cell( env)
+        
+        start = Randomize.random_start_cell(env, res, pad, start_bound_cells)
+        goal = Randomize.random_goal_cell( env, res, pad, goal_bound_cells)
 
-              if goal[1] >= start[1] and (pow((start[0]-goal[0]),2) +  pow(start[1]-goal[1],2))> (math.ceil(100/res))**2: 
-                   return start, goal
+        return start, goal
 
          
    

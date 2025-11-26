@@ -112,6 +112,9 @@ class Randomize:
             pose = (float(x), float(y), 0.0)
             if not PolygonAgent.is_in_collision(pose, shape, env, res, pad):
                 return (x, y)
+        
+        raise ValueError("No Goal Found")
+
             
     
     def random_goal_cell(env: Grid, res: float, pad: float, goal_bound: int ) -> Tuple[int, int]:
@@ -130,6 +133,8 @@ class Randomize:
             pose = (float(x), float(y), 0.0)
             if not PolygonAgent.is_in_collision(pose, shape, env, res, pad):
                 return (x, y)
+            
+        raise ValueError("No Goal Found")
 
 
 

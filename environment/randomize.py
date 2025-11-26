@@ -48,57 +48,21 @@ class Randomize:
 
     #     return env
     @staticmethod
-    def random_obstacles(
-        env: Grid,
-        n_obstacles: int,
-        max_size: int = 15,
-        min_size: int = 10,
-        min_gap: int = 0,   # fixed spacing between obstacles
-    ) -> Grid:
+    def random_obstacles(env: Grid, n_obstacles: int, max_size: int = 25, min_size: int = 10) -> Grid:
         """Generate random rectangular obstacles on a cylindrical world (x wraps)."""
 
         W, H = env.x_range, env.y_range
 
-        obstacles_added = 0
-        max_attempts = n_obstacles * 30  # avoid infinite loops
-        attempts = 0
-
-        while obstacles_added < n_obstacles and attempts < max_attempts:
-            attempts += 1
-
+        for _ in range(n_obstacles):
             # random size
             w = random.randint(min_size, max_size)
             h = random.randint(min_size, max_size)
 
             # random bottom-left corner:
-            # x can be anywhere (wrap), y must fit vertically (no wrap in y)
             x_min = random.randint(0, W - 1)
             y_min = random.randint(0, H - h - 1)
 
-            # extended region incl. min_gap, with wrap in x
-            x0 = x_min - min_gap
-            x1 = x_min + w + min_gap
-            y0 = max(0, y_min - min_gap)
-            y1 = min(H, y_min + h + min_gap)
-
-            too_close = False
-
-            for x in range(x0, x1):
-                x_wrapped = x % W  # wrap horizontally
-                for y in range(y0, y1):
-                    if (x_wrapped, y) in env.obstacles:
-                        too_close = True
-                        break
-                if too_close:
-                    break
-
-            if too_close:
-                # try another obstacle position
-                continue
-
-            # Place obstacle – build_obstacle already wraps in x
             build_obstacle((x_min, x_min + w), (y_min, y_min + h), env)
-            obstacles_added += 1
 
         env.update(env.obstacles)
         return env

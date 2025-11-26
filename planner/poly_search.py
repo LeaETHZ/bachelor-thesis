@@ -21,6 +21,7 @@ class PolygonSearcher(GraphSearcher):
         self.motions = robot.motions
         self.goal_tol_cells_x = goal_tol_cells_x
         self.goal_tol_cells_y = goal_tol_cells_y
+        self.final_distance = -1
 
         self.max_time_s = 60 #s
         self.t_start = time.perf_counter() 

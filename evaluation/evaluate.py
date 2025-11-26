@@ -36,7 +36,8 @@ CYL_RADIUS = 12
 CYL_HEIGHT = 500
 START_BOUND_CM = 100               # random start point is constrainted in y = (0, start_bound)
 GOAL_BOUND_CM = 100                # random end point is constrainted in y = (height - goal_bound , height)
-N_RANDOM_OBS_BLOCKS = 5          # how many random obstacles per case
+N_RANDOM_OBS_RECTANGLE = 3          # how many random rectangle obstacles per case
+N_RANDOM_OBS_ELLIPSE = 3
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
 GOAL_TOL_CM_X = 8.5
 GOAL_TOL_CM_Y = 10
@@ -80,7 +81,8 @@ def save_config(path: Path, varaints: List[Tuple[str, str, str, str]] = VARIANTS
         "variants": varaints,
         "n_cases": N_CASES,
         "cylinder": {"radius": CYL_RADIUS, "height": CYL_HEIGHT},
-        "random_obstacles": N_RANDOM_OBS_BLOCKS,
+        "random_obstacles_rectangle": N_RANDOM_OBS_RECTANGLE,
+        "random_obstacles_ellipse": N_RANDOM_OBS_ELLIPSE,
         "extra_obstacle_rect": EXTRA_OBS_RECT,
         "goal_tol_cm_x": GOAL_TOL_CM_X,
         "goal_tol_cm_y": GOAL_TOL_CM_Y,
@@ -186,9 +188,10 @@ def build_random_scenario(case_seed: int, res: float, pad: float) -> tuple[Cylin
     
 
     # Your own random obstacle builder(s); keep deterministic under seed
-    Randomize.random_obstacles(env, N_RANDOM_OBS_BLOCKS)
+    Randomize.random_obstacles_rectangle(env, N_RANDOM_OBS_RECTANGLE)
+    Randomize.random_obstacles_ellipse(env, N_RANDOM_OBS_ELLIPSE)
     # Optional fixed rectangle:
-    randomize.build_obstacle(EXTRA_OBS_RECT[0], EXTRA_OBS_RECT[1], env)
+    randomize.build_obstacle_rectangle(EXTRA_OBS_RECT[0], EXTRA_OBS_RECT[1], env)
 
     start, goal = Randomize.random_start_and_goal(env, res, pad, START_BOUND_CM, GOAL_BOUND_CM)
 

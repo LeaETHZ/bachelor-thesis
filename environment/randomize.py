@@ -10,7 +10,7 @@ from agent import PolygonAgent, Polygon , presets
 from helper import convert
 
 
-def build_obstacle(x_range: tuple[int, int], y_range: tuple[int, int], env: Grid):
+def build_obstacle_rectangle(x_range: tuple[int, int], y_range: tuple[int, int], env: Grid):
 
     x_min, x_max = x_range
     y_min, y_max = y_range
@@ -26,29 +26,37 @@ def build_obstacle(x_range: tuple[int, int], y_range: tuple[int, int], env: Grid
     env.update(env.obstacles)
     return env
 
+def build_obstacle_ellipse(x_center: int, y_center: int, a: int, b: int, env: Grid):
+
+    # Ellipse equation: x^2/a^2 + y^2/b^2 = 1
+
+    W, H = env.x_range, env.y_range
+
+    # We only need to check the bounding box of the ellipse
+    x_min = x_center - b
+    x_max = x_center + b
+    y_min = y_center - a
+    y_max = y_center + a
+
+    for x in range(x_min, x_max + 1):
+
+        for y in range(y_min, y_max + 1):
+
+                # Check ellipse condition
+                dx = (x - x_center) / b
+                dy = (y - y_center) / a
+
+                if dx * dx + dy * dy <= 1.0:
+                    env.obstacles.add((x % W, y)) # if cell is part of ellipse, add to obstacles with wrapped x
+
+    env.update(env.obstacles)
+    return env
+
+
 class Randomize:
 
     @staticmethod
-    # def random_obstacles(env: Grid, n_obstacles: int, max_size: int = 15, min_size: int = 10) -> Grid:
-    #     """ Generate a number of random rectangular obstacles and add them to the environment. """
-    #     width, height = env.x_range, env.y_range
-
-    #     for _ in range(n_obstacles):
-    #         # choose random size
-    #         w = random.randint(min_size, max_size)
-    #         h = random.randint(min_size, max_size)
-
-    #         # choose random bottom-left corner (make sure obstacle fits)
-    #         x_min = random.randint(0, width - w - 1)
-    #         y_min = random.randint(0, height - h - 1)
-
-    #         # build obstacle
-    #         build_obstacle((x_min, x_min + w), (y_min, y_min + h), env)
-    #         env.update(env.obstacles)
-
-    #     return env
-    @staticmethod
-    def random_obstacles(env: Grid, n_obstacles: int, max_size: int = 25, min_size: int = 10) -> Grid:
+    def random_obstacles_rectangle(env: Grid, n_obstacles: int, max_size: int = 25, min_size: int = 10) -> Grid:
         """Generate random rectangular obstacles on a cylindrical world (x wraps)."""
 
         W, H = env.x_range, env.y_range
@@ -62,7 +70,27 @@ class Randomize:
             x_min = random.randint(0, W - 1)
             y_min = random.randint(0, H - h - 1)
 
-            build_obstacle((x_min, x_min + w), (y_min, y_min + h), env)
+            build_obstacle_rectangle((x_min, x_min + w), (y_min, y_min + h), env)
+
+        env.update(env.obstacles)
+        return env
+
+    @staticmethod
+    def random_obstacles_ellipse(env: Grid, n_obstacles: int, max_size: int = 10, min_size: int = 5) -> Grid:
+        """Generate random elliptic obstacles on a cylindrical world (x wraps)."""
+
+        W, H = env.x_range, env.y_range
+
+        for _ in range(n_obstacles):
+            # random size for the ellipse axes
+            a = random.randint(min_size, max_size) # width
+            b = random.randint(min_size, max_size) # height
+
+            # random center of ellipse:
+            x_center = random.randint(0, W - 1)
+            y_center = random.randint(0, H - b - 1)
+
+            build_obstacle_ellipse(x_center, y_center, a, b, env)
 
         env.update(env.obstacles)
         return env
@@ -98,9 +126,6 @@ class Randomize:
         shape = convert.ScalePolygon(shape, 1.7)
         
         W, H = env.x_range, env.y_range
-
-        print("H = ", H)
-        print("math.ceil((525+pad)/res) = ", math.ceil((52.5+pad)/res))
     
         for _ in range(max_tries):
             x = random.randint(0, W - 1)

@@ -26,11 +26,8 @@ if __name__ == '__main__':
     #start, goal = (25,25), (25,155)
 
 
-    Randomize.random_obstacles(env, 4)
-    #randomize.build_obstacle((25,35),(60,70),env)
-    #randomize.build_obstacle((30,70),(70,80),env)
-    #randomize.build_obstacle((70,100),(40,50),env)
-    
+    # Randomize.random_obstacles_rectangle(env, 4)
+    Randomize.random_obstacles_ellipse(env, 1)
     
     robot = robot_factory.build_robot('ExactRobot', 'UpSideways', 'RegularRes','LowPad')
     res = RESOLUTION_GROUPS_CM["RegularRes"]

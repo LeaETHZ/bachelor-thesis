@@ -7,6 +7,9 @@ from agent import PolygonAgent
 from plot import PolygonPlot
 from environment import Cylinder
 
+import time
+
+
 
 
 class PolygonSearcher(GraphSearcher):
@@ -18,6 +21,15 @@ class PolygonSearcher(GraphSearcher):
         self.motions = robot.motions
         self.goal_tol_cells_x = goal_tol_cells_x
         self.goal_tol_cells_y = goal_tol_cells_y
+
+        self.max_time_s = 30 #s
+        self.t_start = time.perf_counter() 
+
+
+        # --- progress tracking ---
+        self.total_nodes_est = env.x_range * env.y_range
+        self.visited_nodes = 0
+        self._next_progress = 0.1 
        
 
     
@@ -68,6 +80,24 @@ class PolygonSearcher(GraphSearcher):
 
     #need this function to set a tolerance
     def getNeighbor(self, node: Node) -> list:
+        if time.perf_counter() - self.t_start > self.max_time_s:
+                raise TimeoutError("PolygonSearcher exceeded time limit")
+        
+        
+
+        # --- progress update ---
+        self.visited_nodes += 1
+        if self.total_nodes_est > 0:
+            frac = self.visited_nodes / self.total_nodes_est
+            if frac >= self._next_progress:
+                # simple progress bar
+                bar_len = 30
+                filled = int(frac * bar_len)
+                bar = "#" * filled + "-" * (bar_len - filled)
+                print(f"\r  Search progress: [{bar}] {frac*100:5.1f}%", end="", flush=True)
+                self._next_progress += 0.1  # next threshold (10% steps)
+
+
         neighbors = []
         goal_x, goal_y = self.goal.current
 
@@ -87,7 +117,6 @@ class PolygonSearcher(GraphSearcher):
             dx = abs(candidate.x - goal_x)
             dy = abs(candidate.y - goal_y)
             if (dx <= self.goal_tol_cells_x) and (dy <= self.goal_tol_cells_y):
-                print("candidate.x: ", candidate.x, "candidate.y: ", candidate.y)
                 self.robot.target = self.goal
                 self.goal = Node((candidate.x, candidate.y))
                     

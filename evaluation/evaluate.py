@@ -33,17 +33,16 @@ VARIANTS = [
 # ---------- Evaluation parameters ----------
 N_CASES = 3
 CYL_RADIUS = 12
-CYL_HEIGHT = 200
+CYL_HEIGHT = 500
 START_BOUND_CM = 100               # random start point is constrainted in y = (0, start_bound)
 GOAL_BOUND_CM = 100                # random end point is constrainted in y = (height - goal_bound , height)
-N_RANDOM_OBS_BLOCKS = 8           # how many random obstacles per case
+N_RANDOM_OBS_BLOCKS = 5          # how many random obstacles per case
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
 GOAL_TOL_CM_X = 8.5
 GOAL_TOL_CM_Y = 10
 MASTER_SEED = 70                # set None for non-deterministic
 
 
-MAX_CASE_TIME_S = 30.0 
 
 # ---------- Data containers ----------
 @dataclass
@@ -134,6 +133,8 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
         path = None
         expand = None
 
+    
+
     dt = (time.perf_counter() - t0) * 1000.0
 
     success = bool(path)
@@ -216,8 +217,20 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
         t_case_start = time.perf_counter()  #
         # Use MASTER_SEED + i to make each case reproducible & distinct
         case_seed = (MASTER_SEED or 0) + i
-        env, start, goal, scen = build_random_scenario(case_seed, min_res, min_pad)
+
+        #if no start or goal can be found
+        try:
+            env, start, goal, scen = build_random_scenario(case_seed, min_res, min_pad)
+        except ValueError as e:
+            print(f"[SCENARIO {i}] could not sample start/goal: {e} — skipping case.")
+            failed_cases.append(i)
+            continue  # go to next case
+
+
         save_scenario(case_dir / "scenario.json", scen)
+
+        
+
 
 
         # Run all variants on the SAME scenario

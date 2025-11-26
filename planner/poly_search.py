@@ -22,7 +22,7 @@ class PolygonSearcher(GraphSearcher):
         self.goal_tol_cells_x = goal_tol_cells_x
         self.goal_tol_cells_y = goal_tol_cells_y
 
-        self.max_time_s = 30 #s
+        self.max_time_s = 60 #s
         self.t_start = time.perf_counter() 
 
 
@@ -85,11 +85,12 @@ class PolygonSearcher(GraphSearcher):
         
         
 
-        # --- progress update ---
+        # --- progress update --- -> Not working yet
         self.visited_nodes += 1
         if self.total_nodes_est > 0:
             frac = self.visited_nodes / self.total_nodes_est
             if frac >= self._next_progress:
+                print("in the progress bar")
                 # simple progress bar
                 bar_len = 30
                 filled = int(frac * bar_len)
@@ -99,10 +100,17 @@ class PolygonSearcher(GraphSearcher):
 
 
         neighbors = []
+        if self.goal.current == None:
+            print("No goal found")
+            raise ValueError
+        
         goal_x, goal_y = self.goal.current
 
         for motion in self.motions:
             candidate = node + motion
+
+            if candidate.current is None:
+                continue
 
             # wrap x coordinate if env is cylinder
             if isinstance(self.env, Cylinder):

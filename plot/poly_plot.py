@@ -60,12 +60,25 @@ class PolygonPlot(Plot):
         self.ax.plot(x, y, marker="o", color=color, markersize=size)
 
  
-    def animation(self, path, name, cost=None, expand=None,
+    def animation(self, path, name, cost=None, final_distance = None, expand=None,
                   history_pose=None, predict_path=None,
                   lookahead_pts=None, cost_curve=None, ellipse=None):
         # Re-implement the base animation so we can insert our polygon BEFORE show()
-        name = name + "\ncost: " + str(cost) + "\nstep counter: " + str(len(path)-1) if cost else name
+        
+        step_counter = 0
 
+        
+        if path != None:
+            step_counter = len(path)-1
+
+        
+        name = (
+        f"{name}\n"
+            f"cost: {cost}\n"
+            f"step counter: {step_counter}\n"
+            f"final distance: {final_distance}"
+            )
+        
         # draw environment, expansions, path (same as base class)
         self.plotEnv(name)
 

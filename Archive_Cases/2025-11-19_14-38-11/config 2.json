@@ -1,0 +1,58 @@
+{
+  "variants": [
+    [
+      "ExactRobot",
+      "UpSideways",
+      "RegularRes",
+      "RegularPad"
+    ],
+    [
+      "RectangleRobot",
+      "UpSideways",
+      "RegularRes",
+      "RegularPad"
+    ],
+    [
+      "ExactRobot",
+      "UpSidewaysDiagonal",
+      "RegularRes",
+      "RegularPad"
+    ],
+    [
+      "RectangleRobot",
+      "UpSidewaysDiagonal",
+      "RegularRes",
+      "RegularPad"
+    ],
+    [
+      "ExactRobot",
+      "UpSidewaysVaryingLenght",
+      "RegularRes",
+      "RegularPad"
+    ],
+    [
+      "RectangleRobot",
+      "UpSidewaysVaryingLenght",
+      "RegularRes",
+      "RegularPad"
+    ]
+  ],
+  "n_cases": 1000,
+  "cylinder": {
+    "radius": 12,
+    "height": 200
+  },
+  "random_obstacles": 3,
+  "extra_obstacle_rect": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "goal_tol_cells": 10,
+  "master_seed": 40
+}

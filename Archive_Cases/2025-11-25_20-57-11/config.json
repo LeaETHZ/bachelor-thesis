@@ -1,0 +1,35 @@
+{
+  "variants": [
+    [
+      "ExactRobot",
+      "UpSideways",
+      "RegularRes",
+      "RegularPad"
+    ],
+    [
+      "RectangleRobot",
+      "UpSideways",
+      "RegularRes",
+      "RegularPad"
+    ]
+  ],
+  "n_cases": 3,
+  "cylinder": {
+    "radius": 12,
+    "height": 2000
+  },
+  "random_obstacles": 8,
+  "extra_obstacle_rect": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "goal_tol_cm_x": 8.5,
+  "goal_tol_cm_y": 10,
+  "master_seed": 70
+}

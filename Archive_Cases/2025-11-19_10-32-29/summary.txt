@@ -1,0 +1,7 @@
+
+=== Summary ===
+ExactRobot_UpSideways_RegularRes_RegularPad: success 33.3% | avg cost 5.00 over 3 cases
+RectangleRobot_UpSideways_RegularRes_RegularPad: success 33.3% | avg cost 7.00 over 3 cases
+
+=== Failed Cases ===
+Cases with no success: 1, 3

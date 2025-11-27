@@ -1,0 +1,9 @@
+case_id,variant,shape,motion,res,success,cost,steps,expand_count,runtime_ms,img_path
+1,ExactRobot_UpSideways_RegularRes_RegularPad,ExactRobot,UpSideways,RegularRes,0,inf,0,0,1317.09,runs/2025-11-22_11-43-14/case_0001/ExactRobot_UpSideways_RegularRes_RegularPad.png
+1,ExactRobot_UpSidewaysDown_RegularRes_RegularPad,ExactRobot,UpSidewaysDown,RegularRes,0,inf,0,0,4027.29,runs/2025-11-22_11-43-14/case_0001/ExactRobot_UpSidewaysDown_RegularRes_RegularPad.png
+1,ExactRobot_UpSidewaysDiagonal_RegularRes_RegularPad,ExactRobot,UpSidewaysDiagonal,RegularRes,0,inf,0,0,29623.27,runs/2025-11-22_11-43-14/case_0001/ExactRobot_UpSidewaysDiagonal_RegularRes_RegularPad.png
+1,ExactRobot_VaryingLength_RegularRes_RegularPad,ExactRobot,VaryingLength,RegularRes,0,inf,0,0,83932.41,runs/2025-11-22_11-43-14/case_0001/ExactRobot_VaryingLength_RegularRes_RegularPad.png
+2,ExactRobot_UpSideways_RegularRes_RegularPad,ExactRobot,UpSideways,RegularRes,1,10.0,10,11,217.9,runs/2025-11-22_11-43-14/case_0002/ExactRobot_UpSideways_RegularRes_RegularPad.png
+2,ExactRobot_UpSidewaysDown_RegularRes_RegularPad,ExactRobot,UpSidewaysDown,RegularRes,1,10.0,10,11,316.53,runs/2025-11-22_11-43-14/case_0002/ExactRobot_UpSidewaysDown_RegularRes_RegularPad.png
+2,ExactRobot_UpSidewaysDiagonal_RegularRes_RegularPad,ExactRobot,UpSidewaysDiagonal,RegularRes,1,8.0,8,9,280.07,runs/2025-11-22_11-43-14/case_0002/ExactRobot_UpSidewaysDiagonal_RegularRes_RegularPad.png
+2,ExactRobot_VaryingLength_RegularRes_RegularPad,ExactRobot,VaryingLength,RegularRes,1,10.0,10,11,861.46,runs/2025-11-22_11-43-14/case_0002/ExactRobot_VaryingLength_RegularRes_RegularPad.png

@@ -37,8 +37,8 @@ VARIANTS = [
 
 # ---------- Evaluation parameters ----------
 N_CASES = 3
-CYL_RADIUS = 12
-CYL_HEIGHT = 500
+CYL_RADIUS = 20
+CYL_HEIGHT = 1000
 START_BOUND_CM = 100               # random start point is constrainted in y = (0, start_bound)
 GOAL_BOUND_CM = 100                # random end point is constrainted in y = (height - goal_bound , height)
 N_RANDOM_OBS_RECTANGLE = 3          # how many random rectangle obstacles per case
@@ -46,7 +46,7 @@ N_RANDOM_OBS_ELLIPSE = 3
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
 GOAL_TOL_CM_X = 8.5
 GOAL_TOL_CM_Y = 10
-MASTER_SEED = 70                # set None for non-deterministic
+MASTER_SEED = 36                # set None for non-deterministic
 
 
 
@@ -349,6 +349,23 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
 
     print("\n=== Summary ===")
     summary_lines.append("\n=== Summary ===")
+
+    summary_env = (
+    f"Cylinder radius: {CYL_RADIUS} cm | "
+    f"Cylinder height: {CYL_HEIGHT} cm | "
+    f"Random seed: {MASTER_SEED}"
+    )
+    print(summary_env)
+    summary_lines.append(summary_env)
+
+    obs_info = (
+    f"Obstacles per case: "
+    f"{N_RANDOM_OBS_RECTANGLE} rectangular and "
+    f"{N_RANDOM_OBS_ELLIPSE} elliptical obstacles "
+    f"(target numbers in generator)."
+    )
+    print(obs_info)
+    summary_lines.append(obs_info)
 
     for v, s in by_variant.items():
         sr = 100.0 * s["success"] / s["runs"]

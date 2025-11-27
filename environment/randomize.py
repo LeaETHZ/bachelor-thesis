@@ -56,7 +56,7 @@ def build_obstacle_ellipse(x_center: int, y_center: int, a: int, b: int, env: Gr
 class Randomize:
 
     @staticmethod
-    def random_obstacles_rectangle(env: Grid, n_obstacles: int, max_size: int = 25, min_size: int = 10) -> Grid:
+    def random_obstacles_rectangle(env: Grid, n_obstacles: int, max_size: int = 40, min_size: int = 10) -> Grid:
         """Generate random rectangular obstacles on a cylindrical world (x wraps)."""
 
         W, H = env.x_range, env.y_range
@@ -76,7 +76,7 @@ class Randomize:
         return env
 
     @staticmethod
-    def random_obstacles_ellipse(env: Grid, n_obstacles: int, max_size: int = 10, min_size: int = 5) -> Grid:
+    def random_obstacles_ellipse(env: Grid, n_obstacles: int, max_size: int = 35, min_size: int = 5) -> Grid:
         """Generate random elliptic obstacles on a cylindrical world (x wraps)."""
 
         W, H = env.x_range, env.y_range

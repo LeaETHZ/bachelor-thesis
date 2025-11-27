@@ -1,0 +1,9 @@
+
+=== Summary ===
+ExactRobot_UpSideways_RegularRes_RegularPad: success 74.0% | avg cost 5.65 over 50 cases
+ExactRobot_UpSidewaysDown_RegularRes_RegularPad: success 74.0% | avg cost 5.65 over 50 cases
+ExactRobot_UpSidewaysDiagonal_RegularRes_RegularPad: success 82.0% | avg cost 4.80 over 50 cases
+ExactRobot_VaryingLength_RegularRes_RegularPad: success 80.0% | avg cost 5.88 over 50 cases
+
+=== Failed Cases ===
+Cases with no success: 5, 8, 10, 11, 14, 17, 28, 30, 38, 41, 44, 45, 49

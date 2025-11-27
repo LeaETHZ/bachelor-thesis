@@ -1,0 +1,37 @@
+{
+  "variants": [
+    [
+      "ExactRobot",
+      "VaryingLength",
+      "RegularRes"
+    ],
+    [
+      "ExactRobot",
+      "UpSideways",
+      "RegularRes"
+    ],
+    [
+      "ExactRobot",
+      "UpSidewaysDiagonal",
+      "RegularRes"
+    ]
+  ],
+  "n_cases": 50,
+  "cylinder": {
+    "radius": 12,
+    "height": 200
+  },
+  "random_obstacles": 2,
+  "extra_obstacle_rect": [
+    [
+      29,
+      70
+    ],
+    [
+      20,
+      30
+    ]
+  ],
+  "goal_tol_cells": 10,
+  "master_seed": 40
+}

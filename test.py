@@ -2,6 +2,7 @@ import sys, os
 import math 
 import python_motion_planning as pmp
 from python_motion_planning.utils import Grid
+import numpy as np
 
 from agent import PolygonAgent, Polygon, presets, robot_factory
 from planner import AStarExtension 
@@ -20,22 +21,26 @@ if __name__ == '__main__':
     '''
     path searcher constructor
     '''
+    
+    robot = robot_factory.build_robot('ExactRobot', 'UpSideways', 'LowRes','LowPad')
+    res = RESOLUTION_GROUPS_CM["RegularRes"]
+    pad = PADDING_GROUPS_CM["RegularPad"]   
 
     # build environment
-    env = Cylinder(12, 200) # radius and height input
-    #start, goal = (25,25), (25,155)
+    CYL_RADIUS_CM = 20
+    CYL_HEIGHT_CM = 500
 
-
+    cyl_radius_cells = np.round(CYL_RADIUS_CM/res)
+    cyl_height_cells = np.round(CYL_HEIGHT_CM/res)
+    env = Cylinder(cyl_radius_cells, cyl_height_cells)
+   
     # Randomize.random_obstacles_rectangle(env, 4)
-    Randomize.random_obstacles_ellipse(env, 1)
-    
-    robot = robot_factory.build_robot('ExactRobot', 'UpSideways', 'RegularRes','LowPad')
-    res = RESOLUTION_GROUPS_CM["RegularRes"]
-    pad = PADDING_GROUPS_CM["LowPad"]   
-    start, goal = Randomize.random_start_and_goal(env, res, pad)
+    # Randomize.random_obstacles_ellipse(env, 1)
+    # start, goal = Randomize.random_start_and_goal(env, res, pad)
+    # randomize.build_obstacle_rectangle([10,20],[20,25], env)
 
-    # start = (20, 2)
-    # goal = (40, 100)
+    start = (30, 2)
+    goal = (30, 100)
 
 
     #collision of start cell does not get checked by planner

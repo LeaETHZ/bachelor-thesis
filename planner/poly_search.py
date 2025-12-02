@@ -22,6 +22,9 @@ class PolygonSearcher(GraphSearcher):
         self.goal_tol_cells_x = goal_tol_cells_x
         self.goal_tol_cells_y = goal_tol_cells_y
         self.final_distance = -1
+        self.interim_distance = math.inf
+        self.interim_closets_candidate_x = -1
+        self.interim_closets_candidate_y = -1
 
         self.max_time_s = 60 #s
         self.t_start = time.perf_counter() 
@@ -123,15 +126,20 @@ class PolygonSearcher(GraphSearcher):
                 continue
 
             # If within tolerance, snap to exact goal so A* equality triggers
-            dx = abs(candidate.x - goal_x)
+            dx = self.env.dx_min_node(candidate, self.goal)
             dy = abs(candidate.y - goal_y)
-            if (dx <= self.goal_tol_cells_x) and (dy <= self.goal_tol_cells_y):
-                self.robot.target = self.goal
-                self.goal = Node((candidate.x, candidate.y))
-                self.final_distance = math.hypot(self.env.dx_min(self.robot.target, self.goal), self.robot.target.y - self.goal.y) # calculate distance between last path point and original goal point
+            if (dx <= self.goal_tol_cells_x) and (dy <= self.goal_tol_cells_y): # find closets neighbor among all neighbors that are within tolerance and update variables
+                if math.hypot(dx, dy) < self.interim_distance: 
+                    self.interim_distance = math.hypot(dx,dy)
+                    self.interim_closets_candidate_x, self.interim_closets_candidate_y = x,y
+            
+            neighbors.append(candidate) # append all neighbors
 
-            neighbors.append(candidate)
-        
+        if self.interim_closets_candidate_x > 0: # check if any of the neighbors is within tolerance, otherwise nothing needs to be changed
+            self.final_distance = math.hypot(self.env.dx_min_int(self.interim_closets_candidate_x, self.goal.x), self.interim_closets_candidate_y - self.goal.y) # calculate distance between last path point and original goal point
+            self.robot.target = self.goal # save original goal coordinates for later purposes    
+            self.goal = Node((self.interim_closets_candidate_x, self.interim_closets_candidate_y)) # snapped goal coordinates to closest neighbor within tolerance
+
         return neighbors
 
     
@@ -141,7 +149,7 @@ class PolygonSearcher(GraphSearcher):
         dy =  abs(node2.y - node1.y)
 
         if isinstance(self.env, Cylinder):  # Handle wrap-around in the x direction
-            dx = self.env.dx_min(node1, node2)  # shortest path around the cylinder
+            dx = self.env.dx_min_node(node1, node2)  # shortest path around the cylinder
 
         return math.hypot(dx, dy)
     
@@ -158,7 +166,7 @@ class PolygonSearcher(GraphSearcher):
         """
         x_min = abs(goal.x - node.x) 
         if isinstance(self.env, Cylinder):
-            x_min = self.env.dx_min(node, goal)
+            x_min = self.env.dx_min_node(node, goal)
 
         if self.heuristic_type == "manhattan":
             return x_min + abs(goal.y - node.y) 

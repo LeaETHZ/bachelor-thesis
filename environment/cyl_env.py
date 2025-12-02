@@ -55,6 +55,9 @@ class Cylinder(Env):
         else: # right edge was crossed
             return "right"
 
-    def dx_min(self, node1: Node, node2: Node) -> float:
+    def dx_min_node(self, node1: Node, node2: Node) -> float:
         return min(abs(node2.x - node1.x), self.x_range - abs(node2.x - node1.x))
+    
+    def dx_min_int(self, x1: int, x2: int) -> float:
+        return min(abs(x2 - x1), self.x_range - abs(x2 - x1))
     

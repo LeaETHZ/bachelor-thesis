@@ -5,6 +5,7 @@ from typing import Tuple, List, Dict, Any
 import math
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import multiprocessing
+import numpy as np
 
 
 
@@ -37,8 +38,8 @@ VARIANTS = [
 
 # ---------- Evaluation parameters ----------
 N_CASES = 3
-CYL_RADIUS = 20
-CYL_HEIGHT = 1000
+CYL_RADIUS_CM = 20
+CYL_HEIGHT_CM = 1000
 START_BOUND_CM = 100               # random start point is constrainted in y = (0, start_bound)
 GOAL_BOUND_CM = 100                # random end point is constrainted in y = (height - goal_bound , height)
 N_RANDOM_OBS_RECTANGLE = 0          # how many random rectangle obstacles per case
@@ -86,7 +87,7 @@ def save_config(path: Path, varaints: List[Tuple[str, str, str, str]] = VARIANTS
     data = {
         "variants": varaints,
         "n_cases": N_CASES,
-        "cylinder": {"radius": CYL_RADIUS, "height": CYL_HEIGHT},
+        "cylinder": {"radius": CYL_RADIUS_CM, "height": CYL_HEIGHT_CM},
         "random_obstacles_rectangle": N_RANDOM_OBS_RECTANGLE,
         "random_obstacles_ellipse": N_RANDOM_OBS_ELLIPSE,
         "extra_obstacle_rect": EXTRA_OBS_RECT,
@@ -234,7 +235,9 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
 def build_random_scenario(case_seed: int, res: float, pad: float) -> tuple[Cylinder, Tuple[int,int], Tuple[int,int], Scenario]:
     seed_everything(case_seed)
 
-    env = Cylinder(CYL_RADIUS, CYL_HEIGHT)
+    cyl_radius_cells = np.round(CYL_RADIUS_CM/res)
+    cyl_height_cells = np.round(CYL_HEIGHT_CM/res)
+    env = Cylinder(cyl_radius_cells, cyl_height_cells)
     
 
     # Your own random obstacle builder(s); keep deterministic under seed
@@ -353,8 +356,8 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
     summary_lines.append("\n=== Summary ===")
 
     summary_env = (
-    f"Cylinder radius: {CYL_RADIUS} cm | "
-    f"Cylinder height: {CYL_HEIGHT} cm | "
+    f"Cylinder radius: {CYL_RADIUS_CM} cm | "
+    f"Cylinder height: {CYL_HEIGHT_CM} cm | "
     f"Random seed: {MASTER_SEED}"
     )
     print(summary_env)

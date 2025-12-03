@@ -188,7 +188,7 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
 
     success = bool(path)
     steps = len(path)-1 if success else 0 
-    final_distance = planner.final_distance
+    final_distance_cm = planner.final_distance_cells * RESOLUTION_CM
     expand_count = len(expand) if expand else 0
     cost_val = float(cost) if success else float("inf")
 
@@ -196,7 +196,7 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
     title = f"case {case_id:04d} - {variant_name} - {'OK' if success else 'FAIL'}"
 
     # Use your PolygonPlot-based animation instead of static plot
-    planner.plot.animation(path, title, cost, final_distance, expand)
+    planner.plot.animation(path, title, cost, final_distance_cm, expand)
 
     # ---- RESIZE IN METRIC UNITS ----
     fig = plt.gcf()
@@ -222,7 +222,7 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
         success=success,
         cost=cost_val,
         steps=steps,
-        final_distance=final_distance,
+        final_distance=final_distance_cm,
         expand_count=expand_count,
         runtime_ms=dt,
         img_path=str(img_path),

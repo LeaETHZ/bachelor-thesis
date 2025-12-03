@@ -67,9 +67,9 @@ if __name__ == '__main__':
     # print("Step count: ",steps)
 
     # print("cost = ", cost)
-    print ("final distance = ", planner.final_distance)
+    print ("final distance = ", planner.final_distance_cells)
 
-    planner.plot.animation(path, "Shaped A*", cost, planner.final_distance, expand  = None)
+    planner.plot.animation(path, "Shaped A*", cost, planner.final_distance_cells, expand  = None)
     
     
 

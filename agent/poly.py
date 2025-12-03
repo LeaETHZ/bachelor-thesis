@@ -90,7 +90,7 @@ def footprint_cells(pose : tuple[float, float, float], polygon : Polygon, grid_w
     return base
 
     
-def padded_footprint(base: list[tuple[int,int]], grid_width : int, grid_height : int, res: float=1.7, pad : float=1.7):
+def padded_footprint(base: list[tuple[int,int]], grid_width : int, grid_height : int, res: float, pad : float):
     
     pad_cells = math.ceil(pad/res)
     

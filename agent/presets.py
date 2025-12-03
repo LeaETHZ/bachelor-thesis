@@ -45,7 +45,6 @@ SHAPES_MM: Dict[str, ShapeSetMM] = {
 }
 
 
-
 MOTION_GROUPS_MM: Dict[str, List[Tuple[int, int]]] = {
     "UpSideways": [(0, 200), (170, 0), (-170, 0)],
     "UpSidewaysDown": [(0, 200), (170, 0), (-170, 0), (0,-200)],
@@ -53,12 +52,9 @@ MOTION_GROUPS_MM: Dict[str, List[Tuple[int, int]]] = {
     "VaryingLength": varying_length([(0, 200), (170, 0), (-170, 0)],3)
 }
 
-RESOLUTION_GROUPS_CM: Dict[str, float] = {
-    "RegularRes": 1.7,
-    "HighRes": 0.85,
-    "LowRes": 3.4
-    #comparing resolutions is diffeicult bc of the problem that to get a good start node we need to know robot size to check that start is not in collision
-}
+
+RESOLUTION_CM: float = 1.7        # The ONLY resolution value
+
 
 PADDING_GROUPS_CM: Dict[str, int] = {
     "RegularPad": 1.7,

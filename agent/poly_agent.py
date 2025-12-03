@@ -40,7 +40,7 @@ class PolygonAgent(pmp.Robot):
 
     
     @staticmethod
-    def is_in_collision(pose : Pose2D, polygon: Polygon, env: Grid, res : float = 1.7, pad : float = 1.7) -> bool: # obstacles is smth like this : {(10, 5), (11, 5), (12, 5), ...}
+    def is_in_collision(pose : Pose2D, polygon: Polygon, env: Grid, res : float, pad : float) -> bool: # obstacles is smth like this : {(10, 5), (11, 5), (12, 5), ...}
         """Return True if the robot footprint (polygon) overlaps any occupied cells in the environment."""
 
         grid_width, grid_height = env.x_range, env.y_range

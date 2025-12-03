@@ -20,7 +20,7 @@ from python_motion_planning.utils import Grid
 from environment import Cylinder, Randomize, randomize
 from planner import AStarExtension
 from agent import robot_factory
-from agent.presets import SHAPES_MM, MOTION_GROUPS_MM, RESOLUTION_GROUPS_CM, PADDING_GROUPS_CM
+from agent.presets import SHAPES_MM, MOTION_GROUPS_MM, PADDING_GROUPS_CM, RESOLUTION_CM
 
 
 
@@ -48,7 +48,7 @@ EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
 GOAL_TOL_CM_X = 30 #8.5
 GOAL_TOL_CM_Y = 30 #10
 MASTER_SEED = 36                # set None for non-deterministic
-
+RESOLUTION = RESOLUTION_CM
 
 
 # ---------- Data containers ----------
@@ -65,7 +65,6 @@ class RunResult:
     variant: str
     shape_key: str
     motion_key: str
-    res_key: str
     pad_key: str
     success: bool
     cost: float
@@ -83,7 +82,7 @@ def save_scenario(path: Path, scenario: Scenario) -> None:
     with open(path, "w") as f:
         json.dump(asdict(scenario), f, indent=2)
 
-def save_config(path: Path, varaints: List[Tuple[str, str, str, str]] = VARIANTS, n : int = N_CASES) -> None:
+def save_config(path: Path, varaints: List[Tuple[str, str, str]] = VARIANTS, n : int = N_CASES) -> None:
     data = {
         "variants": varaints,
         "n_cases": N_CASES,
@@ -113,7 +112,6 @@ def seed_everything(seed: int | None):
 def _run_single_case(case_id: int,
                      case_seed: int,
                      variants,
-                     min_res: float,
                      min_pad: float,
                      ts_dir: Path) -> list[RunResult]:
     """
@@ -127,7 +125,7 @@ def _run_single_case(case_id: int,
 
     # build scenario (may raise ValueError if no start/goal is found)
     try:
-        env, start, goal, scen = build_random_scenario(case_seed, min_res, min_pad)
+        env, start, goal, scen = build_random_scenario(case_seed, min_pad)
     except ValueError as e:
         print(f"[SCENARIO {case_id}] could not sample start/goal: {e}")
         return []  # no results for this case
@@ -155,21 +153,21 @@ def _run_single_case(case_id: int,
 
 # ---------- One run on one scenario / one variant ----------
 def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], goal: Tuple[int,int],
-                            variant: tuple[str,str,str,str], out_dir: Path) -> RunResult:
-    shape_key, motion_key, res_key, pad_key = variant
-    variant_name = f"{shape_key}_{motion_key}_{res_key}_{pad_key}"
+                            variant: tuple[str,str,str], out_dir: Path) -> RunResult:
+    shape_key, motion_key, pad_key = variant
+    variant_name = f"{shape_key}_{motion_key}_{pad_key}"
 
     # Build robot
-    robot = robot_factory.build_robot(shape_key, motion_key, res_key, pad_key)
+    robot = robot_factory.build_robot(shape_key, motion_key, pad_key)
 
     # (Optional) pre-check start collision
     # from agent import PolygonAgent
     # if PolygonAgent.is_in_collision((start[0], start[1], 0), robot.local_shape_up, env):
-    #     return RunResult(case_id, variant_name, shape_key, motion_key, res_key, False, float("inf"), 0, 0, 0.0, "")
+    #     return RunResult(case_id, variant_name, shape_key, motion_key, False, float("inf"), 0, 0, 0.0, "")
 
     # convert goal_tol_x/y from cm into res
-    goal_tol_cells_x = math.ceil(GOAL_TOL_CM_X/RESOLUTION_GROUPS_CM[variant[2]])
-    goal_tol_cells_y = math.ceil(GOAL_TOL_CM_Y/RESOLUTION_GROUPS_CM[variant[2]])    
+    goal_tol_cells_x = math.ceil(GOAL_TOL_CM_X/RESOLUTION)
+    goal_tol_cells_y = math.ceil(GOAL_TOL_CM_Y/RESOLUTION)    
 
     planner = AStarExtension(start, goal, env, robot, goal_tol_cells_x = goal_tol_cells_x, goal_tol_cells_y= goal_tol_cells_y)
 
@@ -220,7 +218,6 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
         variant=variant_name,
         shape_key=shape_key,
         motion_key=motion_key,
-        res_key=res_key,
         pad_key=pad_key,
         success=success,
         cost=cost_val,
@@ -232,11 +229,11 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
     )
 
 # ---------- Build one scenario ----------
-def build_random_scenario(case_seed: int, res: float, pad: float) -> tuple[Cylinder, Tuple[int,int], Tuple[int,int], Scenario]:
+def build_random_scenario(case_seed: int, pad: float) -> tuple[Cylinder, Tuple[int,int], Tuple[int,int], Scenario]:
     seed_everything(case_seed)
 
-    cyl_radius_cells = np.round(CYL_RADIUS_CM/res)
-    cyl_height_cells = np.round(CYL_HEIGHT_CM/res)
+    cyl_radius_cells = np.round(CYL_RADIUS_CM/RESOLUTION)
+    cyl_height_cells = np.round(CYL_HEIGHT_CM/RESOLUTION)
     env = Cylinder(cyl_radius_cells, cyl_height_cells)
     
 
@@ -246,7 +243,7 @@ def build_random_scenario(case_seed: int, res: float, pad: float) -> tuple[Cylin
     # Optional fixed rectangle:
     randomize.build_obstacle_rectangle(EXTRA_OBS_RECT[0], EXTRA_OBS_RECT[1], env)
 
-    start, goal = Randomize.random_start_and_goal(env, res, pad, START_BOUND_CM, GOAL_BOUND_CM)
+    start, goal = Randomize.random_start_and_goal(env, RESOLUTION, pad, START_BOUND_CM, GOAL_BOUND_CM)
 
     # Serialize obstacles if you need them (convert set->list)
     obs_list = list(env.obstacles)
@@ -261,9 +258,8 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
 
     results: List[RunResult] = []
 
-    # find min padding and min res throughout all variants
-    min_res = min(RESOLUTION_GROUPS_CM[variant[2]] for variant in variants)
-    min_pad = min(PADDING_GROUPS_CM[variant[3]] for variant in variants)
+    # find min padding throughout all variants
+    min_pad = min(PADDING_GROUPS_CM[variant[2]] for variant in variants)
 
 
     # ---------- PARALLEL CASE EXECUTION ----------
@@ -281,7 +277,6 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
                     i,
                     case_seed,
                     variants,
-                    min_res,
                     min_pad,
                     ts_dir,
                 )
@@ -302,7 +297,7 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
 
     #     #if no start or goal can be found
     #     try:
-    #         env, start, goal, scen = build_random_scenario(case_seed, min_res, min_pad)
+    #         env, start, goal, scen = build_random_scenario(case_seed, RESOLUTION, min_pad)
     #     except ValueError as e:
     #         print(f"[SCENARIO {i}] could not sample start/goal: {e} — skipping case.")
     #         failed_cases.append(i)
@@ -330,10 +325,10 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
     import csv
     with open(ts_dir / "results.csv", "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["case_id","variant","shape","motion","res","success","cost","steps","final_distance","expand_count","runtime_ms","img_path"])
+        w.writerow(["case_id","variant","shape","motion","success","cost","steps","final_distance","expand_count","runtime_ms","img_path"])
         for r in results:
             w.writerow([
-                r.case_id, r.variant, r.shape_key, r.motion_key, r.res_key,
+                r.case_id, r.variant, r.shape_key, r.motion_key,
                 int(r.success), r.cost, r.steps, r.final_distance, r.expand_count,
                 round(r.runtime_ms, 2), r.img_path
             ])

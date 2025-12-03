@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 runs/
-
+Archive_Cases/
 # Distribution / packaging
 .Python
 build/

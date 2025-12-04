@@ -21,7 +21,7 @@ class PolygonSearcher(GraphSearcher):
         self.motions = robot.motions
         self.goal_tol_cells_x = goal_tol_cells_x
         self.goal_tol_cells_y = goal_tol_cells_y
-        self.final_distance = -1
+        self.final_distance_cells = -1
         self.interim_distance = math.inf
         self.interim_closets_candidate_x = -1
         self.interim_closets_candidate_y = -1
@@ -136,7 +136,7 @@ class PolygonSearcher(GraphSearcher):
             neighbors.append(candidate) # append all neighbors
 
         if self.interim_closets_candidate_x > 0: # check if any of the neighbors is within tolerance, otherwise nothing needs to be changed
-            self.final_distance = math.hypot(self.env.dx_min_int(self.interim_closets_candidate_x, self.goal.x), self.interim_closets_candidate_y - self.goal.y) # calculate distance between last path point and original goal point
+            self.final_distance_cells = math.hypot(self.env.dx_min_int(self.interim_closets_candidate_x, self.goal.x), self.interim_closets_candidate_y - self.goal.y) # calculate distance between last path point and original goal point
             self.robot.target = self.goal # save original goal coordinates for later purposes    
             self.goal = Node((self.interim_closets_candidate_x, self.interim_closets_candidate_y)) # snapped goal coordinates to closest neighbor within tolerance
 

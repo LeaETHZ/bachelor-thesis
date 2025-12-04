@@ -6,7 +6,8 @@ from typing import Optional, Tuple
 import python_motion_planning as pmp
 from python_motion_planning.utils import Grid, Map, SearchFactory
 
-from agent import PolygonAgent, Polygon , presets
+from agent import PolygonAgent, Polygon 
+from agent.presets import RESOLUTION_CM
 from helper import convert
 
 
@@ -102,7 +103,7 @@ class Randomize:
         max_tries = 50
 
         shape = Polygon([(-68, 0), (68, 0), (68, 215), (90, 215), (160, 525), (-160, 525), (-90, 215), (-68, 215)]) # crouched position
-        shape = convert.ScalePolygon(shape, 1.7)
+        shape = convert.ScalePolygon(shape, RESOLUTION_CM)
         
         W, H = env.x_range, env.y_range
     
@@ -123,7 +124,7 @@ class Randomize:
         max_tries = 50
 
         shape = Polygon([(-68, 0), (68, 0), (68, 215), (90, 215), (160, 525), (-160, 525), (-90, 215), (-68, 215)]) # crouched position
-        shape = convert.ScalePolygon(shape, 1.7)
+        shape = convert.ScalePolygon(shape, RESOLUTION_CM)
         
         W, H = env.x_range, env.y_range
     
@@ -139,7 +140,7 @@ class Randomize:
 
 
     @staticmethod
-    def random_start_and_goal(env : Grid, res: float = 1.7, pad: float = 1.7, start_bound_cm : float = 10, goal_bound_cm : float = 100) -> tuple[tuple[int, int], tuple[int, int]]:
+    def random_start_and_goal(env : Grid, res: float, pad: float, start_bound_cm : float = 10, goal_bound_cm : float = 100) -> tuple[tuple[int, int], tuple[int, int]]:
          
         start_bound_cells = math.ceil(start_bound_cm/res)
         goal_bound_cells = math.ceil(goal_bound_cm/res)         

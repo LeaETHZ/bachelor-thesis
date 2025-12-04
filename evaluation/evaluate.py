@@ -38,16 +38,16 @@ VARIANTS = [
 
 # ---------- Evaluation parameters ----------
 N_CASES = 3
-CYL_RADIUS_CM = 20
+CYL_RADIUS_CM = 30
 CYL_HEIGHT_CM = 1000
-START_BOUND_CM = 100               # random start point is constrainted in y = (0, start_bound)
-GOAL_BOUND_CM = 100                # random end point is constrainted in y = (height - goal_bound , height)
-N_RANDOM_OBS_RECTANGLE = 0          # how many random rectangle obstacles per case
-N_RANDOM_OBS_ELLIPSE = 1
+START_BOUND_CM = 200               # random start point is constrainted in y = (0, start_bound)
+GOAL_BOUND_CM = 200                # random end point is constrainted in y = (height - goal_bound , height)
+N_RANDOM_OBS_RECTANGLE = 7          # how many random rectangle obstacles per case
+N_RANDOM_OBS_ELLIPSE = 4
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
 GOAL_TOL_CM_X = 30 #8.5
 GOAL_TOL_CM_Y = 30 #10
-MASTER_SEED = 36                # set None for non-deterministic
+MASTER_SEED = 165                # set None for non-deterministic
 RESOLUTION = RESOLUTION_CM
 
 
@@ -174,13 +174,14 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
     t0 = time.perf_counter()
     try:
         cost, path, expand = planner.plan()
+ 
 
     except TimeoutError:
         dt = (time.perf_counter() - t0) * 1000.0
         print(f"[TIMEOUT] case {case_id}, variant {variant_name} exceeded time limit")
         cost = None
         path = None
-        expand = None
+        expand = getattr(planner, "expanded_nodes", None)
 
     
 
@@ -287,39 +288,7 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
             case_results = fut.result()  # this is list[RunResult]
             results.extend(case_results)
 
-    # for i in range(1, n_cases + 1):
-    #     case_dir = ts_dir / f"case_{i:04d}"
-    #     ensure_dir(case_dir)
-    #     print(f"\n=== RUN CASE {i}/{n_cases} ===")
-    #     t_case_start = time.perf_counter()  #
-    #     # Use MASTER_SEED + i to make each case reproducible & distinct
-    #     case_seed = (MASTER_SEED or 0) + i
 
-    #     #if no start or goal can be found
-    #     try:
-    #         env, start, goal, scen = build_random_scenario(case_seed, RESOLUTION, min_pad)
-    #     except ValueError as e:
-    #         print(f"[SCENARIO {i}] could not sample start/goal: {e} — skipping case.")
-    #         failed_cases.append(i)
-    #         continue  # go to next case
-
-
-    #     save_scenario(case_dir / "scenario.json", scen)
-
-        
-
-
-
-    #     # Run all variants on the SAME scenario
-    #     for v in variants:
-
-    #         res = run_variant_on_scenario(i, env.copy() if hasattr(env, "copy") else env, start, goal, v, case_dir)
-    #         results.append(res)
-    #         if not res.success:
-    #             failed_cases.append(i)
-        
-    #     t_case_end = time.perf_counter()  #end timer
-    #     print(f"Case {i} finished in {(t_case_end - t_case_start):.2f} seconds")
 
     # Write CSV
     import csv

@@ -326,6 +326,41 @@ class PolygonPlot(Plot):
         # Start marker
         self.ax.plot(self.start.x, self.start.y, marker="s", color="red", markersize=10)
 
+    def plotExpand(self, expand: list) -> None:
+            """
+            Plot expanded nodes for Cylinder (and optionally Grid/Map).
+            Works in headless mode (Agg) – no pauses.
+            """
+            if not expand:
+                return
 
+            # Remove start/goal if they are Node-like
+            try:
+                if self.start in expand:
+                    expand.remove(self.start)
+                if self.goal in expand:
+                    expand.remove(self.goal)
+            except Exception:
+                pass
+
+            # Handle Cylinder like a Grid: just plot their x,y
+            if isinstance(self.env, Cylinder):
+                for n in expand:
+                    # Node from PMP usually has .x, .y
+                    plt.plot(n.x, n.y, color="#c10808", marker="s", markersize=10)
+
+            # (Optional) keep old behaviour for Grid
+            elif isinstance(self.env, Grid):
+                for n in expand:
+                    plt.plot(n.x, n.y, color="#dddddd", marker='s', markersize=3)
+
+            # (Optional) keep old behaviour for Map
+            elif isinstance(self.env, Map):
+                for n in expand:
+                    if n.parent:
+                        plt.plot([n.parent[0], n.x], [n.parent[1], n.y],
+                                color="#dddddd", linestyle="-")
+
+            # No plt.pause() here – we’re saving static images
 
 

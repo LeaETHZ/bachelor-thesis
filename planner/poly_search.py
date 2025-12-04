@@ -1,4 +1,6 @@
 import math
+import heapq
+
 from typing import Optional
 from python_motion_planning.utils import Node, Grid
 from python_motion_planning.global_planner.graph_search.graph_search import GraphSearcher
@@ -34,6 +36,8 @@ class PolygonSearcher(GraphSearcher):
         self.total_nodes_est = env.x_range * env.y_range
         self.visited_nodes = 0
         self._next_progress = 0.1 
+
+        self.expanded_nodes = []
        
 
     
@@ -84,6 +88,7 @@ class PolygonSearcher(GraphSearcher):
 
     #need this function to set a tolerance
     def getNeighbor(self, node: Node) -> list:
+
         if time.perf_counter() - self.t_start > self.max_time_s:
                 raise TimeoutError("PolygonSearcher exceeded time limit")
         
@@ -185,6 +190,8 @@ class PolygonSearcher(GraphSearcher):
             cost (float): the cost of planned path
             path (list): the planning path
         """
+        # --- No path found: goal not in CLOSED ---
+       
         cost = 0
         node = closed_list[self.goal.current]
         path = [node.current]
@@ -195,3 +202,53 @@ class PolygonSearcher(GraphSearcher):
             node = node_parent
             path.append(node.current)
         return cost, path
+    
+    def plan(self) -> tuple:
+        """
+        A* motion plan function.
+
+        Returns:
+            cost (float): path cost
+            path (list): planning path
+            expand (list): all nodes that planner has searched
+        """
+        # OPEN list (priority queue) and CLOSED list (hash table)
+        OPEN = []
+        heapq.heappush(OPEN, self.start)
+        CLOSED = dict()
+
+        while OPEN:
+            node = heapq.heappop(OPEN)
+
+            # exists in CLOSED list
+            if node.current in CLOSED:
+                continue
+
+            # goal found
+            if node == self.goal:
+                CLOSED[node.current] = node
+                cost, path = self.extractPath(CLOSED)
+                return cost, path, list(CLOSED.values())
+
+            for node_n in self.getNeighbor(node):                
+                # exists in CLOSED list
+                if node_n.current in CLOSED:
+                    continue
+                
+                node_n.parent = node.current
+                node_n.h = self.h(node_n, self.goal)
+
+                # goal found
+                if node_n == self.goal:
+                    heapq.heappush(OPEN, node_n)
+                    break
+                
+                # update OPEN list
+                heapq.heappush(OPEN, node_n)
+
+            CLOSED[node.current] = node
+
+            #we need this in case of time out
+            self.expanded_nodes.append(node)
+
+        return [], [], list(CLOSED.values())

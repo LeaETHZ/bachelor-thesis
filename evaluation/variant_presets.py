@@ -19,7 +19,14 @@ def variant_set_motion_groups(shape: str, pad: str):
 def variant_set_padding(shape: str, motion: str):
     """Compare different padding settings."""
     return [
-        (shape, motion, "RegularPad"),
+        
+        (shape, motion, "higher20"),
+        (shape, motion, "higher15"),
+        (shape, motion, "higher10"),
+        (shape, motion, "higher7"),
+        (shape, motion, "higher"),
         (shape, motion, "HighPad"),
+        (shape, motion, "RegularPad"),
         (shape, motion, "LowPad"),
+        (shape, motion, "NoPad"),
     ]

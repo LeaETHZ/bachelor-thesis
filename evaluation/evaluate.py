@@ -42,12 +42,12 @@ CYL_RADIUS_CM = 30
 CYL_HEIGHT_CM = 1000
 START_BOUND_CM = 200               # random start point is constrainted in y = (0, start_bound)
 GOAL_BOUND_CM = 200                # random end point is constrainted in y = (height - goal_bound , height)
-N_RANDOM_OBS_RECTANGLE = 7          # how many random rectangle obstacles per case
+N_RANDOM_OBS_RECTANGLE = 4          # how many random rectangle obstacles per case
 N_RANDOM_OBS_ELLIPSE = 4
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
-GOAL_TOL_CM_X = 30 #8.5
-GOAL_TOL_CM_Y = 30 #10
-MASTER_SEED = 165                # set None for non-deterministic
+GOAL_TOL_CM_X = 20 #8.5
+GOAL_TOL_CM_Y = 20 #10
+MASTER_SEED = 172                # set None for non-deterministic
 RESOLUTION = RESOLUTION_CM
 
 

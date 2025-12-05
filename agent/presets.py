@@ -57,8 +57,13 @@ RESOLUTION_CM: float = 1.7        # The ONLY resolution value
 
 
 PADDING_GROUPS_CM: Dict[str, int] = {
-    "RegularPad": 1.7,
+    "higher20" : 20,
+    "higher15" : 15,
+    "higher10" : 10,
+    "higher7" : 7,
+    "higher" : 5,
     "HighPad": 3.4,
+    "RegularPad": 1.7,
     "LowPad" : 0.85,
     "NoPad" : 0
 }

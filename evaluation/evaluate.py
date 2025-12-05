@@ -44,10 +44,14 @@ START_BOUND_CM = 200               # random start point is constrainted in y = (
 GOAL_BOUND_CM = 200                # random end point is constrainted in y = (height - goal_bound , height)
 N_RANDOM_OBS_RECTANGLE = 4          # how many random rectangle obstacles per case
 N_RANDOM_OBS_ELLIPSE = 4
+RECTANGLE_OBS_MAX_CM = 30
+RECTANGLE_OBS_MIN_CM = 15
+ELLIIPSE_OBS_MAX_CM = 30
+ELLIIPSE_OBS_MIN_CM = 15
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
-GOAL_TOL_CM_X = 20 #8.5
-GOAL_TOL_CM_Y = 20 #10
-MASTER_SEED = 172                # set None for non-deterministic
+GOAL_TOL_CM_X = 5 #8.5
+GOAL_TOL_CM_Y = 5 #10
+MASTER_SEED = 234                # set None for non-deterministic
 RESOLUTION = RESOLUTION_CM
 
 
@@ -89,6 +93,10 @@ def save_config(path: Path, varaints: List[Tuple[str, str, str]] = VARIANTS, n :
         "cylinder": {"radius": CYL_RADIUS_CM, "height": CYL_HEIGHT_CM},
         "random_obstacles_rectangle": N_RANDOM_OBS_RECTANGLE,
         "random_obstacles_ellipse": N_RANDOM_OBS_ELLIPSE,
+        "Rectangle_max_size": RECTANGLE_OBS_MAX_CM,
+        "Rectangle_min_size": RECTANGLE_OBS_MIN_CM,
+        "Ellipse_max_size": ELLIIPSE_OBS_MAX_CM,
+        "Ellipse_min_size": ELLIIPSE_OBS_MIN_CM,
         "extra_obstacle_rect": EXTRA_OBS_RECT,
         "goal_tol_cm_x": GOAL_TOL_CM_X,
         "goal_tol_cm_y": GOAL_TOL_CM_Y,
@@ -239,8 +247,8 @@ def build_random_scenario(case_seed: int, pad: float) -> tuple[Cylinder, Tuple[i
     
 
     # Your own random obstacle builder(s); keep deterministic under seed
-    Randomize.random_obstacles_rectangle(env, N_RANDOM_OBS_RECTANGLE)
-    Randomize.random_obstacles_ellipse(env, N_RANDOM_OBS_ELLIPSE)
+    Randomize.random_obstacles_rectangle(env, N_RANDOM_OBS_RECTANGLE, RECTANGLE_OBS_MAX_CM, RECTANGLE_OBS_MIN_CM)
+    Randomize.random_obstacles_ellipse(env, N_RANDOM_OBS_ELLIPSE, ELLIIPSE_OBS_MAX_CM, ELLIIPSE_OBS_MIN_CM)
     # Optional fixed rectangle:
     randomize.build_obstacle_rectangle(EXTRA_OBS_RECT[0], EXTRA_OBS_RECT[1], env)
 

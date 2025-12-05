@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-def easy_plot(x, y, title="Padding Evaluation (500 Cases)", xlabel="Padding [cm]", ylabel="Success Rate [%]",
+def easy_plot(x, y, title="Goal Tolerance Evaluation (100 Cases)", xlabel="Goal Tolerance [cm]", ylabel="Step Counter",
               marker="o", save_path=None):
 
     plt.figure(figsize=(6,4))
@@ -21,10 +21,11 @@ def easy_plot(x, y, title="Padding Evaluation (500 Cases)", xlabel="Padding [cm]
 
 
 # Example use every time you run the file:
-x = [0, 0.85, 1.7, 3.4, 5.0, 7.0, 10.0, 15.0, 20.0]
-y = [86.8, 75.8, 75.8, 68, 57.4, 41.4, 35.2, 18.6, 8.6]
+tolerance = [40, 30, 25, 20, 15, 10 , 5] #x
+success_rate = [97, 97, 97, 97, 95, 93, 50] #y
+average_path_length = [41.87, 42.72, 43.12, 43.49, 44.45, 45.60, 47.54]
 
 easy_plot(
-    x, y,
+    tolerance, average_path_length,
     
 )

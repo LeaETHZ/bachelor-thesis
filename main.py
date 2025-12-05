@@ -11,8 +11,8 @@ PAD    = "RegularPad"
 # ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓  USER CONFIGURATION BELOW  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 # ---------------------------------------------------------------------
 
-SELECTED_VARIANTS = "padding"   # "shapes", "motion_groups", "padding"
-N_CASES = 100                  # how many random scenarios to run
+SELECTED_VARIANTS = "shapes"   # "shapes", "motion_groups", "padding"
+N_CASES = 1                  # how many random scenarios to run
 
 # ---------------------------------------------------------------------
 # ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑  USER CONFIGURATION ABOVE  ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑

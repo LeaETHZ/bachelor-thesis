@@ -16,10 +16,13 @@ class Cylinder(Env):
     def __init__(self, r: int, h: int) -> None:
         super().__init__(int(round(2*pi*r)), h) # from here on: x_range = 2*pi*r (circumference), y_range = height
         # allowed motions
-        self.motions = [Node((-1, 0), None, 1, None), Node((-1, 1),  None, sqrt(2), None),
-                        Node((0, 1),  None, 1, None), Node((1, 1),   None, sqrt(2), None),
-                        Node((1, 0),  None, 1, None), Node((1, -1),  None, sqrt(2), None),
-                        Node((0, -1), None, 1, None), Node((-1, -1), None, sqrt(2), None)]
+
+        #this should never be used, just bc we need it for initializing cylinder env
+        self.motions = [Node((0, 0), None, 1, None)]
+        # self.motions = [Node((-1, 0), None, 1, None), Node((-1, 1),  None, 1, None),
+        #                 Node((0, 1),  None, 1, None), Node((1, 1),   None, 1, None),
+        #                 Node((1, 0),  None, 1, None), Node((1, -1),  None, 1, None),
+        #                 Node((0, -1), None, 1, None), Node((-1, -1), None, 1, None)]
         # obstacles
         self.obstacles = None
         self.obstacles_tree = None

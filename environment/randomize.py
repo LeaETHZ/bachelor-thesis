@@ -63,8 +63,7 @@ class Randomize:
         max_size = int(max_size_cm/RESOLUTION_CM)
         min_size = int(min_size_cm/RESOLUTION_CM)
 
-        print("max_size", max_size)
-        print("max_size_cm", max_size_cm)
+       
 
         W, H = env.x_range, env.y_range
 

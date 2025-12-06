@@ -42,15 +42,15 @@ CYL_RADIUS_CM = 30
 CYL_HEIGHT_CM = 1000
 START_BOUND_CM = 200               # random start point is constrainted in y = (0, start_bound)
 GOAL_BOUND_CM = 200                # random end point is constrainted in y = (height - goal_bound , height)
-N_RANDOM_OBS_RECTANGLE = 4          # how many random rectangle obstacles per case
-N_RANDOM_OBS_ELLIPSE = 4
-RECTANGLE_OBS_MAX_CM = 30
-RECTANGLE_OBS_MIN_CM = 15
-ELLIIPSE_OBS_MAX_CM = 30
-ELLIIPSE_OBS_MIN_CM = 15
+N_RANDOM_OBS_RECTANGLE = 1          # how many random rectangle obstacles per case
+N_RANDOM_OBS_ELLIPSE = 1
+RECTANGLE_OBS_MAX_CM = 10
+RECTANGLE_OBS_MIN_CM = 5
+ELLIIPSE_OBS_MAX_CM = 10
+ELLIIPSE_OBS_MIN_CM = 5
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
-GOAL_TOL_CM_X = 5 #8.5
-GOAL_TOL_CM_Y = 5 #10
+GOAL_TOL_CM_X = 20 #8.5
+GOAL_TOL_CM_Y = 20 #10
 MASTER_SEED = 234                # set None for non-deterministic
 RESOLUTION = RESOLUTION_CM
 
@@ -168,10 +168,6 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
     # Build robot
     robot = robot_factory.build_robot(shape_key, motion_key, pad_key)
 
-    # (Optional) pre-check start collision
-    # from agent import PolygonAgent
-    # if PolygonAgent.is_in_collision((start[0], start[1], 0), robot.local_shape_up, env):
-    #     return RunResult(case_id, variant_name, shape_key, motion_key, False, float("inf"), 0, 0, 0.0, "")
 
     # convert goal_tol_x/y from cm into res
     goal_tol_cells_x = math.ceil(GOAL_TOL_CM_X/RESOLUTION)

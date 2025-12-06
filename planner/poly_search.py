@@ -32,11 +32,6 @@ class PolygonSearcher(GraphSearcher):
         self.t_start = time.perf_counter() 
 
 
-        # --- progress tracking ---
-        self.total_nodes_est = env.x_range * env.y_range
-        self.visited_nodes = 0
-        self._next_progress = 0.1 
-
         self.expanded_nodes = []
        
 
@@ -91,21 +86,6 @@ class PolygonSearcher(GraphSearcher):
 
         if time.perf_counter() - self.t_start > self.max_time_s:
                 raise TimeoutError("PolygonSearcher exceeded time limit")
-        
-        
-
-        # --- progress update --- -> Not working yet
-        self.visited_nodes += 1
-        if self.total_nodes_est > 0:
-            frac = self.visited_nodes / self.total_nodes_est
-            if frac >= self._next_progress:
-                print("in the progress bar")
-                # simple progress bar
-                bar_len = 30
-                filled = int(frac * bar_len)
-                bar = "#" * filled + "-" * (bar_len - filled)
-                print(f"\r  Search progress: [{bar}] {frac*100:5.1f}%", end="", flush=True)
-                self._next_progress += 0.1  # next threshold (10% steps)
 
 
         neighbors = []

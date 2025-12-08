@@ -42,12 +42,12 @@ CYL_RADIUS_CM = 30
 CYL_HEIGHT_CM = 1000
 START_BOUND_CM = 200               # random start point is constrainted in y = (0, start_bound)
 GOAL_BOUND_CM = 200                # random end point is constrainted in y = (height - goal_bound , height)
-N_RANDOM_OBS_RECTANGLE = 4          # how many random rectangle obstacles per case
-N_RANDOM_OBS_ELLIPSE = 4
-RECTANGLE_OBS_MAX_CM = 60
-RECTANGLE_OBS_MIN_CM = 50
-ELLIIPSE_OBS_MAX_CM = 30
-ELLIIPSE_OBS_MIN_CM = 25
+N_RANDOM_OBS_RECTANGLE = 7          # how many random rectangle obstacles per case
+N_RANDOM_OBS_ELLIPSE = 7
+RECTANGLE_OBS_MAX_CM = 50
+RECTANGLE_OBS_MIN_CM = 5
+ELLIIPSE_OBS_MAX_CM = 25
+ELLIIPSE_OBS_MIN_CM = 2
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
 GOAL_TOL_CM_X = 20 #8.5
 GOAL_TOL_CM_Y = 20 #10
@@ -326,7 +326,8 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
     summary_env = (
     f"Cylinder radius: {CYL_RADIUS_CM} cm | "
     f"Cylinder height: {CYL_HEIGHT_CM} cm | "
-    f"Random seed: {MASTER_SEED}"
+    f"Random seed: {MASTER_SEED} | "
+    f"Goal tolerance x: {GOAL_TOL_CM_X} cm, y: {GOAL_TOL_CM_Y} cm"
     )
     print(summary_env)
     summary_lines.append(summary_env)

@@ -42,12 +42,12 @@ CYL_RADIUS_CM = 30
 CYL_HEIGHT_CM = 1000
 START_BOUND_CM = 200               # random start point is constrainted in y = (0, start_bound)
 GOAL_BOUND_CM = 200                # random end point is constrainted in y = (height - goal_bound , height)
-N_RANDOM_OBS_RECTANGLE = 1          # how many random rectangle obstacles per case
-N_RANDOM_OBS_ELLIPSE = 1
-RECTANGLE_OBS_MAX_CM = 10
-RECTANGLE_OBS_MIN_CM = 5
-ELLIIPSE_OBS_MAX_CM = 10
-ELLIIPSE_OBS_MIN_CM = 5
+N_RANDOM_OBS_RECTANGLE = 4          # how many random rectangle obstacles per case
+N_RANDOM_OBS_ELLIPSE = 4
+RECTANGLE_OBS_MAX_CM = 60
+RECTANGLE_OBS_MIN_CM = 50
+ELLIIPSE_OBS_MAX_CM = 30
+ELLIIPSE_OBS_MIN_CM = 25
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
 GOAL_TOL_CM_X = 20 #8.5
 GOAL_TOL_CM_Y = 20 #10
@@ -335,7 +335,11 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
     f"Obstacles per case: "
     f"{N_RANDOM_OBS_RECTANGLE} rectangular and "
     f"{N_RANDOM_OBS_ELLIPSE} elliptical obstacles "
-    f"(target numbers in generator)."
+    f"(target numbers in generator) | "
+    f"Rectangle range: "
+    f"{RECTANGLE_OBS_MIN_CM}-{RECTANGLE_OBS_MAX_CM}cm, "
+    f"Ellipse axes range: "
+    f"{ELLIIPSE_OBS_MIN_CM}-{ELLIIPSE_OBS_MAX_CM}cm"
     )
     print(obs_info)
     summary_lines.append(obs_info)

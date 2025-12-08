@@ -11,9 +11,8 @@ PAD    = "RegularPad"
 # ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓  USER CONFIGURATION BELOW  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 # ---------------------------------------------------------------------
 
-SELECTED_VARIANTS = "motion_groups"   # "shapes", "motion_groups", "padding"
-N_CASES = 100                  # how many random scenarios to run
-
+SELECTED_VARIANTS = "base_variant"   # "base_variant", "shapes", "motion_groups", "padding"
+N_CASES = 100                 # how many random scenarios to run
 # ---------------------------------------------------------------------
 # ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑  USER CONFIGURATION ABOVE  ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 # ---------------------------------------------------------------------
@@ -26,6 +25,9 @@ elif SELECTED_VARIANTS == "motion_groups":
 
 elif SELECTED_VARIANTS == "padding":
     variants = variant_set_padding(SHAPE, MOTION)
+
+elif SELECTED_VARIANTS == "base_variant":
+    variants = [("ExactRobot", "UpSideways", "RegularPad")]
 
 else:
     raise ValueError(f"Unknown variant set: {SELECTED_VARIANTS}")

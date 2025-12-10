@@ -33,10 +33,10 @@ if __name__ == '__main__':
     cyl_height_cells = np.round(CYL_HEIGHT_CM/RESOLUTION_CM)
     env = Cylinder(cyl_radius_cells, cyl_height_cells)
    
-    # Randomize.random_obstacles_rectangle(env, 4)
+    #Randomize.random_obstacles_rectangle(env, 4)
     # Randomize.random_obstacles_ellipse(env, 1)
     # start, goal = Randomize.random_start_and_goal(env, RESOLUTION_CM, pad)
-    # randomize.build_obstacle_rectangle([10,20],[20,25], env)
+    randomize.build_obstacle_rectangle([10,20],[20,25], env)
 
     start = (30, 2)
     goal = (30, 100)

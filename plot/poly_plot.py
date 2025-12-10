@@ -132,7 +132,7 @@ class PolygonPlot(Plot):
                 self.color = (random.random(), random.random(), random.random())
                 self.drawRobotPolygon((x, y, theta))
                 self.drawPoint(x, y, color="#888888", size=4)
-                # self.drawFootprint()
+                #self.drawFootprint()
                 #self.drawPadding()
             #draw final point that triggers goal
             self.drawPoint(path[-1][0], path[-1][1], "green")

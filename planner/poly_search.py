@@ -28,8 +28,12 @@ class PolygonSearcher(GraphSearcher):
         self.interim_closets_candidate_x = -1
         self.interim_closets_candidate_y = -1
 
-        self.max_time_s = 60 #s
+        self.max_time_s = 300 #s
         self.t_start = time.perf_counter() 
+
+        #need this for heuristic
+        self.max_step_cells = max(math.hypot(m.x, m.y) for m in self.motions)
+        print("self.max_step_cells", self.max_step_cells)
 
 
         self.expanded_nodes = []
@@ -150,14 +154,27 @@ class PolygonSearcher(GraphSearcher):
             h (float): heuristic function value of node
         """
         x_min = abs(goal.x - node.x) 
+       
+
         if isinstance(self.env, Cylinder):
             x_min = self.env.dx_min_node(node, goal)
+
+        # Euclidean distance in cells
+        dy = abs(goal.y - node.y)
+        d_cells = math.hypot(x_min, dy)
+
+        # Radius (in cells) of the tolerated goal region
+        r_tol = math.hypot(self.goal_tol_cells_x, self.goal_tol_cells_y)
+        d_eff = max(d_cells - r_tol, 0.0)
 
         if self.heuristic_type == "manhattan":
             return x_min + abs(goal.y - node.y) 
         
         elif self.heuristic_type == "euclidean":
-            return math.hypot(x_min, goal.y - node.y)
+            return d_eff/self.max_step_cells
+        
+            #old heuristic
+            #return math.hypot(x_min, dy)
 
     def extractPath(self, closed_list: dict) -> tuple:
         """

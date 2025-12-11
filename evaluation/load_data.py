@@ -16,11 +16,15 @@ def load_cylinder_from_npy(path: str, res_cm: float, obstacle_threshold: float =
         height = H * res
     """
 
-    arr = np.load(path)          # H x W
+    arr = np.load(path)
+
+    # Allow RGB
+    if arr.ndim == 3 and arr.shape[2] == 3:
+        arr = arr.mean(axis=2)
 
     if arr.ndim != 2:
         raise ValueError(f"Expected 2D array in {path}, got shape {arr.shape}")
-
+    
     H, W = arr.shape
 
     # Compute physical dimensions from resolution

@@ -1,6 +1,6 @@
 import numpy as np
 
-file = "arrayJulia.npy"  
+file = "updated_array.npy"  
 
 # Load the array
 arr = np.load(file)

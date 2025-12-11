@@ -1,5 +1,8 @@
 import sys, os
 import math 
+
+import matplotlib
+import matplotlib.pyplot as plt 
 import python_motion_planning as pmp
 from python_motion_planning.utils import Grid
 import numpy as np
@@ -9,6 +12,7 @@ from planner import AStarExtension
 from environment import Randomize, Cylinder, randomize
 from helper import convert
 from agent.presets import SHAPES_MM, MOTION_GROUPS_MM, PADDING_GROUPS_CM, RESOLUTION_CM
+from evaluation import load_data
 
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -26,20 +30,28 @@ if __name__ == '__main__':
     pad = PADDING_GROUPS_CM["RegularPad"]   
 
     # build environment
-    CYL_RADIUS_CM = 20
-    CYL_HEIGHT_CM = 500
+    # CYL_RADIUS_CM = 20
+    # CYL_HEIGHT_CM = 500
 
-    cyl_radius_cells = np.round(CYL_RADIUS_CM/RESOLUTION_CM)
-    cyl_height_cells = np.round(CYL_HEIGHT_CM/RESOLUTION_CM)
-    env = Cylinder(cyl_radius_cells, cyl_height_cells)
+    # cyl_radius_cells = np.round(CYL_RADIUS_CM/RESOLUTION_CM)
+    # cyl_height_cells = np.round(CYL_HEIGHT_CM/RESOLUTION_CM)
+    # env = Cylinder(cyl_radius_cells, cyl_height_cells)
    
     #Randomize.random_obstacles_rectangle(env, 4)
     # Randomize.random_obstacles_ellipse(env, 1)
     # start, goal = Randomize.random_start_and_goal(env, RESOLUTION_CM, pad)
-    randomize.build_obstacle_rectangle([10,20],[20,25], env)
+    #randomize.build_obstacle_rectangle([10,20],[20,25], env)
 
-    start = (30, 2)
-    goal = (30, 100)
+    MAP_PATH = os.path.join(os.path.dirname(__file__), "newnewarray.npy")
+
+    env = load_data.load_cylinder_from_npy(MAP_PATH, RESOLUTION_CM, obstacle_threshold=0.5)
+
+
+    
+    
+
+    start = (500, 500)
+    goal = (30, 200)
 
 
     #collision of start cell does not get checked by planner

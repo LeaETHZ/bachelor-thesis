@@ -1,3 +1,4 @@
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import math
@@ -140,6 +141,14 @@ class PolygonPlot(Plot):
             
 
         plt.show()
+
+        # # # ---- Statt plt.show(): speichern ----
+        # import os
+        # os.makedirs("runs", exist_ok=True)
+        # out_path = os.path.join("runs", "path_plot.png")
+        # self.fig.savefig(out_path, dpi=200)
+        # print(f"Saved plot to {out_path}")
+        # # plt.show()  # optional – eher weglassen, dann kommt auch keine Agg-Warnung mehr
 
     def plotEnv(self, name: str) -> None:
         '''

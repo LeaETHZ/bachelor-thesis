@@ -5,7 +5,7 @@ from evaluation.variant_presets import *
 # Default parameters for all variant sets
 SHAPE  = "ExactRobot"
 MOTION = "UpSideways"
-PAD    = "RegularPad"
+PAD    = "NoPad"
 
 # ---------------------------------------------------------------------
 # ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓  USER CONFIGURATION BELOW  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
@@ -27,7 +27,7 @@ elif SELECTED_VARIANTS == "padding":
     variants = variant_set_padding(SHAPE, MOTION)
 
 elif SELECTED_VARIANTS == "base_variant":
-    variants = [("ExactRobot", "UpSideways", "RegularPad")]
+    variants = [("ExactRobot", "UpSideways", "NoPad")]
 
 else:
     raise ValueError(f"Unknown variant set: {SELECTED_VARIANTS}")

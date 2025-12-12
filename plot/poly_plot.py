@@ -10,6 +10,8 @@ from agent import PolygonAgent, Polygon
 from environment import Cylinder
 import random
 from agent.poly import transform_polygon_local_to_world, footprint_cells, padded_footprint
+from agent.presets import MOTIONS_CELLS
+
 
 
 
@@ -107,28 +109,15 @@ class PolygonPlot(Plot):
 
                 next_x, next_y = path[i+1]
                 theta = 0
-                dx, dy = next_x - x, next_y - y
+                current_motion = next_x - x, next_y - y
 
-                crossed_edge = self.env.crossed_edge_check(x, next_x) # check if we cross edge
-
-                if crossed_edge != None: 
-                    if crossed_edge == "right": 
-                        self.current_shape = self.robot.local_shape_right 
-                    else: 
-                        self.current_shape = self.robot.local_shape_left 
-
-                else: # no edges were crossed
-                    if dx > 0:
-                        self.current_shape = self.robot.local_shape_right
-                    
-                    elif dx < 0: 
-                        self.current_shape = self.robot.local_shape_left
-                    
-                    elif dy > 0:
-                        self.current_shape = self.robot.local_shape_up
-                    
-                    else:
-                        self.current_shape = self.robot.local_shape_up
+                for name, motion in MOTIONS_CELLS.items():
+                    if motion == current_motion:
+                        motion_name = name
+                
+                # assign shape corresponding to current motion
+                attr_name = f"local_shape_{motion_name}"
+                self.current_shape = getattr(self.robot, attr_name)
 
                 self.color = (random.random(), random.random(), random.random())
                 self.drawRobotPolygon((x, y, theta))

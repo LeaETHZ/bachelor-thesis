@@ -13,7 +13,12 @@ Cell = tuple[int, int]
 
 #in this class everything that is robot description and its interaction with the environment
 class PolygonAgent(pmp.Robot):
-    def __init__(self,  pose: Pose2D | None, polygon_up : Polygon, polygon_right : Polygon, polygon_left : Polygon, polygon_crouched : Polygon, motions : list[Node], resolution: float, padding: float) -> None:
+    def __init__(self,  pose: Pose2D | None, 
+                polygon_up : Polygon, polygon_right : Polygon, polygon_left : Polygon, polygon_crouched : Polygon, 
+                polygon_down : Polygon, polygon_diagonal_right : Polygon, polygon_diagonal_left : Polygon, 
+                polygon_up_2_3 : Polygon, polygon_up_1_3 : Polygon, polygon_right_2_3 : Polygon, polygon_right_1_3 : Polygon, polygon_left_2_3 : Polygon, polygon_left_1_3 : Polygon,
+                motions : list[Node], resolution: float, padding: float) -> None:
+    
         if pose is None:
             pose = (0.0, 0.0, 0.0)
         
@@ -28,6 +33,19 @@ class PolygonAgent(pmp.Robot):
         self.local_shape_right : Polygon = polygon_right
         self.local_shape_left : Polygon = polygon_left
         self.local_shape_crouched : Polygon = polygon_crouched
+
+        self.local_shape_down : Polygon = polygon_down
+        self.local_shape_diagonal_right : Polygon = polygon_diagonal_right
+        self.local_shape_diagonal_left : Polygon = polygon_diagonal_left
+
+        self.local_shape_up_2_3 : Polygon = polygon_up_2_3
+        self.local_shape_up_1_3 : Polygon = polygon_up_1_3
+        self.local_shape_right_2_3 : Polygon = polygon_right_2_3
+        self.local_shape_right_1_3 : Polygon = polygon_right_1_3
+        self.local_shape_left_2_3 : Polygon = polygon_left_2_3
+        self.local_shape_left_1_3 : Polygon = polygon_left_1_3
+        
+
         self.padding : float = padding
         self.resolution : float = resolution
         

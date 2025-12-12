@@ -41,8 +41,21 @@ def build_robot(shape_key: str, motion_key: str, padding_key: str) -> PolygonAge
     # --- convert polygons (mm -> cells) ---
     scaledShapeUp = convert.ScalePolygon(shapes_mm.up, RESOLUTION_CM)
     scaledShapeRight = convert.ScalePolygon(shapes_mm.right, RESOLUTION_CM)
-    sacledShapeLeft = convert.ScalePolygon(shapes_mm.left, RESOLUTION_CM)
-    sacledShapeCrouched = convert.ScalePolygon(shapes_mm.crouched, RESOLUTION_CM)
+    scaledShapeLeft = convert.ScalePolygon(shapes_mm.left, RESOLUTION_CM)
+    scaledShapeCrouched = convert.ScalePolygon(shapes_mm.crouched, RESOLUTION_CM)
+
+    scaledShapeDown = convert.ScalePolygon(shapes_mm.down, RESOLUTION_CM)
+    scaledShapeDiagonalRight = convert.ScalePolygon(shapes_mm.diagonal_right, RESOLUTION_CM)
+    scaledShapeDiagonalLeft = convert.ScalePolygon(shapes_mm.diagonal_left, RESOLUTION_CM)
+
+    scaledShapeUp23 = convert.ScalePolygon(shapes_mm.up_2_3, RESOLUTION_CM)
+    scaledShapeUp13 = convert.ScalePolygon(shapes_mm.up_2_3, RESOLUTION_CM)
+    scaledShapeRight23 = convert.ScalePolygon(shapes_mm.right_2_3, RESOLUTION_CM)
+    scaledShapeRight13 = convert.ScalePolygon(shapes_mm.right_1_3, RESOLUTION_CM)
+    scaledShapeLeft23 = convert.ScalePolygon(shapes_mm.left_2_3, RESOLUTION_CM)
+    scaledShapeLeft13 = convert.ScalePolygon(shapes_mm.left_1_3, RESOLUTION_CM)
+
+
     
 
     # --- convert motions (mm -> cells) ---
@@ -55,7 +68,10 @@ def build_robot(shape_key: str, motion_key: str, padding_key: str) -> PolygonAge
         
 
     # --- construct agent ---
-    agent = PolygonAgent(None, scaledShapeUp, scaledShapeRight, sacledShapeLeft, sacledShapeCrouched, motions, RESOLUTION_CM, padding_cm)
+    agent = PolygonAgent(None, scaledShapeUp, scaledShapeRight, scaledShapeLeft, scaledShapeCrouched, 
+                         scaledShapeDown, scaledShapeDiagonalRight, scaledShapeDiagonalLeft,
+                         scaledShapeUp23, scaledShapeUp13, scaledShapeRight23, scaledShapeRight13, scaledShapeLeft23, scaledShapeLeft13,
+                         motions, RESOLUTION_CM, padding_cm)
     return agent
 
 

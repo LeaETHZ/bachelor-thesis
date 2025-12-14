@@ -26,7 +26,7 @@ if __name__ == '__main__':
     path searcher constructor
     '''
     
-    robot = robot_factory.build_robot('ExactRobot', 'UpSidewaysDiagonal','NoPad')
+    robot = robot_factory.build_robot('ExactRobot', 'UpSidewaysDiagonal','RegularPad')
     pad = PADDING_GROUPS_CM["NoPad"]   
 
     # build environment

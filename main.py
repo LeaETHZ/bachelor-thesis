@@ -5,14 +5,14 @@ from evaluation.variant_presets import *
 # Default parameters for all variant sets
 SHAPE  = "ExactRobot"
 MOTION = "UpSideways"
-PAD    = "RegularPad"
+PAD    = "NoPad"
 
 # ---------------------------------------------------------------------
 # ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓  USER CONFIGURATION BELOW  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 # ---------------------------------------------------------------------
 
 SELECTED_VARIANTS = "motion_groups"   # "base_variant", "shapes", "motion_groups", "padding"
-N_CASES = 10                 # how many random scenarios to run
+N_CASES = 1                 # how many random scenarios to run
 # ---------------------------------------------------------------------
 # ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑  USER CONFIGURATION ABOVE  ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 # ---------------------------------------------------------------------

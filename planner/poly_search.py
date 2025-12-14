@@ -4,6 +4,8 @@ import heapq
 from typing import Optional
 from python_motion_planning.utils import Node, Grid
 from python_motion_planning.global_planner.graph_search.graph_search import GraphSearcher
+from agent.presets import SHAPES_MM, MOTION_GROUPS_MM, RESOLUTION_CM, PADDING_GROUPS_CM, MOTIONS_CELLS
+
 
 from agent import PolygonAgent 
 from plot import PolygonPlot
@@ -54,35 +56,27 @@ class PolygonSearcher(GraphSearcher):
         theta = self.robot.pose[2]   # keep orientation constant 
         self.robot.pose = (x, y, theta)
 
-        dx, dy = motion.current   # e.g. (3, 0), (0, -3), etc.
+        motion_name = self.motion_decode(motion.current)
 
-        # normalize sign (since step_cells could be >1)
-        if dx > 0:
-            direction = "right"
-        elif dx < 0:
-            direction = "left"
-        elif dy > 0:
-            direction = "up"
-        elif dy < 0:
-            direction = "down"
-        else:
-            direction = "none"
-
-        if direction == "right":
-            shape = self.robot.local_shape_right
-
-        elif direction == "left":
-            shape = self.robot.local_shape_left
-        
-
-        else:
-            shape = self.robot.local_shape_up
+        # assign shape corresponding to the specific motion
+        attr_name = f"local_shape_{motion_name}"
+        shape = getattr(self.robot, attr_name)
 
 
         # polygon footprint collision    
         if self.robot.is_in_collision(self.robot.pose, shape, self.env, self.robot.resolution, self.robot.padding):
              return True
         return False
+
+    # Given dx, dy, function returns motion name
+    def motion_decode(self, current_motion : tuple[int, int]) -> str:
+
+        for name, motion in MOTIONS_CELLS.items():
+            if motion == current_motion:
+                return name
+
+        # raise an error or return None if no match is found
+        raise ValueError(f"No motion found for motion {current_motion}")
     
 
     #need this function to set a tolerance

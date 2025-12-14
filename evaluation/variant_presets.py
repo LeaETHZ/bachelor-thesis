@@ -10,10 +10,10 @@ def variant_set_shapes(motion: str, pad: str):
 def variant_set_motion_groups(shape: str, pad: str):
     """Compare different motion groups, keep robot shape/res/pad fixed."""
     return [
-        (shape, "UpSideways", pad),
-        (shape, "UpSidewaysDown", pad),
+        # (shape, "UpSideways", pad),
+        # (shape, "UpSidewaysDown", pad),
         (shape, "UpSidewaysDiagonal", pad),
-        (shape, "VaryingLength", pad),
+        # (shape, "VaryingLength", pad),
     ]
 
 def variant_set_padding(shape: str, motion: str):

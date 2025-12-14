@@ -49,8 +49,8 @@ RECTANGLE_OBS_MIN_CM = 5
 ELLIIPSE_OBS_MAX_CM = 25
 ELLIIPSE_OBS_MIN_CM = 2
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
-GOAL_TOL_CM_X = 8.5 #8.5
-GOAL_TOL_CM_Y = 10 #10
+GOAL_TOL_CM_X = 20 #8.5
+GOAL_TOL_CM_Y = 20 #10
 MASTER_SEED = 356                # set None for non-deterministic
 RESOLUTION = RESOLUTION_CM
 

@@ -79,10 +79,10 @@ SHAPES_MM: Dict[str, ShapeSetMM] = {
 
 
 MOTION_GROUPS_MM: Dict[str, List[Tuple[int, int]]] = {
-    "UpSideways": [(0, 200), (170, 0), (-170, 0)],
-    "UpSidewaysDown": [(0, 200), (170, 0), (-170, 0), (0,-200)],
-    "UpSidewaysDiagonal": [(0, 200), (170, 0), (-170, 0),(141,141),(-141,141)],
-    "VaryingLength": varying_length([(0, 200), (170, 0), (-170, 0)],3) 
+    "UpSideways": [(0, 240), (200, 0), (-200, 0)],
+    "UpSidewaysDown": [(0, 240), (200, 0), (-200, 0), (0,-240)],
+    "UpSidewaysDiagonal": [(0, 240), (200, 0), (-200, 0),(170,170),(-170,170)],
+    "VaryingLength": varying_length([(0, 240), (200, 0), (-200, 0)],3) 
     # VaryingLength = [(0, 200), (170, 0), (-170, 0), (0, 66), (0, 133), (0, 200), (56, 0), (113, 0), (170, 0), (-56, 0), (-113, 0), (-170, 0)]
 }
 

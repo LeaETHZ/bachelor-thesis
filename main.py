@@ -11,8 +11,8 @@ PAD    = "NoPad"
 # ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓  USER CONFIGURATION BELOW  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 # ---------------------------------------------------------------------
 
-SELECTED_VARIANTS = "motion_groups"   # "base_variant", "shapes", "motion_groups", "padding"
-N_CASES = 10                 # how many random scenarios to run
+SELECTED_VARIANTS = "base_variant"   # "base_variant", "shapes", "motion_groups", "padding"
+N_CASES = 3                 # how many random scenarios to run
 # ---------------------------------------------------------------------
 # ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑  USER CONFIGURATION ABOVE  ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 # ---------------------------------------------------------------------

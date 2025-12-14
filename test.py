@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     # build environment
     CYL_RADIUS_CM = 20
-    CYL_HEIGHT_CM = 500
+    CYL_HEIGHT_CM = 200
 
     cyl_radius_cells = np.round(CYL_RADIUS_CM/RESOLUTION_CM)
     cyl_height_cells = np.round(CYL_HEIGHT_CM/RESOLUTION_CM)
@@ -39,7 +39,7 @@ if __name__ == '__main__':
    
     # Randomize.random_obstacles_rectangle(env, 4, 50, 5)
     # Randomize.random_obstacles_ellipse(env, 1, 25, 2.5)
-    start, goal = Randomize.random_start_and_goal(env, RESOLUTION_CM, pad)
+    #start, goal = Randomize.random_start_and_goal(env, RESOLUTION_CM, pad)
     #randomize.build_obstacle_rectangle([10,20],[20,25], env)
 
     # MAP_PATH = os.path.join(os.path.dirname(__file__), "newnewarray.npy")
@@ -50,8 +50,8 @@ if __name__ == '__main__':
     
     
 
-    # start = (40, 30)
-    # goal = (53, 45)
+    start = (40, 30)
+    goal = (40, 45)
 
 
     #collision of start cell does not get checked by planner

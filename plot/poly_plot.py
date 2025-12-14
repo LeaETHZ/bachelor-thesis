@@ -109,6 +109,14 @@ class PolygonPlot(Plot):
 
                 next_x, next_y = path[i+1]
                 theta = 0
+
+                # check if we crossed edge and adjust 
+                crossed_edge = self.env.crossed_edge_check(x, next_x)
+                if crossed_edge == "right":
+                    next_x += self.env.x_range
+                elif crossed_edge == "left":
+                    x += self.env.x_range
+
                 current_motion = next_x - x, next_y - y
 
                 for name, motion in MOTIONS_CELLS.items():

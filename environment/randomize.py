@@ -138,7 +138,7 @@ class Randomize:
     
         for _ in range(max_tries):
             x = random.randint(0, W - 1)
-            y = random.randint(H-goal_bound, H - math.ceil((52.5+pad)/res)) # find a random y s.t. it is between (y_max - bound, y_max - height of courched shape incl. pad)
+            y = random.randint(H-goal_bound, H - math.ceil((78.3+pad)/res)) # find a random y s.t. it is between (y_max - bound, y_max - height of courched shape incl. pad)
             pose = (float(x), float(y), 0.0)
             if not PolygonAgent.is_in_collision(pose, shape, env, res, pad):
                 return (x, y)

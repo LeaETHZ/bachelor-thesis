@@ -32,7 +32,8 @@ class PolygonSearcher(GraphSearcher):
         self.interim_closets_candidate_x = -1
         self.interim_closets_candidate_y = -1
 
-        self.max_time_s = 300 #s
+        self.max_time_s = 200 #s
+        self.max_time_varying_s = 500 #s #400
         self.t_start = time.perf_counter() 
 
         #need this for heuristic
@@ -83,8 +84,14 @@ class PolygonSearcher(GraphSearcher):
     #need this function to set a tolerance
     def getNeighbor(self, node: Node) -> list:
 
-        if time.perf_counter() - self.t_start > self.max_time_s:
+        #different time limit for varying
+        if len(self.motions) == 9:
+            if time.perf_counter() - self.t_start > self.max_time_varying_s:
                 raise TimeoutError("PolygonSearcher exceeded time limit")
+
+        else:
+            if time.perf_counter() - self.t_start > self.max_time_s:
+                    raise TimeoutError("PolygonSearcher exceeded time limit")
 
 
         neighbors = []
@@ -109,22 +116,15 @@ class PolygonSearcher(GraphSearcher):
             if self.isCollision(node, candidate, motion):
                 continue
 
-            # If within tolerance, snap to exact goal so A* equality triggers
-            dx = self.env.dx_min_node(candidate, self.goal)
-            dy = abs(candidate.y - goal_y)
-            if (dx <= self.goal_tol_cells_x) and (dy <= self.goal_tol_cells_y): # find closets neighbor among all neighbors that are within tolerance and update variables
-                if math.hypot(dx, dy) < self.interim_distance: 
-                    self.interim_distance = math.hypot(dx,dy)
-                    self.interim_closets_candidate_x, self.interim_closets_candidate_y = x,y
             
             neighbors.append(candidate) # append all neighbors
 
-        if self.interim_closets_candidate_x > 0: # check if any of the neighbors is within tolerance, otherwise nothing needs to be changed
-            self.final_distance_cells = math.hypot(self.env.dx_min_int(self.interim_closets_candidate_x, self.goal.x), self.interim_closets_candidate_y - self.goal.y) # calculate distance between last path point and original goal point
-            self.robot.target = self.goal # save original goal coordinates for later purposes    
-            self.goal = Node((self.interim_closets_candidate_x, self.interim_closets_candidate_y)) # snapped goal coordinates to closest neighbor within tolerance
+        # sort neighbors by distance to goal (closest first)
+        neighbors.sort(key=self.neighbor_goal_distance)
+
 
         return neighbors
+
 
     
     def dist(self, node1: Node, node2: Node) -> float:
@@ -216,10 +216,20 @@ class PolygonSearcher(GraphSearcher):
             if node.current in CLOSED:
                 continue
 
+            CLOSED[node.current] = node
+
             # goal found
-            if node == self.goal:
-                CLOSED[node.current] = node
+            if self.within_goal_tolerance(node):
+
+                dx = self.env.dx_min_node(node, self.goal)
+                dy = abs(node.y - self.goal.y)
+                self.final_distance_cells = math.hypot(dx, dy)
+
+                reached_goal = self.goal
+                self.goal = Node(node.current)        
                 cost, path = self.extractPath(CLOSED)
+                self.goal = reached_goal             
+
                 return cost, path, list(CLOSED.values())
 
             for node_n in self.getNeighbor(node):                
@@ -229,18 +239,28 @@ class PolygonSearcher(GraphSearcher):
                 
                 node_n.parent = node.current
                 node_n.h = self.h(node_n, self.goal)
-
-                # goal found
-                if node_n == self.goal:
-                    heapq.heappush(OPEN, node_n)
-                    break
                 
                 # update OPEN list
                 heapq.heappush(OPEN, node_n)
 
-            CLOSED[node.current] = node
 
             #we need this in case of time out
             self.expanded_nodes.append(node)
 
         return [], [], list(CLOSED.values())
+    
+    
+    def within_goal_tolerance(self, node: Node) -> bool:
+        goal_x, goal_y = self.goal.current
+
+        # cylinder-aware shortest dx
+        dx = self.env.dx_min_node(node, self.goal)  # since env is always Cylinder
+        dy = abs(node.y - goal_y)
+
+        return (dx <= self.goal_tol_cells_x) and (dy <= self.goal_tol_cells_y)
+    
+    def neighbor_goal_distance(self, node: Node) -> float:
+        """Cylinder-aware distance from node to true goal (in cells)."""
+        dx = self.env.dx_min_node(node, self.goal)   # shortest x on cylinder
+        dy = abs(node.y - self.goal.y)
+        return math.hypot(dx, dy)

@@ -42,16 +42,16 @@ if __name__ == '__main__':
     #start, goal = Randomize.random_start_and_goal(env, RESOLUTION_CM, pad)
     #randomize.build_obstacle_rectangle([10,20],[20,25], env)
 
-    # MAP_PATH = os.path.join(os.path.dirname(__file__), "newnewarray.npy")
+    MAP_PATH = os.path.join(os.path.dirname(__file__), "xy_labels.npy")
 
-    # env = load_data.load_cylinder_from_npy(MAP_PATH, RESOLUTION_CM, obstacle_threshold=0.5)
+    env = load_data.load_cylinder_from_npy(MAP_PATH)
 
 
     
     
 
-    start = (40, 30)
-    goal = (40, 45)
+    start = (0, 0)
+    goal = (0, 20)
 
 
     #collision of start cell does not get checked by planner
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     # print("cost = ", cost)
     print ("final distance = ", planner.final_distance_cells)
 
-    planner.plot.animation(path, "Shaped A*", cost, planner.final_distance_cells, expand  = None)
+    planner.plot.animation(path, "Shaped A*", cost, planner.final_distance_cells, expand  = expand)
     
     
 

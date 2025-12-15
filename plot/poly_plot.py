@@ -134,10 +134,11 @@ class PolygonPlot(Plot):
                 #self.drawPadding()
             #draw final point that triggers goal
             self.drawPoint(path[-1][0], path[-1][1], "green")
+
             #This is the real end
             
 
-        plt.show()
+        #plt.show()
 
         # # # ---- Statt plt.show(): speichern ----
         # import os
@@ -149,7 +150,7 @@ class PolygonPlot(Plot):
         # self.fig.savefig(out_path, dpi=300, bbox_inches="tight")
         # print(f"Saved plot to {out_path}")
 
-        # # plt.show()  # optional – eher weglassen, dann kommt auch keine Agg-Warnung mehr
+        # plt.show()  # optional – eher weglassen, dann kommt auch keine Agg-Warnung mehr
 
     def plotEnv(self, name: str) -> None:
         '''
@@ -372,5 +373,4 @@ class PolygonPlot(Plot):
                                 color="#dddddd", linestyle="-")
 
             # No plt.pause() here – we’re saving static images
-
 

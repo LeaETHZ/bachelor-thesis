@@ -10,12 +10,11 @@ from helper import convert
 def varying_length(motions: list[tuple], number: int) -> list[tuple]:
     varying_length_motions = motions.copy()
     for motion in motions:
-        for i in range(1,number+1):
+        for i in range(1,number):
             if motion[0] != 0:
                 varying_length_motions.append((int((motion[0]/float(number)*i)), 0))
             if motion[1] != 0:
                 varying_length_motions.append((0,int((motion[1]/float(number)*i))))
-
     return varying_length_motions
 
 
@@ -115,10 +114,10 @@ MOTIONS_CELLS: Dict[str, Tuple[int, int]] = {
 
     "up_2_3" : convert.ScaleVertex(MOTION_GROUPS_MM["VaryingLength"][4], RESOLUTION_CM),
     "up_1_3" : convert.ScaleVertex(MOTION_GROUPS_MM["VaryingLength"][3], RESOLUTION_CM),
-    "right_2_3" : convert.ScaleVertex(MOTION_GROUPS_MM["VaryingLength"][7], RESOLUTION_CM),
-    "right_1_3" : convert.ScaleVertex(MOTION_GROUPS_MM["VaryingLength"][6], RESOLUTION_CM),
-    "left_2_3" : convert.ScaleVertex(MOTION_GROUPS_MM["VaryingLength"][10], RESOLUTION_CM),
-    "left_1_3" : convert.ScaleVertex(MOTION_GROUPS_MM["VaryingLength"][9], RESOLUTION_CM),
+    "right_2_3" : convert.ScaleVertex(MOTION_GROUPS_MM["VaryingLength"][6], RESOLUTION_CM),
+    "right_1_3" : convert.ScaleVertex(MOTION_GROUPS_MM["VaryingLength"][5], RESOLUTION_CM),
+    "left_2_3" : convert.ScaleVertex(MOTION_GROUPS_MM["VaryingLength"][8], RESOLUTION_CM),
+    "left_1_3" : convert.ScaleVertex(MOTION_GROUPS_MM["VaryingLength"][7], RESOLUTION_CM),
     }
 
 

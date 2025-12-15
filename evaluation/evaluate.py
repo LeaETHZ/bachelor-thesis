@@ -38,20 +38,20 @@ VARIANTS = [
 
 # ---------- Evaluation parameters ----------
 N_CASES = 3
-CYL_RADIUS_CM = 30
-CYL_HEIGHT_CM = 1000
+CYL_RADIUS_CM = 20
+CYL_HEIGHT_CM = 500
 START_BOUND_CM = 200               # random start point is constrainted in y = (0, start_bound)
 GOAL_BOUND_CM = 200                # random end point is constrainted in y = (height - goal_bound , height)
-N_RANDOM_OBS_RECTANGLE = 7          # how many random rectangle obstacles per case
-N_RANDOM_OBS_ELLIPSE = 7
+N_RANDOM_OBS_RECTANGLE = 3          # how many random rectangle obstacles per case
+N_RANDOM_OBS_ELLIPSE = 3
 RECTANGLE_OBS_MAX_CM = 50
 RECTANGLE_OBS_MIN_CM = 5
 ELLIIPSE_OBS_MAX_CM = 25
 ELLIIPSE_OBS_MIN_CM = 2
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
-GOAL_TOL_CM_X = 20 #8.5
-GOAL_TOL_CM_Y = 20 #10
-MASTER_SEED = 356                # set None for non-deterministic
+GOAL_TOL_CM_X = 10 #8.5
+GOAL_TOL_CM_Y = 12 #10
+MASTER_SEED = 967                # set None for non-deterministic
 RESOLUTION = RESOLUTION_CM
 
 
@@ -244,7 +244,7 @@ def build_random_scenario(case_seed: int, pad: float) -> tuple[Cylinder, Tuple[i
     cyl_height_cells = np.round(CYL_HEIGHT_CM/RESOLUTION)
     env = Cylinder(cyl_radius_cells, cyl_height_cells)
     
-
+    
     # Your own random obstacle builder(s); keep deterministic under seed
     Randomize.random_obstacles_rectangle(env, N_RANDOM_OBS_RECTANGLE, RECTANGLE_OBS_MAX_CM, RECTANGLE_OBS_MIN_CM)
     Randomize.random_obstacles_ellipse(env, N_RANDOM_OBS_ELLIPSE, ELLIIPSE_OBS_MAX_CM, ELLIIPSE_OBS_MIN_CM)

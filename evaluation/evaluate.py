@@ -77,6 +77,8 @@ class RunResult:
     expand_count: int
     runtime_ms: float
     img_path: str
+    case_all_success: bool = False   # NEW
+
 
 # ---------- Utilities ----------
 def ensure_dir(p: Path) -> None:
@@ -152,6 +154,17 @@ def _run_single_case(case_id: int,
             case_dir,
         )
         case_results.append(res)
+
+    all_variants_success = all(r.success for r in case_results)
+
+    # mark each result with the case-level outcome
+    for r in case_results:
+        r.case_all_success = all_variants_success
+
+    # "delete cost" if the case isn't fully successful:
+    if not all_variants_success:
+        for r in case_results:
+            r.cost = float("nan")  # or float("inf") or None if you change typing
 
     t_case_end = time.perf_counter()
     print(f"Case {case_id} finished in {(t_case_end - t_case_start):.2f} seconds")
@@ -234,6 +247,7 @@ def run_variant_on_scenario(case_id: int, env: Cylinder, start: Tuple[int,int], 
         expand_count=expand_count,
         runtime_ms=dt,
         img_path=str(img_path),
+        case_all_success=False
     )
 
 # ---------- Build one scenario ----------
@@ -319,7 +333,7 @@ def run_experiment(n_cases=N_CASES, variants=VARIANTS):
         s = by_variant.setdefault(r.variant, {"runs":0, "success":0, "costs":[], "final_distances":[]})
         s["runs"] += 1
         s["success"] += int(r.success)
-        if r.success: 
+        if r.success and r.case_all_success:
             s["costs"].append(r.cost)
             s["final_distances"].append(r.final_distance)
 

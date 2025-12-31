@@ -40,18 +40,18 @@ VARIANTS = [
 N_CASES = 3
 CYL_RADIUS_CM = 20
 CYL_HEIGHT_CM = 500
-START_BOUND_CM = 200               # random start point is constrainted in y = (0, start_bound)
-GOAL_BOUND_CM = 200                # random end point is constrainted in y = (height - goal_bound , height)
+START_BOUND_CM = 100               # random start point is constrainted in y = (0, start_bound)
+GOAL_BOUND_CM = 100                # random end point is constrainted in y = (height - goal_bound , height)
 N_RANDOM_OBS_RECTANGLE = 3          # how many random rectangle obstacles per case
 N_RANDOM_OBS_ELLIPSE = 3
 RECTANGLE_OBS_MAX_CM = 50
-RECTANGLE_OBS_MIN_CM = 5
+RECTANGLE_OBS_MIN_CM = 40
 ELLIIPSE_OBS_MAX_CM = 25
-ELLIIPSE_OBS_MIN_CM = 2
+ELLIIPSE_OBS_MIN_CM = 20
 EXTRA_OBS_RECT = ((0,0), (0,0))  # optional fixed obstacle example
 GOAL_TOL_CM_X = 10 #8.5
 GOAL_TOL_CM_Y = 12 #10
-MASTER_SEED = 967                # set None for non-deterministic
+MASTER_SEED = 2393                # set None for non-deterministic
 RESOLUTION = RESOLUTION_CM
 
 

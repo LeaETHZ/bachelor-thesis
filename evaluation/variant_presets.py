@@ -14,6 +14,7 @@ def variant_set_motion_groups(shape: str, pad: str):
         (shape, "UpSidewaysDown", pad),
         (shape, "UpSidewaysDiagonal", pad),
         (shape, "VaryingLength", pad),
+        (shape, "DiagonalAndVaryingLength", pad)
     ]
 
 def variant_set_padding(shape: str, motion: str):

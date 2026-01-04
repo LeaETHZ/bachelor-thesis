@@ -8,6 +8,8 @@ __pycache__/
 
 runs/
 Archive_Cases/
+RealData/
+
 # Distribution / packaging
 .Python
 build/

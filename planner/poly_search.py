@@ -85,9 +85,11 @@ class PolygonSearcher(GraphSearcher):
     def getNeighbor(self, node: Node) -> list:
 
         #different time limit for varying
-        if len(self.motions) == 9:
+        if len(self.motions) >= 9:
             if time.perf_counter() - self.t_start > self.max_time_varying_s:
+                print("This has more than 9")
                 raise TimeoutError("PolygonSearcher exceeded time limit")
+    
 
         else:
             if time.perf_counter() - self.t_start > self.max_time_s:

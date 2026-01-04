@@ -1,4 +1,4 @@
-# Bachelor Thesis — Experiments & Results
+# Bachelor Thesis — Global Path Planning Experiments
 
 This repository contains all code and data for running and evaluating experiments for the bachelor thesis on global path planning.
 
@@ -86,5 +86,6 @@ This project uses an extended A* search for global path planning. Here is how th
 8. **Plotting and Analysis**
 	- After all cases, review plots and summary files in `runs/`.
 	- Each case has a visual output; the run folder contains all results and configuration.
+
 
 For more details on any step, see the relevant code in the `planner/`, `agent/`, and `environment/` folders.

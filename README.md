@@ -6,8 +6,8 @@ This repository contains all code and data for running and evaluating experiment
 ## How to Run, Evaluate, and Plot Results
 
 1. **Configure your experiment:**
-	- Set all experiment parameters (such as variant, number of cases, random seed, etc.) directly at the top of `main.py`. You can explicitly set the random seed for reproducibility.
-	- Also set evaluation and plotting parameters (such as `VARIANTS`, `N_CASES`, etc.) at the top of `evaluation/evaluate.py` as needed for your analysis and plots.
+	- Set all experiment parameters (such as variant, number of cases, etc.) directly at the top of `main.py`. 
+	- Also set evaluation and plotting parameters (such as `CYL_RADIUS_CM`, `N_CASES`, etc.) at the top of `evaluation/evaluate.py` as needed for your analysis and plots. You can explicitly set the random seed for reproducibility.
 	- No external config files are needed; simply edit the variables in these files.
 
 2. **Run the experiment:**

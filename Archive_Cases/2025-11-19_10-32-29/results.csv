@@ -1,7 +1,0 @@
-case_id,variant,shape,motion,res,success,cost,steps,expand_count,runtime_ms,img_path
-1,ExactRobot_UpSideways_RegularRes_RegularPad,ExactRobot,UpSideways,RegularRes,0,inf,0,0,2223.23,runs/2025-11-19_10-32-29/case_0001/ExactRobot_UpSideways_RegularRes_RegularPad.png
-1,RectangleRobot_UpSideways_RegularRes_RegularPad,RectangleRobot,UpSideways,RegularRes,0,inf,0,0,1331.35,runs/2025-11-19_10-32-29/case_0001/RectangleRobot_UpSideways_RegularRes_RegularPad.png
-2,ExactRobot_UpSideways_RegularRes_RegularPad,ExactRobot,UpSideways,RegularRes,1,5.0,5,6,94.43,runs/2025-11-19_10-32-29/case_0002/ExactRobot_UpSideways_RegularRes_RegularPad.png
-2,RectangleRobot_UpSideways_RegularRes_RegularPad,RectangleRobot,UpSideways,RegularRes,1,7.0,7,8,78.4,runs/2025-11-19_10-32-29/case_0002/RectangleRobot_UpSideways_RegularRes_RegularPad.png
-3,ExactRobot_UpSideways_RegularRes_RegularPad,ExactRobot,UpSideways,RegularRes,0,inf,0,0,56.61,runs/2025-11-19_10-32-29/case_0003/ExactRobot_UpSideways_RegularRes_RegularPad.png
-3,RectangleRobot_UpSideways_RegularRes_RegularPad,RectangleRobot,UpSideways,RegularRes,0,inf,0,0,44.26,runs/2025-11-19_10-32-29/case_0003/RectangleRobot_UpSideways_RegularRes_RegularPad.png

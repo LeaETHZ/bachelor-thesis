@@ -1,9 +1,0 @@
-
-=== Summary ===
-ExactRobot_UpSideways_RegularRes_RegularPad: success 70.0% | avg cost 6.43 over 10 cases
-ExactRobot_UpSidewaysDown_RegularRes_RegularPad: success 70.0% | avg cost 6.43 over 10 cases
-ExactRobot_UpSidewaysDiagonal_RegularRes_RegularPad: success 90.0% | avg cost 6.00 over 10 cases
-ExactRobot_VaryingLength_RegularRes_RegularPad: success 90.0% | avg cost 7.33 over 10 cases
-
-=== Failed Cases ===
-Cases with no success: 5, 8, 10

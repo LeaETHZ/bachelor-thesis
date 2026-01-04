@@ -1,3 +1,17 @@
+"""
+robot_factory.py
+----------------
+This module provides a factory function to create PolygonAgent robots with preset shapes, motions, and padding.
+
+- Uses shape, motion, and padding presets from the presets module.
+- Handles conversion from millimeter-based shapes/motions to grid cell units.
+- Returns a fully configured PolygonAgent ready for use in planning and simulation.
+
+Key function:
+- build_robot(shape_key, motion_key, padding_key):
+    Looks up the correct preset, converts units, and returns a PolygonAgent instance.
+"""
+
 import math
 from typing import Tuple
 from python_motion_planning.utils import Node

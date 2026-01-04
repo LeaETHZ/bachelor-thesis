@@ -1,27 +1,43 @@
+"""
+This module defines robot shape, motion, and padding presets for experiments.
+It provides:
+ - ShapeSetMM: dataclass for robot polygon shapes in different postures
+ - SHAPES_MM: dictionary of named robot shape sets
+ - MOTION_GROUPS_MM: dictionary of named motion primitive sets
+ - RESOLUTION_CM: the grid resolution used throughout the project
+ - PADDING_GROUPS_CM: named padding values for collision checking
+ - MOTIONS_CELLS: mapping from motion names to scaled grid cell moves
+ - varying_length: helper to generate motion primitives of different lengths
+"""
+
 from dataclasses import dataclass
 from typing import Dict, List, Tuple
 
-from agent import Polygon 
+from agent import Polygon
 from helper import convert
 
 
-
-
 def varying_length(motions: list[tuple], number: int) -> list[tuple]:
+    """
+    Generate a set of motion primitives with varying lengths based on the input motions.
+    For each motion, creates 'number' scaled versions (except for zero components).
+    """
     varying_length_motions = motions.copy()
     for motion in motions:
-        for i in range(1,number):
+        for i in range(1, number):
             if motion[0] != 0:
-                varying_length_motions.append((int((motion[0]/float(number)*i)), 0))
+                varying_length_motions.append((int((motion[0] / float(number) * i)), 0))
             if motion[1] != 0:
-                varying_length_motions.append((0,int((motion[1]/float(number)*i))))
+                varying_length_motions.append((0, int((motion[1] / float(number) * i))))
     return varying_length_motions
-
 
 
 @dataclass(frozen=True)
 class ShapeSetMM:
-    """A set of polygons for different headings (all in mm)."""
+    """
+    A set of robot polygons (in mm) for different headings/postures.
+    Used to describe the robot's shape for each possible motion direction.
+    """
     up: Polygon
     right: Polygon
     left: Polygon
@@ -38,6 +54,7 @@ class ShapeSetMM:
     left_2_3: Polygon
     left_1_3: Polygon
 
+# Dictionary of named robot shape sets (ExactRobot, RectangleRobot, etc.)
 SHAPES_MM: Dict[str, ShapeSetMM] = {
     "ExactRobot": ShapeSetMM(
     up=Polygon([(-68, 0), (68, 0), (68, 215), (90, 215), (245, 783), (-245, 783), (-90, 215), (-68, 215)]),
@@ -76,7 +93,7 @@ SHAPES_MM: Dict[str, ShapeSetMM] = {
     )
 }
 
-
+# Dictionary of named sets of motion primitives (in mm)
 MOTION_GROUPS_MM: Dict[str, List[Tuple[int, int]]] = {
     "UpSideways": [(0, 240), (200, 0), (-200, 0)],
     "UpSidewaysDown": [(0, 240), (200, 0), (-200, 0), (0,-240)],
@@ -87,10 +104,9 @@ MOTION_GROUPS_MM: Dict[str, List[Tuple[int, int]]] = {
     # DiagonalAndVaryingLength = [(0, 240), (200, 0), (-200, 0), (0, 80), (0, 160), (66, 0), (133, 0), (-66, 0), (-133, 0), (170, 170), (-170, 170)]
 }
 
+RESOLUTION_CM: float = 1.7        # The ONLY resolution value (cm per grid cell)
 
-RESOLUTION_CM: float = 1.7        # The ONLY resolution value
-
-
+# Named padding values (in cm) for collision checking
 PADDING_GROUPS_CM: Dict[str, int] = {
     "higher20" : 20,
     "higher15" : 15,
@@ -103,8 +119,7 @@ PADDING_GROUPS_CM: Dict[str, int] = {
     "NoPad" : 0
 }
 
-
-# Dictionary assignin motion name to motion tuple given in cells
+# Dictionary assigning motion name to motion tuple (scaled to grid cells)
 MOTIONS_CELLS: Dict[str, Tuple[int, int]] = {
     "up" : convert.ScaleVertex(MOTION_GROUPS_MM["UpSideways"][0], RESOLUTION_CM),
     "right" : convert.ScaleVertex(MOTION_GROUPS_MM["UpSideways"][1], RESOLUTION_CM),
